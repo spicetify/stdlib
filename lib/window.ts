@@ -53,6 +53,6 @@ export const xfetch = (input: RequestInfo | URL, init?: RequestInit, onFetch?: (
 
 	const request = new Request(url, input instanceof Request ? input : undefined);
 
-	onFetch(request, init);
+	onFetch?.(request, init);
 	return fetch(request, init);
 };
