@@ -62,7 +62,7 @@ export interface HiddenField<I extends string = any> extends BaseField<I> {
 
 import SettingsSectionRegistry from "../src/registers/settingsSection.js";
 import SettingsButton from "./components/SettingsButton.js";
-import type { Module } from "/hooks/module.js";
+import type { LoadableModule } from "/hooks/module.js";
 
 export class Settings<A = Record<string, never>> {
 	public sectionFields: { [key: string]: JSX.Element } = {};
@@ -91,8 +91,8 @@ export class Settings<A = Record<string, never>> {
 		);
 	}
 
-	static fromModule(mod: Module) {
-		return new Settings(mod.getName(), mod.getIdentifier());
+	static fromModule(mod: LoadableModule) {
+		return new Settings(mod.getName(), mod.getModuleIdentifier());
 	}
 
 	get cfg() {
@@ -218,7 +218,7 @@ export class Settings<A = Record<string, never>> {
 	};
 }
 
-export const createSettings = (mod: Module & { settings?: Settings }) => {
+export const createSettings = (mod: LoadableModule & { settings?: Settings }) => {
 	if (!mod.settings) {
 		mod.settings = Settings.fromModule(mod);
 	}

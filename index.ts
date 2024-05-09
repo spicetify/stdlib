@@ -22,14 +22,14 @@ export * from "./src/static.js";
 import { S as _S } from "./src/expose/index.js";
 export const S = _S;
 
-import type { Module } from "/hooks/module.js";
+import type { LoadableModule, Module } from "/hooks/module.js";
 
 import { Registrar } from "./src/registers/registers.js";
-import { Subject, BehaviorSubject, Subscription } from "https://esm.sh/rxjs";
+import { BehaviorSubject, Subscription } from "https://esm.sh/rxjs";
 
-export const createRegistrar = (mod: Module & { registrar?: Registrar }) => {
+export const createRegistrar = (mod: LoadableModule & { registrar?: Registrar }) => {
 	if (!mod.registrar) {
-		mod.registrar = new Registrar(mod.getIdentifier());
+		mod.registrar = new Registrar(mod.getModuleIdentifier());
 		const unloadJS = mod.unloadJS;
 		mod.unloadJS = () => {
 			mod.registrar.dispose();
@@ -48,7 +48,7 @@ export const createStorage = <M extends Module>(mod: M & { storage?: Storage }) 
 		mod.storage = new Proxy(globalThis.localStorage, {
 			get(target, p, receiver) {
 				if (typeof p === "string" && hookedMethods.has(p)) {
-					return (key: string, ...data: any[]) => target[p](`module:${mod.getIdentifier()}:${key}`, ...data);
+					return (key: string, ...data: any[]) => target[p](`module:${mod.getModuleIdentifier()}:${key}`, ...data);
 				}
 
 				return target[p as keyof typeof target];
@@ -66,7 +66,7 @@ export const createLogger = (mod: Module & { logger?: Console }) => {
 		mod.logger = new Proxy(globalThis.console, {
 			get(target, p, receiver) {
 				if (typeof p === "string" && hookedMethods.has(p)) {
-					return (...data: any[]) => target[p](`[${mod.getIdentifier()}]:`, ...data);
+					return (...data: any[]) => target[p](`[${mod.getModuleIdentifier()}]:`, ...data);
 				}
 
 				return target[p as keyof typeof target];
