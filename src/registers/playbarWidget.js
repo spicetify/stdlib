@@ -15,26 +15,25 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */
-
-import { Registry } from "./registry.js";
-import { S } from "../expose/index.js";
+ */ import { Registry } from "./registry.js";
+import { React } from "../expose/React.js";
 import { createIconComponent } from "../../lib/createIconComponent.js";
-import { registerTransform } from "../../mixin.js";
+import { transformer } from "../../mixin.js";
+import { Tooltip } from "../expose/webpack/ReactComponents.js";
+import { UI } from "../expose/webpack/ComponentLibrary.js";
 const registry = new Registry();
 export default registry;
 globalThis.__renderNowPlayingWidgets = registry.getItems.bind(registry);
-registerTransform({
-    transform: (emit)=>(str)=>{
-            str = str.replace(/(hideButtonFactory[^\]]*)/, "$1,...__renderNowPlayingWidgets()");
-            emit();
-            return str;
-        },
+transformer((emit)=>(str)=>{
+        str = str.replace(/(hideButtonFactory[^\]]*)/, "$1,...__renderNowPlayingWidgets()");
+        emit();
+        return str;
+    }, {
     glob: /^\/xpui\.js/
 });
-export const NowPlayingWidget = ({ label, icon, onClick })=>/*#__PURE__*/ S.React.createElement(S.ReactComponents.Tooltip, {
+export const NowPlayingWidget = ({ label, icon, onClick })=>/*#__PURE__*/ React.createElement(Tooltip, {
         label: label
-    }, /*#__PURE__*/ S.React.createElement(S.ReactComponents.UI.ButtonTertiary, {
+    }, /*#__PURE__*/ React.createElement(UI.ButtonTertiary, {
         size: "small",
         className: undefined,
         "aria-label": label,

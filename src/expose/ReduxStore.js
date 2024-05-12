@@ -15,9 +15,17 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ export let transformer;
-export default async function(t) {
-    transformer = t;
-    await import("./src/expose/index.js");
-    await import("./src/registers/index.js");
-}
+ */ import { transformer } from "../../mixin.js";
+export let ReduxStore = null;
+transformer((emit)=>(str)=>{
+        str = str.replace(/(,[a-zA-Z_\$][\w\$]*=)(([$\w,.:=;(){}]+\(\{session:[a-zA-Z_\$][\w\$]*,features:[a-zA-Z_\$][\w\$]*,seoExperiment:[a-zA-Z_\$][\w\$]*\}))/, "$1__ReduxStore=$2");
+        Object.defineProperty(globalThis, "__ReduxStore", {
+            set: emit
+        });
+        return str;
+    }, {
+    then: ($)=>{
+        ReduxStore = $;
+    },
+    glob: /^\/xpui\.js/
+});

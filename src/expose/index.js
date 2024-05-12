@@ -15,9 +15,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ export let transformer;
-export default async function(t) {
-    transformer = t;
-    await import("./src/expose/index.js");
-    await import("./src/registers/index.js");
-}
+ */ import "./enqueueImageSnackbar.js";
+import "./GraphQL.js";
+import "./Platform.js";
+import "./React.js";
+import "./ReactFlipToolkitSpring.js";
+import "./ReduxStore.js";
+import "./SettingsSection.js";
+import "./Snackbar.js";
+import "./Tippy.js";
+import "./enqueueImageSnackbar.js";
+import "./webpack.js";

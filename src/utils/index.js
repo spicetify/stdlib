@@ -15,10 +15,11 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */
-
-import { S } from "../expose/index.js";
+ */ import { Platform } from "../expose/Platform.js";
 export const isTouchscreenUi = ()=>{
-    const { enableGlobalNavBar } = S.Platform?.getLocalStorageAPI()?.getItem("remote-config-overrides") ?? {};
+    if (!Platform) {
+        return undefined;
+    }
+    const { enableGlobalNavBar } = Platform.getLocalStorageAPI().getItem("remote-config-overrides");
     return enableGlobalNavBar === "home-next-to-navigation" || enableGlobalNavBar === "home-next-to-search";
 };

@@ -15,9 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ export let transformer;
-export default async function(t) {
-    transformer = t;
-    await import("./src/expose/index.js");
-    await import("./src/registers/index.js");
-}
+ */ import { modules } from "./index.js";
+export const ReactJSX = modules.find((m)=>m.jsx);
+export const ReactDOM = modules.find((m)=>m.createRoot);
+export const ReactDOMServer = modules.find((m)=>m.renderToString);

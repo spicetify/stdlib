@@ -19,12 +19,11 @@
 
 export * from "./src/static.js";
 
-import { S as _S } from "./src/expose/index.js";
-export const S = _S;
-
 import type { LoadableModule, Module } from "/hooks/module.js";
 
-import { Registrar } from "./src/registers/registers.js";
+import { Platform } from "./src/expose/Platform.js";
+import { Registrar } from "./src/registers/index.js";
+
 import { BehaviorSubject, Subscription } from "https://esm.sh/rxjs";
 
 export const createRegistrar = (mod: LoadableModule) => {
@@ -70,8 +69,8 @@ export const createLogger = (mod: Module & { logger?: Console }) => {
    return mod.logger;
 };
 
-const PlayerAPI = S.Platform.getPlayerAPI();
-const History = S.Platform.getHistory();
+const PlayerAPI = Platform.getPlayerAPI();
+const History = Platform.getHistory();
 
 const newEventBus = () => {
    const playerState = PlayerAPI.getState();

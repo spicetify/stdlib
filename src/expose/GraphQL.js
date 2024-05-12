@@ -15,9 +15,25 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ export let transformer;
-export default async function(t) {
-    transformer = t;
-    await import("./src/expose/index.js");
-    await import("./src/registers/index.js");
-}
+ */ import { transformer } from "../../mixin.js";
+export const GraphQLDefs = {
+    query: {},
+    mutation: {}
+};
+transformer((emit)=>(str)=>{
+        const matches = str.matchAll(/(=new [a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\("(?<name>\w+)","(?<operation>query|mutation)","(?<sha256Hash>[\w\d]{64})",null\))/g);
+        for (const match of matches){
+            const { name, operation, sha256Hash } = match.groups;
+            // @ts-ignore
+            GraphQLDefs[operation][name] = {
+                name,
+                operation,
+                sha256Hash,
+                value: null
+            };
+        }
+        emit();
+        return str;
+    }, {
+    glob: /.+\.js$/
+});

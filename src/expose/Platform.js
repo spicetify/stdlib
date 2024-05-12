@@ -15,9 +15,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ export let transformer;
-export default async function(t) {
-    transformer = t;
-    await import("./src/expose/index.js");
-    await import("./src/registers/index.js");
-}
+ */ import { transformer } from "../../mixin.js";
+export let Platform = null;
+export let Cosmos = null;
+transformer((emit)=>(str)=>{
+        str = str.replace(/(setTitlebarHeight[\w(){}.,&$!=;"" ]+)(\{version:[a-zA-Z_\$][\w\$]*,)/, "$1__Platform=$2");
+        Object.defineProperty(globalThis, "__Platform", {
+            set: emit
+        });
+        return str;
+    }, {
+    then: ($)=>{
+        Platform = $;
+        Cosmos = $.getPlayerAPI()._cosmos;
+    },
+    glob: /^\/xpui\.js/
+});

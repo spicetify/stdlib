@@ -15,9 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */
-
-// TODO: remove lodash import
+ */ // TODO: remove lodash import
 import ld from "https://esm.sh/lodash";
 export const _ = ld;
 import ld_fp from "https://esm.sh/lodash/fp";

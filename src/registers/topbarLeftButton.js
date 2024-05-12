@@ -15,13 +15,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */
-
-import { Registry } from "./registry.js";
-import { S } from "../expose/index.js";
+ */ import { Registry } from "./registry.js";
+import { React } from "../expose/React.js";
 import { createIconComponent } from "../../lib/createIconComponent.js";
-import { registerTransform } from "../../mixin.js";
+import { transformer } from "../../mixin.js";
 import { isTouchscreenUi } from "../utils/index.js";
+import { Tooltip } from "../expose/webpack/ReactComponents.js";
+import { UI } from "../expose/webpack/ComponentLibrary.js";
 const registry = new class extends Registry {
     register(item, predicate) {
         super.register(item, predicate);
@@ -37,51 +37,50 @@ const registry = new class extends Registry {
 export default registry;
 let refreshTopbarLeftButtons;
 let topbarLeftButtonFactoryCtx;
-globalThis.__renderTopbarLeftButtons = ()=>S.React.createElement(()=>{
-        const [refreshCount, refresh] = S.React.useReducer((x)=>x + 1, 0);
+globalThis.__renderTopbarLeftButtons = ()=>React.createElement(()=>{
+        const [___, refresh] = React.useReducer((n)=>n + 1, 0);
         refreshTopbarLeftButtons = refresh;
         const topbarLeftButtonFactory = isTouchscreenUi() ? TopbarLeftButtonRound : TopbarLeftButtonSquare;
-        if (!topbarLeftButtonFactoryCtx) topbarLeftButtonFactoryCtx = S.React.createContext(null);
-        return /*#__PURE__*/ S.React.createElement(topbarLeftButtonFactoryCtx.Provider, {
+        if (!topbarLeftButtonFactoryCtx) topbarLeftButtonFactoryCtx = React.createContext(null);
+        return /*#__PURE__*/ React.createElement(topbarLeftButtonFactoryCtx.Provider, {
             value: topbarLeftButtonFactory
-        }, registry.getItems().map((TopbarLeftButton)=>/*#__PURE__*/ S.React.createElement(TopbarLeftButton, null)));
+        }, registry.getItems().map((TopbarLeftButton)=>/*#__PURE__*/ React.createElement(TopbarLeftButton, null)));
     });
-registerTransform({
-    transform: (emit)=>(str)=>{
-            str = str.replace(/("top-bar-forward-button"[^\]]*)/g, "$1,__renderTopbarLeftButtons()");
-            emit();
-            return str;
-        },
+transformer((emit)=>(str)=>{
+        str = str.replace(/("top-bar-forward-button"[^\]]*)/g, "$1,__renderTopbarLeftButtons()");
+        emit();
+        return str;
+    }, {
     glob: /^\/xpui\.js/
 });
 export const Button = (props)=>{
-    const TopbarLeftButtonFactory = S.React.useContext(topbarLeftButtonFactoryCtx);
-    return TopbarLeftButtonFactory && /*#__PURE__*/ S.React.createElement(TopbarLeftButtonFactory, props);
+    const TopbarLeftButtonFactory = React.useContext(topbarLeftButtonFactoryCtx);
+    return TopbarLeftButtonFactory && /*#__PURE__*/ React.createElement(TopbarLeftButtonFactory, props);
 };
-const TopbarLeftButtonRound = ({ label, disabled = false, onClick, icon })=>/*#__PURE__*/ S.React.createElement(S.ReactComponents.Tooltip, {
-        label: label
-    }, /*#__PURE__*/ S.React.createElement(S.ReactComponents.UI.ButtonTertiary, {
+const TopbarLeftButtonRound = (props)=>/*#__PURE__*/ React.createElement(Tooltip, {
+        label: props.label
+    }, /*#__PURE__*/ React.createElement(UI.ButtonTertiary, {
         size: "medium",
-        iconOnly: ()=>icon && createIconComponent({
-                icon,
+        iconOnly: ()=>props.icon && createIconComponent({
+                icon: props.icon,
                 iconSize: 16,
                 realIconSize: 24
             }),
         condensed: true,
-        "aria-label": label,
-        disabled: disabled,
-        onClick: onClick,
-        className: "rBX1EWVZ2EaPwP4y1Gkd"
+        "aria-label": props.label,
+        disabled: props.disabled,
+        onClick: props.onClick,
+        className: CLASSMAP.main.topbar.left.button_t.wrapper
     }));
-const TopbarLeftButtonSquare = ({ label, disabled = false, onClick, icon })=>/*#__PURE__*/ S.React.createElement(S.ReactComponents.Tooltip, {
-        label: label
-    }, /*#__PURE__*/ S.React.createElement("button", {
-        "aria-label": label,
-        disabled: disabled,
-        className: "ql0zZd7giPXSnPg75NR0",
-        onClick: onClick
-    }, icon && createIconComponent({
-        icon,
+const TopbarLeftButtonSquare = (props)=>/*#__PURE__*/ React.createElement(Tooltip, {
+        label: props.label
+    }, /*#__PURE__*/ React.createElement("button", {
+        "aria-label": props.label,
+        disabled: props.disabled,
+        className: CLASSMAP.main.topbar.left.button.wrapper,
+        onClick: props.onClick
+    }, props.icon && createIconComponent({
+        icon: props.icon,
         iconSize: 16,
-        className: "IYDlXmBmmUKHveMzIPCF"
+        className: CLASSMAP.main.topbar.left.button.icon.wrapper
     })));

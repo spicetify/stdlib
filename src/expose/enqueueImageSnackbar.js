@@ -15,9 +15,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ export let transformer;
-export default async function(t) {
-    transformer = t;
-    await import("./src/expose/index.js");
-    await import("./src/registers/index.js");
-}
+ */ import { transformer } from "../../mixin.js";
+export let enqueueImageSnackbar = null;
+// TODO: replace with a custom enqueueCustomSnackbar wrapper
+transformer((emit)=>(str)=>{
+        str = str.replace(/(\(\({[^}]*,\s*imageSrc)/, "__enqueueImageSnackbar=$1");
+        Object.defineProperty(globalThis, "__enqueueImageSnackbar", {
+            set: emit
+        });
+        return str;
+    }, {
+    then: ($)=>{
+        enqueueImageSnackbar = $;
+    },
+    glob: /^\/xpui\.js/,
+    noAwait: true
+});

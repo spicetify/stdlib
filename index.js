@@ -15,42 +15,34 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */
-
-export * from "./src/static.js";
+ */ export * from "./src/static.js";
 import { S as _S } from "./src/expose/index.js";
 export const S = _S;
 import { Registrar } from "./src/registers/registers.js";
 import { BehaviorSubject, Subscription } from "https://esm.sh/rxjs";
 export const createRegistrar = (mod)=>{
-    if (!mod.registrar) {
-        mod.registrar = new Registrar(mod.getIdentifier());
-        const unloadJS = mod.unloadJS;
-        mod.unloadJS = ()=>{
-            mod.registrar.dispose();
-            mod.registrar = undefined;
-            return unloadJS();
-        };
-    }
-    return mod.registrar;
+    const registrar = new Registrar(mod.getModuleIdentifier());
+    const unloadJS = mod.unloadJS;
+    mod.unloadJS = ()=>{
+        registrar.dispose();
+        return unloadJS();
+    };
+    return registrar;
 };
+const hookedNativeStorageMethods = new Set([
+    "getItem",
+    "setItem",
+    "removeItem"
+]);
 export const createStorage = (mod)=>{
-    if (!mod.storage) {
-        const hookedMethods = new Set([
-            "getItem",
-            "setItem",
-            "removeItem"
-        ]);
-        mod.storage = new Proxy(globalThis.localStorage, {
-            get (target, p, receiver) {
-                if (typeof p === "string" && hookedMethods.has(p)) {
-                    return (key, ...data)=>target[p](`module:${mod.getIdentifier()}:${key}`, ...data);
-                }
-                return target[p];
+    return new Proxy(globalThis.localStorage, {
+        get (target, p, receiver) {
+            if (typeof p === "string" && hookedNativeStorageMethods.has(p)) {
+                return (key, ...data)=>target[p](`module:${mod.getModuleIdentifier()}:${key}`, ...data);
             }
-        });
-    }
-    return mod.storage;
+            return target[p];
+        }
+    });
 };
 export const createLogger = (mod)=>{
     if (!mod.logger) {
@@ -64,7 +56,8 @@ export const createLogger = (mod)=>{
         mod.logger = new Proxy(globalThis.console, {
             get (target, p, receiver) {
                 if (typeof p === "string" && hookedMethods.has(p)) {
-                    return (...data)=>target[p](`[${mod.getIdentifier()}]:`, ...data);
+                    // @ts-ignore
+                    return (...data)=>target[p](`[${mod.getModuleIdentifier()}]:`, ...data);
                 }
                 return target[p];
             }
@@ -89,22 +82,19 @@ const newEventBus = ()=>{
 };
 const EventBus = newEventBus();
 export const createEventBus = (mod)=>{
-    if (!mod.eventBus) {
-        mod.eventBus = newEventBus();
-        // TODO: come up with a nicer solution
-        const s = new Subscription();
-        s.add(EventBus.Player.song_changed.subscribe(mod.eventBus.Player.song_changed));
-        s.add(EventBus.Player.state_updated.subscribe(mod.eventBus.Player.state_updated));
-        s.add(EventBus.Player.status_changed.subscribe(mod.eventBus.Player.status_changed));
-        s.add(EventBus.History.updated.subscribe(mod.eventBus.History.updated));
-        const unloadJS = mod.unloadJS;
-        mod.unloadJS = ()=>{
-            s.unsubscribe();
-            mod.eventBus = undefined;
-            return unloadJS();
-        };
-    }
-    return mod.eventBus;
+    const eventBus = newEventBus();
+    // TODO: come up with a nicer solution
+    const s = new Subscription();
+    s.add(EventBus.Player.song_changed.subscribe(eventBus.Player.song_changed));
+    s.add(EventBus.Player.state_updated.subscribe(eventBus.Player.state_updated));
+    s.add(EventBus.Player.status_changed.subscribe(eventBus.Player.status_changed));
+    s.add(EventBus.History.updated.subscribe(eventBus.History.updated));
+    const unloadJS = mod.unloadJS;
+    mod.unloadJS = ()=>{
+        s.unsubscribe();
+        return unloadJS();
+    };
+    return eventBus;
 };
 let cachedState = {};
 const listener = ({ data: state })=>{

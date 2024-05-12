@@ -15,11 +15,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */
-
-import { Registry } from "./registry.js";
+ */ import { Registry } from "./registry.js";
 import { matchLast } from "/hooks/util.js";
-import { registerTransform } from "../../mixin.js";
+import { transformer } from "../../mixin.js";
 class R extends Registry {
     register(item, predicate) {
         super.register(item, predicate);
@@ -34,26 +32,25 @@ class R extends Registry {
 }
 const registry = new R();
 export default registry;
-let resolveRefreshRoot = undefined;
+let resolveRefreshRoot;
 const refreshRoot = new Promise((r)=>{
     resolveRefreshRoot = r;
 });
 globalThis.__renderRootChildren = registry.getItems.bind(registry);
-registerTransform({
-    transform: (emit)=>(str)=>{
-            const croppedInput = str.match(/.*"data-right-sidebar-hidden"/)[0];
-            const children = matchLast(croppedInput, /children:([a-zA-Z_\$][\w\$]*)/g)[1];
-            str = str.replace(/("data-right-sidebar-hidden")/, `[(${children}=[${children},__renderRootChildren()].flat(),$1)]`);
-            const react = matchLast(croppedInput, /([a-zA-Z_\$][\w\$]*)\.useCallback/g)[1];
-            const index = matchLast(croppedInput, /return/g).index;
-            str = `${str.slice(0, index)}const[rand,setRand]=${react}.useState(0);__setRootRand=setRand;${str.slice(index)}`;
-            Object.defineProperty(globalThis, "__setRootRand", {
-                set: emit
-            });
-            return str;
-        },
-    then: (setRootRand)=>{
-        resolveRefreshRoot(()=>setRootRand(Math.random()));
+transformer((emit)=>(str)=>{
+        const croppedInput = str.match(/.*"data-right-sidebar-hidden"/)[0];
+        const children = matchLast(croppedInput, /children:([a-zA-Z_\$][\w\$]*)/g)[1];
+        str = str.replace(/("data-right-sidebar-hidden")/, `[(${children}=[${children},__renderRootChildren()].flat(),$1)]`);
+        const react = matchLast(croppedInput, /([a-zA-Z_\$][\w\$]*)\.useCallback/g)[1];
+        const index = matchLast(croppedInput, /return/g).index;
+        str = `${str.slice(0, index)}const[___,refresh]=${react}.useReducer(n=>n+1,0);__refreshRoot=refresh;${str.slice(index)}`;
+        Object.defineProperty(globalThis, "__refreshRoot", {
+            set: emit
+        });
+        return str;
+    }, {
+    then: ($)=>{
+        resolveRefreshRoot($);
     },
     glob: /^\/xpui\.js/
 });
