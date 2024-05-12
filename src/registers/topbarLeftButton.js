@@ -70,17 +70,17 @@ const TopbarLeftButtonRound = (props)=>/*#__PURE__*/ React.createElement(Tooltip
         "aria-label": props.label,
         disabled: props.disabled,
         onClick: props.onClick,
-        className: CLASSMAP.main.topbar.left.button_t.wrapper
+        className: "rBX1EWVZ2EaPwP4y1Gkd"
     }));
 const TopbarLeftButtonSquare = (props)=>/*#__PURE__*/ React.createElement(Tooltip, {
         label: props.label
     }, /*#__PURE__*/ React.createElement("button", {
         "aria-label": props.label,
         disabled: props.disabled,
-        className: CLASSMAP.main.topbar.left.button.wrapper,
+        className: "ql0zZd7giPXSnPg75NR0",
         onClick: props.onClick
     }, props.icon && createIconComponent({
         icon: props.icon,
         iconSize: 16,
-        className: CLASSMAP.main.topbar.left.button.icon.wrapper
+        className: "IYDlXmBmmUKHveMzIPCF"
     })));

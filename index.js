@@ -16,9 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */ export * from "./src/static.js";
-import { S as _S } from "./src/expose/index.js";
-export const S = _S;
-import { Registrar } from "./src/registers/registers.js";
+import { Platform } from "./src/expose/Platform.js";
+import { Registrar } from "./src/registers/index.js";
 import { BehaviorSubject, Subscription } from "https://esm.sh/rxjs";
 export const createRegistrar = (mod)=>{
     const registrar = new Registrar(mod.getModuleIdentifier());
@@ -65,8 +64,8 @@ export const createLogger = (mod)=>{
     }
     return mod.logger;
 };
-const PlayerAPI = S.Platform.getPlayerAPI();
-const History = S.Platform.getHistory();
+const PlayerAPI = Platform.getPlayerAPI();
+const History = Platform.getHistory();
 const newEventBus = ()=>{
     const playerState = PlayerAPI.getState();
     return {

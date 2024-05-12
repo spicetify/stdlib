@@ -65,7 +65,7 @@ const TopbarRightButtonRound = (props)=>/*#__PURE__*/ React.createElement(Toolti
         onClick: props.onClick,
         size: "small",
         condensedAll: true,
-        className: CLASSMAP.main.topbar.right.button_t.wrapper
+        className: "OomFKn3bsxs5JfNUoWhz"
     }, props.icon && createIconComponent({
         icon: props.icon,
         iconSize: 16,
@@ -75,7 +75,7 @@ const TopbarRightButtonSquare = (props)=>/*#__PURE__*/ React.createElement(Toolt
         label: props.label
     }, /*#__PURE__*/ React.createElement("button", {
         "aria-label": props.label,
-        className: classnames("encore-over-media-set", CLASSMAP.main.topbar.right.button.wrapper),
+        className: classnames("encore-over-media-set", "WtC1lGbmQRplD6JBhNFU"),
         onClick: props.onClick,
         disabled: props.disabled
     }, props.icon && createIconComponent({

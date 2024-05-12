@@ -39,9 +39,9 @@ export const PlaybarBarControl = ({ label, isActive = false, isActiveNoIndicator
     }, /*#__PURE__*/ React.createElement(UI.ButtonTertiary, {
         "aria-label": label,
         size: "small",
-        className: classnames(CLASSMAP.main.playbar.buttons.button.wrapper, {
-            [CLASSMAP.main.playbar.buttons.button.wrapper__indicator]: _isActive,
-            [CLASSMAP.main.playbar.buttons.button.wrapper__active]: _isActive || isActiveNoIndicator
+        className: classnames("KAZD28usA1vPz5GVpm63", {
+            ["EHxL6K_6WWDlTCZP6x5w"]: _isActive,
+            ["RK45o6dbvO1mb0wQtSwq"]: _isActive || isActiveNoIndicator
         }),
         disabled: disabled,
         iconOnly: icon && (()=>createIconComponent({
