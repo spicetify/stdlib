@@ -17,12 +17,24 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Platform } from "../expose/Platform.js";
+import { transformer } from "../../mixin.js";
 
-export const isTouchscreenUi = () => {
-   if (!Platform) {
-      return undefined;
-   }
-   const { enableGlobalNavBar } = Platform.getLocalStorageAPI().getItem("remote-config-overrides");
-   return enableGlobalNavBar === "home-next-to-navigation" || enableGlobalNavBar === "home-next-to-search";
-};
+export let enqueueImageSnackbar = null! as any;
+
+// TODO: replace with a custom enqueueCustomSnackbar wrapper
+transformer(
+   emit => str => {
+      str = str.replace(/(\(\({[^}]*,\s*imageSrc)/, "__enqueueImageSnackbar=$1");
+      Object.defineProperty(globalThis, "__enqueueImageSnackbar", {
+         set: emit,
+      });
+      return str;
+   },
+   {
+      then: ($: any) => {
+         enqueueImageSnackbar = $;
+      },
+      glob: /^\/xpui\.js/,
+      noAwait: true,
+   },
+);

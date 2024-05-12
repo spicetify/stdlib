@@ -17,12 +17,28 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Platform } from "../expose/Platform.js";
+import { transformer } from "../../mixin.js";
 
-export const isTouchscreenUi = () => {
-   if (!Platform) {
-      return undefined;
-   }
-   const { enableGlobalNavBar } = Platform.getLocalStorageAPI().getItem("remote-config-overrides");
-   return enableGlobalNavBar === "home-next-to-navigation" || enableGlobalNavBar === "home-next-to-search";
-};
+import type { Store } from "redux";
+
+export type ReduxStore = Store;
+export let ReduxStore = null! as ReduxStore;
+
+transformer<ReduxStore>(
+   emit => str => {
+      str = str.replace(
+         /(,[a-zA-Z_\$][\w\$]*=)(([$\w,.:=;(){}]+\(\{session:[a-zA-Z_\$][\w\$]*,features:[a-zA-Z_\$][\w\$]*,seoExperiment:[a-zA-Z_\$][\w\$]*\}))/,
+         "$1__ReduxStore=$2",
+      );
+      Object.defineProperty(globalThis, "__ReduxStore", {
+         set: emit,
+      });
+      return str;
+   },
+   {
+      then: ($: ReduxStore) => {
+         ReduxStore = $;
+      },
+      glob: /^\/xpui\.js/,
+   },
+);

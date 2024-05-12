@@ -17,12 +17,12 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Platform } from "../expose/Platform.js";
+import { exportedFunctions } from "./index.js";
 
-export const isTouchscreenUi = () => {
-   if (!Platform) {
-      return undefined;
-   }
-   const { enableGlobalNavBar } = Platform.getLocalStorageAPI().getItem("remote-config-overrides");
-   return enableGlobalNavBar === "home-next-to-navigation" || enableGlobalNavBar === "home-next-to-search";
-};
+import type { Flipped as FlippedT, Flipper as FlipperT } from "react-flip-toolkit";
+
+export type Flipped = typeof FlippedT;
+export type Flipper = FlipperT;
+
+export const Flipper = exportedFunctions.find(m => m.prototype?.getSnapshotBeforeUpdate) as unknown as Flipper;
+export const Flipped = exportedFunctions.find(m => (m as any).displayName === "Flipped") as Flipped;

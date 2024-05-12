@@ -17,12 +17,6 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Platform } from "../expose/Platform.js";
+import { exportedContexts } from "./index.js";
 
-export const isTouchscreenUi = () => {
-   if (!Platform) {
-      return undefined;
-   }
-   const { enableGlobalNavBar } = Platform.getLocalStorageAPI().getItem("remote-config-overrides");
-   return enableGlobalNavBar === "home-next-to-navigation" || enableGlobalNavBar === "home-next-to-search";
-};
+export const FilterContext = exportedContexts.find(c => (c as any)._currentValue2?.setFilter)!;

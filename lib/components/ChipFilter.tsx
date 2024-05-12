@@ -18,44 +18,51 @@
  */
 
 import { _ } from "/modules/official/stdlib/deps.js";
-import { S } from "/modules/official/stdlib/index.js";
-const { React } = S;
+import { React } from "../../src/expose/React.js";
+import { UI } from "../../src/expose/webpack/ComponentLibrary.js";
+import { ScrollableContainer } from "../../src/expose/webpack/ReactComponents";
 
 export interface FilterOption {
-	key: string;
-	filter: {
-		"": React.ReactNode;
-	};
+   key: string;
+   filter: {
+      "": React.ReactNode;
+   };
 }
 
 export interface ChipFilterProps {
-	availableFilters: FilterOption[];
-	selectedFilters: FilterOption[];
-	toggleFilter: (filter: FilterOption) => void;
-	className?: string;
+   availableFilters: FilterOption[];
+   selectedFilters: FilterOption[];
+   toggleFilter: (filter: FilterOption) => void;
+   className?: string;
 }
-export const ChipFilter = React.memo(({ availableFilters, selectedFilters, toggleFilter, className }: ChipFilterProps) => {
-	const createChip = isSelected => (filter, index) => (
-		<S.ReactComponents.UI.Chip
-			onClick={() => toggleFilter(filter)}
-			selectedColorSet="invertedLight"
-			selected={isSelected}
-			secondary={isSelected && index > 0}
-			style={{ marginBlockEnd: 0, willChange: "transform, opacity" }}
-			tabIndex={-1}
-			index={index}
-			key={filter.key}
-		>
-			{filter.filter[""]}
-		</S.ReactComponents.UI.Chip>
-	);
+export const ChipFilter = React.memo(
+   ({ availableFilters, selectedFilters, toggleFilter, className }: ChipFilterProps) => {
+      const createChip = (isSelected: boolean) => (filter: FilterOption, index: number) =>
+         (
+            <UI.Chip
+               onClick={() => toggleFilter(filter)}
+               selectedColorSet="invertedLight"
+               selected={isSelected}
+               secondary={isSelected && index > 0}
+               style={{ marginBlockEnd: 0, willChange: "transform, opacity" }}
+               tabIndex={-1}
+               index={index}
+               key={filter.key}
+            >
+               {filter.filter[""]}
+            </UI.Chip>
+         );
 
-	return (
-		selectedFilters.length + availableFilters.length > 0 && (
-			<S.ReactComponents.ScrollableContainer className={className} ariaLabel={"Filter options"}>
-				{selectedFilters.map(createChip(true))}
-				{availableFilters.map(createChip(false))}
-			</S.ReactComponents.ScrollableContainer>
-		)
-	);
-});
+      return (
+         selectedFilters.length + availableFilters.length > 0 && (
+            <ScrollableContainer
+               className={className}
+               ariaLabel={"Filter options"}
+            >
+               {selectedFilters.map(createChip(true))}
+               {availableFilters.map(createChip(false))}
+            </ScrollableContainer>
+         )
+      );
+   },
+);

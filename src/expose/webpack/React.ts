@@ -17,12 +17,13 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Platform } from "../expose/Platform.js";
+import { modules } from "./index.js";
 
-export const isTouchscreenUi = () => {
-   if (!Platform) {
-      return undefined;
-   }
-   const { enableGlobalNavBar } = Platform.getLocalStorageAPI().getItem("remote-config-overrides");
-   return enableGlobalNavBar === "home-next-to-navigation" || enableGlobalNavBar === "home-next-to-search";
-};
+import type ReactDOMT from "react-dom";
+import type ReactDOMServerT from "react-dom/server";
+export type ReactDOM = typeof ReactDOMT;
+export type ReactDOMServer = typeof ReactDOMServerT;
+
+export const ReactJSX = modules.find(m => m.jsx);
+export const ReactDOM = modules.find(m => m.createRoot) as ReactDOM;
+export const ReactDOMServer = modules.find(m => m.renderToString) as ReactDOMServer;

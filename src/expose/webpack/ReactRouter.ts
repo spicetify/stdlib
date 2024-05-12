@@ -17,12 +17,14 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Platform } from "../expose/Platform.js";
+import { chunks, require } from "./index.js";
+import { findBy } from "/hooks/util.js";
 
-export const isTouchscreenUi = () => {
-   if (!Platform) {
-      return undefined;
-   }
-   const { enableGlobalNavBar } = Platform.getLocalStorageAPI().getItem("remote-config-overrides");
-   return enableGlobalNavBar === "home-next-to-navigation" || enableGlobalNavBar === "home-next-to-search";
-};
+export const [ReactRouterModuleID] = chunks.find(([_, v]) => v.toString().includes("React Router"))!;
+export const ReactRouterModule = Object.values(require(ReactRouterModuleID));
+
+// https://github.com/remix-run/react-router/blob/main/packages/react-router/lib/hooks.tsx#L131
+export const useMatch = findBy(
+   "let{pathname:",
+   /\(([a-zA-Z_\$][\w\$]*),([a-zA-Z_\$][\w\$]*)\)\),\[\2,\1\]/,
+)(ReactRouterModule);

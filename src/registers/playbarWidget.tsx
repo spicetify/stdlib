@@ -18,33 +18,41 @@
  */
 
 import { Registry } from "./registry.js";
-import { S } from "../expose/index.js";
+import { React } from "../expose/React.js";
 import { createIconComponent } from "../../lib/createIconComponent.js";
-import { registerTransform } from "../../mixin.js";
+import { transformer } from "../../mixin.js";
+import { Tooltip } from "../expose/webpack/ReactComponents.js";
+import { UI } from "../expose/webpack/ComponentLibrary.js";
 
-const registry = new Registry<React.ReactElement, void>();
+const registry = new Registry<React.ReactNode, void>();
 export default registry;
 
+declare global {
+   var __renderNowPlayingWidgets: any;
+}
+
 globalThis.__renderNowPlayingWidgets = registry.getItems.bind(registry);
-registerTransform({
-	transform: emit => str => {
-		str = str.replace(/(hideButtonFactory[^\]]*)/, "$1,...__renderNowPlayingWidgets()");
-		emit();
-		return str;
-	},
-	glob: /^\/xpui\.js/,
-});
+transformer(
+   emit => str => {
+      str = str.replace(/(hideButtonFactory[^\]]*)/, "$1,...__renderNowPlayingWidgets()");
+      emit();
+      return str;
+   },
+   {
+      glob: /^\/xpui\.js/,
+   },
+);
 
 export type NowPlayingWidgetProps = { label: string; icon?: string; onClick: () => void };
 export const NowPlayingWidget = ({ label, icon, onClick }: NowPlayingWidgetProps) => (
-	<S.ReactComponents.Tooltip label={label}>
-		<S.ReactComponents.UI.ButtonTertiary
-			size="small"
-			className={undefined}
-			aria-label={label}
-			condensed={false}
-			iconOnly={icon && (() => createIconComponent({ icon }))}
-			onClick={onClick}
-		/>
-	</S.ReactComponents.Tooltip>
+   <Tooltip label={label}>
+      <UI.ButtonTertiary
+         size="small"
+         className={undefined}
+         aria-label={label}
+         condensed={false}
+         iconOnly={icon && (() => createIconComponent({ icon }))}
+         onClick={onClick}
+      />
+   </Tooltip>
 );

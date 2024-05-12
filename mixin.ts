@@ -17,11 +17,11 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { RegisterTransformFN } from "/hooks/transforms/transform.js";
+import type { Transformer } from "/hooks/transform.js";
 
-export let registerTransform: RegisterTransformFN;
-export default async function (rt: RegisterTransformFN) {
-	registerTransform = rt;
-	await import("./src/expose/index.js");
-	await import("./src/registers/registers.js");
+export let transformer: Transformer;
+export default async function (t: Transformer) {
+   transformer = t;
+   await import("./src/expose/index.js");
+   await import("./src/registers/index.js");
 }

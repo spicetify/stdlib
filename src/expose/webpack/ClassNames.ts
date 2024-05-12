@@ -17,10 +17,12 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export function expose({ Platform }) {
-    const Cosmos = Platform.getPlayerAPI()._cosmos;
-    return {
-        Platform,
-        Cosmos
-    };
-}
+import { chunks, require } from "./index.js";
+
+import type classNamesT from "classnames";
+export type classNames = typeof classNamesT;
+
+const [classnamesModuleID] = chunks.find(
+   ([_, v]) => v.toString().includes("[native code]") && !v.toString().includes("<anonymous>"),
+)!;
+export const classnames = require(classnamesModuleID) as classNames;

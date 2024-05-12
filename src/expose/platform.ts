@@ -17,12 +17,30 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { transformer } from "../../mixin.js";
+
+import type { PlatformAutoGen } from "/hooks/PlatformAutoGen.d.ts";
+
 export type Platform = PlatformAutoGen;
+export let Platform = null! as Platform;
+export let Cosmos = null! as ReturnType<Platform["getPlayerAPI"]>["_cosmos"];
 
-export type ExposedPlatform = ReturnType<typeof expose>;
-
-export function expose({ Platform }: { Platform: Platform }) {
-	const Cosmos = Platform.getPlayerAPI()._cosmos;
-
-	return { Platform, Cosmos };
-}
+transformer<Platform>(
+   emit => str => {
+      str = str.replace(
+         /(setTitlebarHeight[\w(){}.,&$!=;"" ]+)(\{version:[a-zA-Z_\$][\w\$]*,)/,
+         "$1__Platform=$2",
+      );
+      Object.defineProperty(globalThis, "__Platform", {
+         set: emit,
+      });
+      return str;
+   },
+   {
+      then: ($: Platform) => {
+         Platform = $;
+         Cosmos = $.getPlayerAPI()._cosmos;
+      },
+      glob: /^\/xpui\.js/,
+   },
+);

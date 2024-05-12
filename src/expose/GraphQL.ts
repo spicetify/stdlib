@@ -17,27 +17,36 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Registry } from "./registry.js";
 import { transformer } from "../../mixin.js";
 
-const registry = new Registry<React.ReactNode, void>();
-export default registry;
+export type GraphQLOp = "query" | "mutation";
+export type GraphQLDef<N extends string, O extends GraphQLOp> = {
+   name: N;
+   operation: O;
+   sha256Hash: string;
+   value: null;
+};
+export type GraphQLDefs = { [O in GraphQLOp]: { [N in string]: GraphQLDef<N, O> } };
 
-declare global {
-   var __renderRoutes: any;
-}
+export const GraphQLDefs = {
+   query: {},
+   mutation: {},
+} as GraphQLDefs;
 
-globalThis.__renderRoutes = registry.getItems.bind(registry);
 transformer(
    emit => str => {
-      str = str.replace(
-         /(\(0,[a-zA-Z_\$][\w\$]*\.jsx\)\([a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*,\{[^\{]*path:"\/search\/\*")/,
-         "...__renderRoutes(),$1",
+      const matches = str.matchAll(
+         /(=new [a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\("(?<name>\w+)","(?<operation>query|mutation)","(?<sha256Hash>[\w\d]{64})",null\))/g,
       );
+      for (const match of matches) {
+         const { name, operation, sha256Hash } = match.groups!;
+         // @ts-ignore
+         GraphQLDefs[operation][name] = { name, operation, sha256Hash, value: null };
+      }
       emit();
       return str;
    },
    {
-      glob: /^\/xpui\.js/,
+      glob: /.+\.js$/,
    },
 );

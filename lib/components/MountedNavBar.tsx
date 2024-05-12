@@ -17,53 +17,85 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { S } from "../../index.js";
+import { React } from "../../src/expose/React.js";
+import { UI } from "../../src/expose/webpack/ComponentLibrary.js";
+import { ReactDOM } from "../../src/expose/webpack/React.js";
+import { NavTo, ScrollableContainer } from "../../src/expose/webpack/ReactComponents.js";
 import { isTouchscreenUi } from "../../src/utils/index.js";
-const { ReactDOM } = S;
 
-const NavToChip = ({ to, title, selected, onClick }) => (
-	<S.ReactComponents.NavTo replace={true} to={to} tabIndex={-1} onClick={onClick} className="ZWI7JsjzJaR_G8Hy4W6J">
-		<S.ReactComponents.UI.Chip selected={selected} selectedColorSet="invertedLight" tabIndex={-1}>
-			{title}
-		</S.ReactComponents.UI.Chip>
-	</S.ReactComponents.NavTo>
+import type { FC, ReactNode } from "react";
+
+interface NavToChipProps {
+   to: string;
+   title: string;
+   selected: boolean;
+   onClick: () => void;
+}
+const NavToChip: FC<NavToChipProps> = props => (
+   <NavTo
+      replace={true}
+      to={props.to}
+      tabIndex={-1}
+      onClick={props.onClick}
+      className="ZWI7JsjzJaR_G8Hy4W6J"
+   >
+      <UI.Chip
+         selected={props.selected}
+         selectedColorSet="invertedLight"
+         tabIndex={-1}
+      >
+         {props.title}
+      </UI.Chip>
+   </NavTo>
 );
 
 export interface NavBarProps {
-	namespace: string;
-	categories: string[];
-	selectedCategory: string;
+   namespace: string;
+   categories: string[];
+   selectedCategory: string;
 }
 const NavBar = ({ namespace, categories, selectedCategory }: NavBarProps) => (
-	<div className="fVB_YDdnaDlztX7CcWTA">
-		<div className="e179_Eg8r7Ub6yjjxctr contentSpacing">
-			<div className="VIeVCUUETJyYPCDpsBif">
-				<S.ReactComponents.ScrollableContainer>
-					{categories.map(category => (
-						<NavToChip to={`spotify:app:bespoke:${namespace}:${category}`} title={category} selected={category === selectedCategory}>
-							{category}
-						</NavToChip>
-					))}
-				</S.ReactComponents.ScrollableContainer>
-			</div>
-		</div>
-	</div>
+   <div className="fVB_YDdnaDlztX7CcWTA">
+      <div className="e179_Eg8r7Ub6yjjxctr contentSpacing">
+         <div className="VIeVCUUETJyYPCDpsBif">
+            <ScrollableContainer>
+               {categories.map(category => (
+                  <NavToChip
+                     to={`spotify:app:bespoke:${namespace}:${category}`}
+                     title={category}
+                     selected={category === selectedCategory}
+                  >
+                     {category}
+                  </NavToChip>
+               ))}
+            </ScrollableContainer>
+         </div>
+      </div>
+   </div>
 );
 
-const TopBarMounted = ({ children }) => {
-	const touchscreenUi = isTouchscreenUi();
+interface TopBarMountedProps {
+   children?: ReactNode;
+}
+const TopBarMounted: FC<TopBarMountedProps> = props => {
+   const touchscreenUi = isTouchscreenUi();
 
-	const component = (
-		<div className="main-topbar-topbarContent" style={{ pointerEvents: "all" }}>
-			{children}
-		</div>
-	);
+   const component = (
+      <div
+         className="main-topbar-topbarContent"
+         style={{ pointerEvents: "all" }}
+      >
+         {props.children}
+      </div>
+   );
 
-	return touchscreenUi ? component : ReactDOM.createPortal(component, document.querySelector(".main-topBar-topbarContentWrapper"));
+   return touchscreenUi
+      ? component
+      : ReactDOM.createPortal(component, document.querySelector(".main-topBar-topbarContentWrapper")!);
 };
 
 export const TopNavBar = (props: NavBarProps) => (
-	<TopBarMounted>
-		<NavBar {...props} />
-	</TopBarMounted>
+   <TopBarMounted>
+      <NavBar {...props} />
+   </TopBarMounted>
 );

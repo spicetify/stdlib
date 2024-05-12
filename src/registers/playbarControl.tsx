@@ -18,58 +18,68 @@
  */
 
 import { Registry } from "./registry.js";
-import { S } from "../expose/index.js";
+import { React } from "../expose/React.js";
 import { createIconComponent } from "../../lib/createIconComponent.js";
-import { registerTransform } from "../../mixin.js";
+import { transformer } from "../../mixin.js";
+import { Tooltip } from "../expose/webpack/ReactComponents.js";
+import { UI } from "../expose/webpack/ComponentLibrary.js";
+import { classnames } from "../expose/webpack/ClassNames.js";
 
-const registry = new Registry<React.ReactElement, void>();
+const registry = new Registry<React.ReactNode, void>();
 export default registry;
 
+declare global {
+   var __renderPlaybarBarControls: any;
+}
+
 globalThis.__renderPlaybarBarControls = registry.getItems.bind(registry, undefined, true);
-registerTransform({
-	transform: emit => str => {
-		str = str.replace(/(children:\[)([^\[]*djJumpButtonFactory)/, "$1...__renderPlaybarBarControls(),$2");
-		emit();
-		return str;
-	},
-	glob: /^\/xpui\.js/,
-});
+transformer(
+   emit => str => {
+      str = str.replace(/(children:\[)([^\[]*djJumpButtonFactory)/, "$1...__renderPlaybarBarControls(),$2");
+      emit();
+      return str;
+   },
+   {
+      glob: /^\/xpui\.js/,
+   },
+);
 
 export type PlaybarBarControlProps = {
-	label: string;
-	isActive?: boolean;
-	isActiveNoIndicator?: boolean;
-	disabled?: boolean;
-	icon?: string;
-	onClick: () => void;
+   label: string;
+   isActive?: boolean;
+   isActiveNoIndicator?: boolean;
+   disabled?: boolean;
+   icon?: string;
+   onClick: () => void;
 };
 export const PlaybarBarControl = ({
-	label,
-	isActive = false,
-	isActiveNoIndicator = false,
-	disabled = false,
-	icon,
-	onClick,
+   label,
+   isActive = false,
+   isActiveNoIndicator = false,
+   disabled = false,
+   icon,
+   onClick,
 }: PlaybarBarControlProps) => {
-	const [_isActive, _setIsActive] = S.React.useState(isActive);
+   const [_isActive, _setIsActive] = React.useState(isActive);
 
-	return (
-		<S.ReactComponents.Tooltip label={label}>
-			<S.ReactComponents.UI.ButtonTertiary
-				aria-label={label}
-				size="small"
-				className={`main-genericButton-button ${_isActive || isActiveNoIndicator ? "main-genericButton-buttonActive" : ""} ${
-					_isActive ? "main-genericButton-buttonActiveDot" : ""
-				}`}
-				disabled={disabled}
-				iconOnly={icon && (() => createIconComponent({ icon }))}
-				onClick={() => {
-					onClick();
-					_setIsActive(!_isActive);
-				}}
-				data-active={_isActive.toString()}
-				aria-pressed={_isActive}
-			/>
-		</S.ReactComponents.Tooltip>
-	);
+   return (
+      <Tooltip label={label}>
+         <UI.ButtonTertiary
+            aria-label={label}
+            size="small"
+            className={classnames(CLASSMAP.main.playbar.buttons.button.wrapper, {
+               [CLASSMAP.main.playbar.buttons.button.wrapper__indicator]: _isActive,
+               [CLASSMAP.main.playbar.buttons.button.wrapper__active]: _isActive || isActiveNoIndicator,
+            })}
+            disabled={disabled}
+            iconOnly={icon && (() => createIconComponent({ icon }))}
+            onClick={() => {
+               onClick();
+               _setIsActive(!_isActive);
+            }}
+            data-active={_isActive.toString()}
+            aria-pressed={_isActive}
+         />
+      </Tooltip>
+   );
 };

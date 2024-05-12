@@ -26,35 +26,45 @@ import playbarWidget from "./playbarWidget.js";
 import settingsSection from "./settingsSection.js";
 import topbarLeftButton from "./topbarLeftButton.js";
 import topbarRightButton from "./topbarRightButton.js";
-// It's ugly, but we gotta do it statically to get type completions
+
 const registers = {
-    menu,
-    root,
-    route,
-    navlink,
-    playbarControl,
-    playbarWidget,
-    settingsSection,
-    topbarLeftButton,
-    topbarRightButton
+   menu,
+   root,
+   route,
+   navlink,
+   playbarControl,
+   playbarWidget,
+   settingsSection,
+   topbarLeftButton,
+   topbarRightButton,
 };
+type Registers = typeof registers;
+
+import type { Predicate } from "./registry.js";
+
 export class Registrar {
-    id;
-    constructor(id){
-        this.id = id;
-        this.ledger = new Map();
-    }
-    ledger;
-    register(type, item, predicate = ()=>true) {
-        this.ledger.set(item, type);
-        registers[type].register(item, predicate);
-    }
-    unregister(type, item) {
-        this.ledger.delete(item);
-        registers[type].unregister(item);
-    }
-    dispose() {
-        for (const [item, type] of this.ledger.entries())this.unregister(type, item);
-        this.ledger.clear();
-    }
+   constructor(public id: string) {}
+
+   ledger = new Map<Registers[keyof Registers]["_A"], keyof Registers>();
+
+   register<R extends keyof Registers>(
+      type: R,
+      item: Registers[R]["_A"],
+      predicate: Predicate<Registers[R]["_B"]> = () => true,
+   ) {
+      this.ledger.set(item, type);
+      // @ts-ignore
+      registers[type].register(item, predicate);
+   }
+
+   unregister<R extends keyof Registers>(type: R, item: Registers[R]["_A"]) {
+      this.ledger.delete(item);
+      // @ts-ignore
+      registers[type].unregister(item);
+   }
+
+   dispose() {
+      for (const [item, type] of this.ledger.entries()) this.unregister(type, item);
+      this.ledger.clear();
+   }
 }

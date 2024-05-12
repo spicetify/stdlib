@@ -17,12 +17,25 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Platform } from "../expose/Platform.js";
+import { transformer } from "../../mixin.js";
 
-export const isTouchscreenUi = () => {
-   if (!Platform) {
-      return undefined;
-   }
-   const { enableGlobalNavBar } = Platform.getLocalStorageAPI().getItem("remote-config-overrides");
-   return enableGlobalNavBar === "home-next-to-navigation" || enableGlobalNavBar === "home-next-to-search";
-};
+import type { Tippy as TippyT } from "tippy.js";
+
+export type Tippy = TippyT;
+export let Tippy = null! as Tippy;
+
+transformer(
+   emit => str => {
+      str = str.replace(/(([a-zA-Z_\$][\w\$]*)\.setDefaultProps=)/, "__Tippy=$2;$1");
+      Object.defineProperty(globalThis, "__Tippy", {
+         set: emit,
+      });
+      return str;
+   },
+   {
+      then: ($: Tippy) => {
+         Tippy = $;
+      },
+      glob: /^\/vendor~xpui\.js/,
+   },
+);

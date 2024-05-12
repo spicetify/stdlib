@@ -17,12 +17,12 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Platform } from "../expose/Platform.js";
+import { exportedFunctions } from "./index.js";
+import { findBy } from "/hooks/util.js";
 
-export const isTouchscreenUi = () => {
-   if (!Platform) {
-      return undefined;
-   }
-   const { enableGlobalNavBar } = Platform.getLocalStorageAPI().getItem("remote-config-overrides");
-   return enableGlobalNavBar === "home-next-to-navigation" || enableGlobalNavBar === "home-next-to-search";
-};
+export const DragHandler = findBy("dataTransfer", "data-dragging")(exportedFunctions);
+export const useExtractedColor = exportedFunctions.find(
+   m =>
+      m.toString().includes("extracted-color") ||
+      (m.toString().includes("colorRaw") && m.toString().includes("useEffect")),
+);

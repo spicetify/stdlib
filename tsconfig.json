@@ -1,18 +1,18 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../../../tsconfig.json",
     "compilerOptions": {
         "baseUrl": "../../../",
         "paths": {
             "/*": ["./*"],
             "https://esm.sh/v135/*": [
-                "modules/Delusoire/spicetify-marketplace/node_modules/@types/*",
-                "modules/Delusoire/spicetify-marketplace/node_modules/*",
+                "modules/official/stdlib/node_modules/@types/*",
+                "modules/official/stdlib/node_modules/*",
                 "node_modules/@types/*",
                 "node_modules/*"
             ],
             "https://esm.sh/*": [
-                "modules/Delusoire/spicetify-marketplace/node_modules/@types/*",
-                "modules/Delusoire/spicetify-marketplace/node_modules/*",
+                "modules/official/stdlib/node_modules/@types/*",
+                "modules/official/stdlib/node_modules/*",
                 "node_modules/@types/*",
                 "node_modules/*"
             ]

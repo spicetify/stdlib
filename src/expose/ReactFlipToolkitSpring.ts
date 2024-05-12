@@ -17,12 +17,26 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Platform } from "../expose/Platform.js";
+import { transformer } from "../../mixin.js";
 
-export const isTouchscreenUi = () => {
-   if (!Platform) {
-      return undefined;
-   }
-   const { enableGlobalNavBar } = Platform.getLocalStorageAPI().getItem("remote-config-overrides");
-   return enableGlobalNavBar === "home-next-to-navigation" || enableGlobalNavBar === "home-next-to-search";
-};
+import type { spring } from "react-flip-toolkit";
+
+export type ReactFlipToolkitSpring = typeof spring;
+export let ReactFlipToolkitSpring = null! as ReactFlipToolkitSpring;
+
+transformer(
+   emit => str => {
+      str = str.replace(
+         /([a-zA-Z_\$][\w\$]*)=((?:function|\()([\w$.,{}()= ]+(?:springConfig|overshootClamping)){2})/,
+         "$1=__ReactFlipToolkitSpring=$2",
+      );
+      Object.defineProperty(globalThis, "__ReactFlipToolkitSpring", { set: emit });
+      return str;
+   },
+   {
+      then: ($: ReactFlipToolkitSpring) => {
+         ReactFlipToolkitSpring = $;
+      },
+      glob: /^\/vendor~xpui\.js/,
+   },
+);

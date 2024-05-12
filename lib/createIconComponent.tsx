@@ -17,21 +17,27 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { S } from "../src/expose/index.js";
+import { React } from "../src/expose/React.js";
+import { UI } from "../src/expose/webpack/ComponentLibrary.js";
 
 export const createIconComponent = ({
-	icon,
-	iconSize = 16,
-	realIconSize = iconSize,
-	...props
-}: { [k: string]: any; icon: string; realIconSize?: number; iconSize?: number }) => {
-	return (
-		<S.ReactComponents.UI.Icon
-			autoMirror={false}
-			iconSize={realIconSize}
-			viewBox={`0 0 ${iconSize} ${iconSize}`}
-			dangerouslySetInnerHTML={{ __html: icon }}
-			{...props}
-		/>
-	);
+   icon,
+   iconSize = 16,
+   realIconSize = iconSize,
+   ...props
+}: {
+   [k: string]: any;
+   icon: string;
+   realIconSize?: number;
+   iconSize?: number;
+}) => {
+   return (
+      <UI.Icon
+         autoMirror={false}
+         iconSize={realIconSize}
+         viewBox={`0 0 ${iconSize} ${iconSize}`}
+         dangerouslySetInnerHTML={{ __html: icon }}
+         {...props}
+      />
+   );
 };

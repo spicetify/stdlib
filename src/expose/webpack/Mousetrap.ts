@@ -17,9 +17,9 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*
-const HU = await import("/hooks/util.js")
-const MSI = await import("/modules/official/stdlib/index.js")
-HU.visited.clear()
-MSI.S.Platform.getClipboardAPI().copy(HU.type(MSI.S.Platform, "PlatformAutoGen"))
-*/
+import { modules } from "./index.js";
+
+import type MousetrapT from "mousetrap";
+export type Mousetrap = typeof MousetrapT;
+
+export const Mousetrap = modules.find(m => m.addKeycodes) as Mousetrap;
