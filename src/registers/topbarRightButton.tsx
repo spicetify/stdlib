@@ -98,6 +98,7 @@ const TopbarRightButtonRound: TopbarRightButtonFactory = props => (
       </UI.ButtonTertiary>
    </Tooltip>
 );
+
 const TopbarRightButtonSquare: TopbarRightButtonFactory = props => (
    <Tooltip label={ props.label }>
       <button
