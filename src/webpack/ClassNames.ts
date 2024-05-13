@@ -15,7 +15,24 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ import { modules } from "./index.js";
-export const ReactJSX = modules.find((m)=>m.jsx);
-export const ReactDOM = modules.find((m)=>m.createRoot);
-export const ReactDOMServer = modules.find((m)=>m.renderToString);
+ */
+
+import { webpackLoaded } from "../../mixin";
+import { chunks, require } from "./index.js";
+
+import type classNamesT from "classnames";
+export type classNames = typeof classNamesT;
+
+
+export let classnames: classNames;
+
+webpackLoaded.subscribe( loaded => {
+   if ( !loaded ) {
+      return;
+   }
+
+   const [ classnamesModuleID ] = chunks.find(
+      ( [ _, v ] ) => v.toString().includes( "[native code]" ) && !v.toString().includes( "<anonymous>" ),
+   )!;
+   classnames = require( classnamesModuleID );
+} );

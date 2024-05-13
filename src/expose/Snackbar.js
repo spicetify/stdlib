@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */ import { transformer } from "../../mixin.js";
-export let Snackbar = null;
+export let Snackbar;
 transformer((emit)=>(str)=>{
         str = str.replace(/(\.call\(this,[a-zA-Z_\$][\w\$]*\)\|\|this\)\.enqueueSnackbar)/, "$1=__Snackbar");
         let __Snackbar = undefined;

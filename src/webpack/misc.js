@@ -15,19 +15,18 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ import { Platform } from "../Platform.js";
+ */ import { webpackLoaded } from "../../mixin.js";
+import { Platform } from "../expose/Platform.js";
 import { exportedFunctions, exports } from "./index.js";
 import { findBy } from "/hooks/util.js";
-export const useContextMenuState = findBy("useContextMenuState")(exportedFunctions);
-export const Color = Object.assign(findBy("static fromHex")(exportedFunctions), {
-    CSSFormat: exports.find((m)=>m.RGBA)
-});
-export const _reservedPanelIds = exports.find((m)=>m.BuddyFeed);
-export const Locale = exports.find((m)=>m.getTranslations);
-export const createUrlLocale = findBy("has", "baseName", "language")(exportedFunctions);
-export const imageAnalysis = findBy(/\![a-zA-Z_\$][\w\$]*\.isFallback|\{extractColor/)(exportedFunctions);
-export const fallbackPreset = exports.find((m)=>m.colorDark);
-export const extractColorPreset = async (image)=>{
+export let useContextMenuState;
+export let Color;
+export let _reservedPanelIds;
+export let Locale;
+export let createUrlLocale;
+export let imageAnalysis;
+export let fallbackPreset;
+export let extractColorPreset = async (image)=>{
     const analysis = await imageAnalysis(Platform.getGraphQLLoader(), image);
     for (const result of analysis){
         if ("isFallback" in result === false) {
@@ -36,5 +35,21 @@ export const extractColorPreset = async (image)=>{
     }
     return analysis;
 };
-export const getPlayContext = findBy("referrerIdentifier", "usePlayContextItem")(exportedFunctions);
-export const InternalPropetyMap = exports.find((o)=>o.Builder);
+export let getPlayContext;
+export let InternalPropetyMap;
+webpackLoaded.subscribe((loaded)=>{
+    if (!loaded) {
+        return;
+    }
+    useContextMenuState = findBy("useContextMenuState")(exportedFunctions);
+    Color = Object.assign(findBy("static fromHex")(exportedFunctions), {
+        CSSFormat: exports.find((m)=>m.RGBA)
+    });
+    _reservedPanelIds = exports.find((m)=>m.BuddyFeed);
+    Locale = exports.find((m)=>m.getTranslations);
+    createUrlLocale = findBy("has", "baseName", "language")(exportedFunctions);
+    imageAnalysis = findBy(/\![a-zA-Z_\$][\w\$]*\.isFallback|\{extractColor/)(exportedFunctions);
+    fallbackPreset = exports.find((m)=>m.colorDark);
+    getPlayContext = findBy("referrerIdentifier", "usePlayContextItem")(exportedFunctions);
+    InternalPropetyMap = exports.find((o)=>o.Builder);
+});

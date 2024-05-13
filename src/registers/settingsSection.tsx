@@ -27,7 +27,7 @@ declare global {
    var __renderSettingSections: any;
 }
 
-globalThis.__renderSettingSections = registry.getItems.bind(registry);
+globalThis.__renderSettingSections = registry.getItems.bind( registry );
 transformer(
    emit => str => {
       str = str.replace(

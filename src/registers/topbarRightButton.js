@@ -20,9 +20,9 @@ import { React } from "../expose/React.js";
 import { createIconComponent } from "../../lib/createIconComponent.js";
 import { transformer } from "../../mixin.js";
 import { isTouchscreenUi } from "../utils/index.js";
-import { Tooltip } from "../expose/webpack/ReactComponents.js";
-import { UI } from "../expose/webpack/ComponentLibrary.js";
-import { classnames } from "../expose/webpack/ClassNames.js";
+import { Tooltip } from "../webpack/ReactComponents.js";
+import { UI } from "../webpack/ComponentLibrary.js";
+import { classnames } from "../webpack/ClassNames.js";
 const registry = new class extends Registry {
     register(item, predicate) {
         super.register(item, predicate);

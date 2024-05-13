@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */ import { transformer } from "../../mixin.js";
-export let enqueueImageSnackbar = null;
+export let enqueueImageSnackbar;
 // TODO: replace with a custom enqueueCustomSnackbar wrapper
 transformer((emit)=>(str)=>{
         str = str.replace(/(\(\({[^}]*,\s*imageSrc)/, "__enqueueImageSnackbar=$1");

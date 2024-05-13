@@ -20,9 +20,9 @@
 import { Platform } from "../expose/Platform.js";
 
 export const isTouchscreenUi = () => {
-   if (!Platform) {
+   if ( !Platform ) {
       return undefined;
    }
-   const { enableGlobalNavBar } = Platform.getLocalStorageAPI().getItem("remote-config-overrides");
+   const { enableGlobalNavBar } = Platform.getLocalStorageAPI().getItem( "remote-config-overrides" );
    return enableGlobalNavBar === "home-next-to-navigation" || enableGlobalNavBar === "home-next-to-search";
 };

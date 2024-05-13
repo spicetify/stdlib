@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */ import { transformer } from "../../mixin.js";
-export let Platform = null;
-export let Cosmos = null;
+export let Platform;
+export let Cosmos;
 transformer((emit)=>(str)=>{
         str = str.replace(/(setTitlebarHeight[\w(){}.,&$!=;"" ]+)(\{version:[a-zA-Z_\$][\w\$]*,)/, "$1__Platform=$2");
         Object.defineProperty(globalThis, "__Platform", {

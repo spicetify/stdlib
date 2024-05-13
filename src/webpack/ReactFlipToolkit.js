@@ -15,14 +15,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */
-
-import { chunks, require } from "./index.js";
-
-import type classNamesT from "classnames";
-export type classNames = typeof classNamesT;
-
-const [classnamesModuleID] = chunks.find(
-   ([_, v]) => v.toString().includes("[native code]") && !v.toString().includes("<anonymous>"),
-)!;
-export const classnames = require(classnamesModuleID) as classNames;
+ */ import { webpackLoaded } from "../../mixin.js";
+import { exportedFunctions } from "./index.js";
+export let Flipper;
+export let Flipped;
+webpackLoaded.subscribe((loaded)=>{
+    if (!loaded) {
+        return;
+    }
+    Flipper = exportedFunctions.find((m)=>m.prototype?.getSnapshotBeforeUpdate);
+    Flipped = exportedFunctions.find((m)=>m.displayName === "Flipped");
+});

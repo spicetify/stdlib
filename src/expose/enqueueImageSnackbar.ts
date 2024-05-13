@@ -19,19 +19,19 @@
 
 import { transformer } from "../../mixin.js";
 
-export let enqueueImageSnackbar = null! as any;
+export let enqueueImageSnackbar: any;
 
 // TODO: replace with a custom enqueueCustomSnackbar wrapper
 transformer(
    emit => str => {
-      str = str.replace(/(\(\({[^}]*,\s*imageSrc)/, "__enqueueImageSnackbar=$1");
-      Object.defineProperty(globalThis, "__enqueueImageSnackbar", {
+      str = str.replace( /(\(\({[^}]*,\s*imageSrc)/, "__enqueueImageSnackbar=$1" );
+      Object.defineProperty( globalThis, "__enqueueImageSnackbar", {
          set: emit,
-      });
+      } );
       return str;
    },
    {
-      then: ($: any) => {
+      then: ( $: any ) => {
          enqueueImageSnackbar = $;
       },
       glob: /^\/xpui\.js/,

@@ -19,13 +19,13 @@
 
 import { transformer } from "../../mixin.js";
 
-export type SettingsSectionProps = { filterMatchQuery: string };
+export type SettingsSectionProps = { filterMatchQuery: string; };
 export type SettingsSection = React.FC<SettingsSectionProps>;
-export let SettingsSection = null! as SettingsSection;
+export let SettingsSection: SettingsSection;
 
 export type SettingsSectionTitleProps = {};
 export type SettingsSectionTitle = React.FC<SettingsSectionTitleProps>;
-export let SettingsSectionTitle = null! as SettingsSectionTitle;
+export let SettingsSectionTitle: SettingsSectionTitle;
 
 transformer<SettingsSection>(
    emit => str => {
@@ -33,11 +33,11 @@ transformer<SettingsSection>(
          /(\.jsxs\)\()([a-zA-Z_\$][\w\$]*)([^=]*"desktop.settings.compatibility")/,
          "$1(__SettingsSection=$2)$3",
       );
-      Object.defineProperty(globalThis, "__SettingsSection", { set: emit });
+      Object.defineProperty( globalThis, "__SettingsSection", { set: emit } );
       return str;
    },
    {
-      then: ($: SettingsSection) => {
+      then: ( $: SettingsSection ) => {
          SettingsSection = $;
       },
       glob: /^\/xpui-routes-desktop-settings\.js/,
@@ -51,11 +51,11 @@ transformer<SettingsSectionTitle>(
          /("desktop.settings.compatibility"[^=]*?\.jsx\)\()([a-zA-Z_\$][\w\$]*)/,
          "$1(__SettingsSectionTitle=$2)",
       );
-      Object.defineProperty(globalThis, "__SettingsSectionTitle", { set: emit });
+      Object.defineProperty( globalThis, "__SettingsSectionTitle", { set: emit } );
       return str;
    },
    {
-      then: ($: SettingsSectionTitle) => {
+      then: ( $: SettingsSectionTitle ) => {
          SettingsSectionTitle = $;
       },
       glob: /^\/xpui-routes-desktop-settings\.js/,

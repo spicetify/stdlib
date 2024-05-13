@@ -22,15 +22,15 @@ import { matchLast } from "/hooks/util.js";
 import { transformer } from "../../mixin.js";
 
 class R extends Registry<React.ReactNode, void> {
-   override register(item: React.ReactNode, predicate: Predicate<void>): React.ReactNode {
-      super.register(item, predicate);
-      refreshRoot.then(refresh => refresh());
+   override register( item: React.ReactNode, predicate: Predicate<void> ): React.ReactNode {
+      super.register( item, predicate );
+      refreshRoot.then( refresh => refresh() );
       return item;
    }
 
-   override unregister(item: React.ReactNode): React.ReactNode {
-      super.unregister(item);
-      refreshRoot.then(f => f());
+   override unregister( item: React.ReactNode ): React.ReactNode {
+      super.unregister( item );
+      refreshRoot.then( f => f() );
       return item;
    }
 }
@@ -38,39 +38,39 @@ class R extends Registry<React.ReactNode, void> {
 const registry = new R();
 export default registry;
 
-let resolveRefreshRoot!: (refreshRoot: () => void) => void;
-const refreshRoot = new Promise<() => void>(r => {
+let resolveRefreshRoot!: ( refreshRoot: () => void ) => void;
+const refreshRoot = new Promise<() => void>( r => {
    resolveRefreshRoot = r;
-});
+} );
 
 declare global {
    var __renderRootChildren: any;
 }
 
-globalThis.__renderRootChildren = registry.getItems.bind(registry);
+globalThis.__renderRootChildren = registry.getItems.bind( registry );
 transformer(
    emit => str => {
-      const croppedInput = str.match(/.*"data-right-sidebar-hidden"/)![0];
-      const children = matchLast(croppedInput, /children:([a-zA-Z_\$][\w\$]*)/g)[1];
+      const croppedInput = str.match( /.*"data-right-sidebar-hidden"/ )![ 0 ];
+      const children = matchLast( croppedInput, /children:([a-zA-Z_\$][\w\$]*)/g )[ 1 ];
       str = str.replace(
          /("data-right-sidebar-hidden")/,
-         `[(${children}=[${children},__renderRootChildren()].flat(),$1)]`,
+         `[(${ children }=[${ children },__renderRootChildren()].flat(),$1)]`,
       );
 
-      const react = matchLast(croppedInput, /([a-zA-Z_\$][\w\$]*)\.useCallback/g)[1];
-      const index = matchLast(croppedInput, /return/g).index;
-      str = `${str.slice(
+      const react = matchLast( croppedInput, /([a-zA-Z_\$][\w\$]*)\.useCallback/g )[ 1 ];
+      const index = matchLast( croppedInput, /return/g ).index;
+      str = `${ str.slice(
          0,
          index,
-      )}const[___,refresh]=${react}.useReducer(n=>n+1,0);__refreshRoot=refresh;${str.slice(index)}`;
-      Object.defineProperty(globalThis, "__refreshRoot", {
+      ) }const[___,refresh]=${ react }.useReducer(n=>n+1,0);__refreshRoot=refresh;${ str.slice( index ) }`;
+      Object.defineProperty( globalThis, "__refreshRoot", {
          set: emit,
-      });
+      } );
       return str;
    },
    {
-      then: ($: React.DispatchWithoutAction) => {
-         resolveRefreshRoot($);
+      then: ( $: React.DispatchWithoutAction ) => {
+         resolveRefreshRoot( $ );
       },
       glob: /^\/xpui\.js/,
    },

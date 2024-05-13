@@ -22,7 +22,7 @@ import { transformer } from "../../mixin.js";
 import type { Store } from "redux";
 
 export type ReduxStore = Store;
-export let ReduxStore = null! as ReduxStore;
+export let ReduxStore: ReduxStore;
 
 transformer<ReduxStore>(
    emit => str => {
@@ -30,13 +30,13 @@ transformer<ReduxStore>(
          /(,[a-zA-Z_\$][\w\$]*=)(([$\w,.:=;(){}]+\(\{session:[a-zA-Z_\$][\w\$]*,features:[a-zA-Z_\$][\w\$]*,seoExperiment:[a-zA-Z_\$][\w\$]*\}))/,
          "$1__ReduxStore=$2",
       );
-      Object.defineProperty(globalThis, "__ReduxStore", {
+      Object.defineProperty( globalThis, "__ReduxStore", {
          set: emit,
-      });
+      } );
       return str;
    },
    {
-      then: ($: ReduxStore) => {
+      then: ( $: ReduxStore ) => {
          ReduxStore = $;
       },
       glob: /^\/xpui\.js/,

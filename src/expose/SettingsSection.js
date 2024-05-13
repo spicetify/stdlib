@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */ import { transformer } from "../../mixin.js";
-export let SettingsSection = null;
-export let SettingsSectionTitle = null;
+export let SettingsSection;
+export let SettingsSectionTitle;
 transformer((emit)=>(str)=>{
         str = str.replace(/(\.jsxs\)\()([a-zA-Z_\$][\w\$]*)([^=]*"desktop.settings.compatibility")/, "$1(__SettingsSection=$2)$3");
         Object.defineProperty(globalThis, "__SettingsSection", {

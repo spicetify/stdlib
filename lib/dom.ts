@@ -23,33 +23,33 @@ export const waitForElement = <E extends Element>(
    location = document.body,
    notEl?: E | null,
 ) =>
-   new Promise((resolve: (value: E) => void, reject) => {
+   new Promise( ( resolve: ( value: E ) => void, reject ) => {
       const onMutation = () => {
-         const el = document.querySelector<E>(selector);
-         if (el) {
-            if (notEl && el === notEl) {
+         const el = document.querySelector<E>( selector );
+         if ( el ) {
+            if ( notEl && el === notEl ) {
             } else {
                observer.disconnect();
-               return resolve(el);
+               return resolve( el );
             }
          }
       };
 
-      const observer = new MutationObserver(onMutation);
+      const observer = new MutationObserver( onMutation );
       onMutation();
 
-      observer.observe(location, {
+      observer.observe( location, {
          childList: true,
          subtree: true,
-      });
+      } );
 
-      if (timeout)
-         setTimeout(() => {
+      if ( timeout )
+         setTimeout( () => {
             observer.disconnect();
             console.debug();
-            reject(`waitForElement: timed out waiting for ${selector}`);
-         }, timeout);
-   });
+            reject( `waitForElement: timed out waiting for ${ selector }` );
+         }, timeout );
+   } );
 
-export const mainElement = document.querySelector("main")!;
-export const [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
+export const mainElement = document.querySelector( "main" )!;
+export const [ REACT_FIBER, REACT_PROPS ] = Object.keys( mainElement );

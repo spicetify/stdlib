@@ -16,3 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
+
+import { webpackLoaded } from "../../mixin";
+import { exportedFunctions } from "./index.js";
+import { findBy } from "/hooks/util.js";
+
+export let DragHandler: Function;
+export let useExtractedColor: Function;
+
+
+webpackLoaded.subscribe( loaded => {
+   if ( !loaded ) {
+      return;
+   }
+
+   DragHandler = findBy( "dataTransfer", "data-dragging" )( exportedFunctions );
+   useExtractedColor = exportedFunctions.find(
+      m =>
+         m.toString().includes( "extracted-color" ) ||
+         ( m.toString().includes( "colorRaw" ) && m.toString().includes( "useEffect" ) ),
+   )!;
+} );

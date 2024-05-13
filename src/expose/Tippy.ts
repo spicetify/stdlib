@@ -22,18 +22,18 @@ import { transformer } from "../../mixin.js";
 import type { Tippy as TippyT } from "tippy.js";
 
 export type Tippy = TippyT;
-export let Tippy = null! as Tippy;
+export let Tippy: Tippy;
 
 transformer(
    emit => str => {
-      str = str.replace(/(([a-zA-Z_\$][\w\$]*)\.setDefaultProps=)/, "__Tippy=$2;$1");
-      Object.defineProperty(globalThis, "__Tippy", {
+      str = str.replace( /(([a-zA-Z_\$][\w\$]*)\.setDefaultProps=)/, "__Tippy=$2;$1" );
+      Object.defineProperty( globalThis, "__Tippy", {
          set: emit,
-      });
+      } );
       return str;
    },
    {
-      then: ($: Tippy) => {
+      then: ( $: Tippy ) => {
          Tippy = $;
       },
       glob: /^\/vendor~xpui\.js/,

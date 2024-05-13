@@ -17,6 +17,25 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { exportedContexts } from "./index.js";
+import { webpackLoaded } from "../../mixin";
+import { chunks, require } from "./index.js";
+import { findBy } from "/hooks/util.js";
 
-export const FilterContext = exportedContexts.find(c => (c as any)._currentValue2?.setFilter)!;
+
+// https://github.com/remix-run/react-router/blob/main/packages/react-router/lib/hooks.tsx#L131
+export let useMatch: Function;
+
+
+webpackLoaded.subscribe( loaded => {
+   if ( !loaded ) {
+      return;
+   }
+
+   const [ ReactRouterModuleID ] = chunks.find( ( [ _, v ] ) => v.toString().includes( "React Router" ) )!;
+   const ReactRouterModule = Object.values( require( ReactRouterModuleID ) );
+
+   useMatch = findBy(
+      "let{pathname:",
+      /\(([a-zA-Z_\$][\w\$]*),([a-zA-Z_\$][\w\$]*)\)\),\[\2,\1\]/,
+   )( ReactRouterModule ) as Function;
+} );

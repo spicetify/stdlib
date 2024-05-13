@@ -15,11 +15,16 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */
-
+ */ import { webpackLoaded } from "../../mixin.js";
 import { modules } from "./index.js";
-
-import type MousetrapT from "mousetrap";
-export type Mousetrap = typeof MousetrapT;
-
-export const Mousetrap = modules.find(m => m.addKeycodes) as Mousetrap;
+export let ReactJSX;
+export let ReactDOM;
+export let ReactDOMServer;
+webpackLoaded.subscribe((loaded)=>{
+    if (!loaded) {
+        return;
+    }
+    ReactJSX = modules.find((m)=>m.jsx);
+    ReactDOM = modules.find((m)=>m.createRoot);
+    ReactDOMServer = modules.find((m)=>m.renderToString);
+});

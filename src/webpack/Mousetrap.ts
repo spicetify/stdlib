@@ -15,4 +15,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ 
+ */
+
+import { webpackLoaded } from "../../mixin";
+import { modules } from "./index.js";
+
+import type MousetrapT from "mousetrap";
+export type Mousetrap = typeof MousetrapT;
+
+export let Mousetrap: Mousetrap;
+
+webpackLoaded.subscribe( loaded => {
+   if ( !loaded ) {
+      return;
+   }
+
+   Mousetrap = modules.find( m => m.addKeycodes );
+} );

@@ -15,9 +15,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ export * from "./src/static.js";
+ */ import { webpackLoaded } from "./mixin.js";
+webpackLoaded.next(true);
 import { Platform } from "./src/expose/Platform.js";
-import { Registrar } from "./src/registers/index.js";
+import { Registrar } from "./src/registers";
 import { BehaviorSubject, Subscription } from "https://esm.sh/rxjs";
 export const createRegistrar = (mod)=>{
     const registrar = new Registrar(mod.getModuleIdentifier());
@@ -28,12 +29,12 @@ export const createRegistrar = (mod)=>{
     };
     return registrar;
 };
-const hookedNativeStorageMethods = new Set([
-    "getItem",
-    "setItem",
-    "removeItem"
-]);
 export const createStorage = (mod)=>{
+    const hookedNativeStorageMethods = new Set([
+        "getItem",
+        "setItem",
+        "removeItem"
+    ]);
     return new Proxy(globalThis.localStorage, {
         get (target, p, receiver) {
             if (typeof p === "string" && hookedNativeStorageMethods.has(p)) {

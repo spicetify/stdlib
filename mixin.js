@@ -15,7 +15,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ export let transformer;
+ */ import { BehaviorSubject } from "https://esm.sh/rxjs";
+export const webpackLoaded = new BehaviorSubject(false);
+export let transformer;
 export default async function(t) {
     transformer = t;
     await import("./src/expose/index.js");

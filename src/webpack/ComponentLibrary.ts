@@ -17,12 +17,27 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { exportedFunctions } from "./index.js";
+import { webpackLoaded } from "../../mixin";
+import { exportedForwardRefs, exportedFunctions, exports } from "./index.js";
 
-import type { Flipped as FlippedT, Flipper as FlipperT } from "react-flip-toolkit";
 
-export type Flipped = typeof FlippedT;
-export type Flipper = FlipperT;
+export let UI: any;
 
-export const Flipper = exportedFunctions.find(m => m.prototype?.getSnapshotBeforeUpdate) as unknown as Flipper;
-export const Flipped = exportedFunctions.find(m => (m as any).displayName === "Flipped") as Flipped;
+webpackLoaded.subscribe( loaded => {
+   if ( !loaded ) {
+      return;
+   }
+
+   const componentNames = Object.keys( exports.find( e => e.BrowserDefaultFocusStyleProvider ) );
+   const componentRegexes = componentNames.map(
+      n => new RegExp( `"data-encore-id":(?:[a-zA-Z_\$][\w\$]*\\.){2}${ n }\\b` ),
+   );
+   const componentPairs = [
+      exportedFunctions.map( f => [ f, f ] ),
+      exportedForwardRefs.map( f => [ ( f as any ).render, f ] ),
+   ]
+      .flat()
+      .map( ( [ s, f ] ) => [ componentNames.find( ( n, i ) => s.toString().match( componentRegexes[ i ] ) ), f ] );
+
+   UI = Object.fromEntries( componentPairs );
+} );

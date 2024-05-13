@@ -17,11 +17,14 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { BehaviorSubject } from "https://esm.sh/rxjs";
 import type { Transformer } from "/hooks/transform.js";
 
+export const webpackLoaded = new BehaviorSubject<boolean>( false );
+
 export let transformer: Transformer;
-export default async function (t: Transformer) {
+export default async function ( t: Transformer ) {
    transformer = t;
-   await import("./src/expose/index.js");
-   await import("./src/registers/index.js");
+   await import( "./src/expose/index.js" );
+   await import( "./src/registers/index.js" );
 }

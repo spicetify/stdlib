@@ -15,20 +15,26 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ import { exportedForwardRefs, exportedFunctions, exports } from "./index.js";
-const componentNames = Object.keys(exports.find((e)=>e.BrowserDefaultFocusStyleProvider));
-const componentRegexes = componentNames.map((n)=>new RegExp(`"data-encore-id":(?:[a-zA-Z_\$][\w\$]*\\.){2}${n}\\b`));
-const componentPairs = [
-    exportedFunctions.map((f)=>[
-            f,
-            f
-        ]),
-    exportedForwardRefs.map((f)=>[
-            f.render,
-            f
-        ])
-].flat().map(([s, f])=>[
-        componentNames.find((n, i)=>s.toString().match(componentRegexes[i])),
-        f
-    ]);
-export const UI = Object.fromEntries(componentPairs);
+ */
+
+import { webpackLoaded } from "../../mixin";
+import { modules } from "./index.js";
+
+import type ReactDOMT from "react-dom";
+import type ReactDOMServerT from "react-dom/server";
+export type ReactDOM = typeof ReactDOMT;
+export type ReactDOMServer = typeof ReactDOMServerT;
+
+export let ReactJSX: any;
+export let ReactDOM: ReactDOM;
+export let ReactDOMServer: ReactDOMServer;
+
+webpackLoaded.subscribe( loaded => {
+   if ( !loaded ) {
+      return;
+   }
+
+   ReactJSX = modules.find( m => m.jsx )!;
+   ReactDOM = modules.find( m => m.createRoot )!;
+   ReactDOMServer = modules.find( m => m.renderToString )!;
+} );

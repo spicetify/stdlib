@@ -21,8 +21,8 @@ import { Registry } from "./registry.js";
 import { React } from "../expose/React.js";
 import { createIconComponent } from "../../lib/createIconComponent.js";
 import { transformer } from "../../mixin.js";
-import { Tooltip } from "../expose/webpack/ReactComponents.js";
-import { UI } from "../expose/webpack/ComponentLibrary.js";
+import { Tooltip } from "../webpack/ReactComponents.js";
+import { UI } from "../webpack/ComponentLibrary.js";
 
 const registry = new Registry<React.ReactNode, void>();
 export default registry;
@@ -31,10 +31,10 @@ declare global {
    var __renderNowPlayingWidgets: any;
 }
 
-globalThis.__renderNowPlayingWidgets = registry.getItems.bind(registry);
+globalThis.__renderNowPlayingWidgets = registry.getItems.bind( registry );
 transformer(
    emit => str => {
-      str = str.replace(/(hideButtonFactory[^\]]*)/, "$1,...__renderNowPlayingWidgets()");
+      str = str.replace( /(hideButtonFactory[^\]]*)/, "$1,...__renderNowPlayingWidgets()" );
       emit();
       return str;
    },
@@ -43,16 +43,16 @@ transformer(
    },
 );
 
-export type NowPlayingWidgetProps = { label: string; icon?: string; onClick: () => void };
-export const NowPlayingWidget = ({ label, icon, onClick }: NowPlayingWidgetProps) => (
-   <Tooltip label={label}>
+export type NowPlayingWidgetProps = { label: string; icon?: string; onClick: () => void; };
+export const NowPlayingWidget = ( { label, icon, onClick }: NowPlayingWidgetProps ) => (
+   <Tooltip label={ label }>
       <UI.ButtonTertiary
          size="small"
-         className={undefined}
-         aria-label={label}
-         condensed={false}
-         iconOnly={icon && (() => createIconComponent({ icon }))}
-         onClick={onClick}
+         className={ undefined }
+         aria-label={ label }
+         condensed={ false }
+         iconOnly={ icon && ( () => createIconComponent( { icon } ) ) }
+         onClick={ onClick }
       />
    </Tooltip>
 );

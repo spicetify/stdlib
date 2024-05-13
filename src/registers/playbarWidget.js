@@ -19,8 +19,8 @@
 import { React } from "../expose/React.js";
 import { createIconComponent } from "../../lib/createIconComponent.js";
 import { transformer } from "../../mixin.js";
-import { Tooltip } from "../expose/webpack/ReactComponents.js";
-import { UI } from "../expose/webpack/ComponentLibrary.js";
+import { Tooltip } from "../webpack/ReactComponents.js";
+import { UI } from "../webpack/ComponentLibrary.js";
 const registry = new Registry();
 export default registry;
 globalThis.__renderNowPlayingWidgets = registry.getItems.bind(registry);

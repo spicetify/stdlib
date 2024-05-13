@@ -15,5 +15,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ import { exportedContexts } from "./index.js";
-export const FilterContext = exportedContexts.find((c)=>c._currentValue2?.setFilter);
+ */ import { webpackLoaded } from "../../mixin.js";
+import { exportedFunctions } from "./index.js";
+import { findBy } from "/hooks/util.js";
+export let useSnackbar;
+export let enqueueCustomSnackbar;
+webpackLoaded.subscribe(()=>{
+    useSnackbar = findBy(/^function\(\)\{return\(0,[a-zA-Z_\$][\w\$]*\.useContext\)\([a-zA-Z_\$][\w\$]*\)\}$/)(exportedFunctions);
+    enqueueCustomSnackbar = findBy("enqueueCustomSnackbar", "headless")(exportedFunctions);
+});

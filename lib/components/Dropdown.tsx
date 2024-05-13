@@ -19,22 +19,22 @@
 
 import { React } from "../../src/expose/React.js";
 import { createIconComponent } from "../createIconComponent.js";
-import { ContextMenu, Menu, MenuItem } from "../../src/expose/webpack/ReactComponents.js";
-import { UI } from "../../src/expose/webpack/ComponentLibrary.js";
+import { ContextMenu, Menu, MenuItem } from "../../src/webpack/ReactComponents.js";
+import { UI } from "../../src/webpack/ComponentLibrary.js";
 
 const CheckIcon = () =>
-   createIconComponent({
+   createIconComponent( {
       // TODO
       icon: "" /*  SVGIcons.check */,
-   });
+   } );
 
 interface MenuItemProps {
    option: string;
    isActive: boolean;
-   onSwitch: (option: string) => void;
+   onSwitch: ( option: string ) => void;
    children: React.ReactNode;
 }
-const DropdownMenuItem = ({ option, isActive, onSwitch, children }: MenuItemProps) => {
+const DropdownMenuItem = ( { option, isActive, onSwitch, children }: MenuItemProps ) => {
    const activeStyle = {
       backgroundColor: "rgba(var(--spice-rgb-selected-row),.1)",
    };
@@ -42,12 +42,12 @@ const DropdownMenuItem = ({ option, isActive, onSwitch, children }: MenuItemProp
    return (
       <MenuItem
          trigger="click"
-         onClick={() => onSwitch(option)}
-         data-checked={isActive}
-         trailingIcon={isActive ? <CheckIcon /> : undefined}
-         style={isActive ? activeStyle : undefined}
+         onClick={ () => onSwitch( option ) }
+         data-checked={ isActive }
+         trailingIcon={ isActive ? <CheckIcon /> : undefined }
+         style={ isActive ? activeStyle : undefined }
       >
-         {children}
+         { children }
       </MenuItem>
    );
 };
@@ -60,12 +60,12 @@ export type DropdownOptions = Record<string, React.FC<OptionProps>>;
 interface DropdownMenuProps<O extends DropdownOptions> {
    options: O;
    activeOption: keyof O;
-   onSwitch: (option: keyof O) => void;
+   onSwitch: ( option: keyof O ) => void;
 }
-export default function <O extends DropdownOptions>({ options, activeOption, onSwitch }: DropdownMenuProps<O>) {
-   const SelectedOption: React.FC<OptionProps> = options[activeOption];
+export default function <O extends DropdownOptions>( { options, activeOption, onSwitch }: DropdownMenuProps<O> ) {
+   const SelectedOption: React.FC<OptionProps> = options[ activeOption ];
 
-   if (Object.keys(options).length === 1) {
+   if ( Object.keys( options ).length === 1 ) {
       return (
          <button
             className="x-sortBox-sortDropdown"
@@ -83,25 +83,25 @@ export default function <O extends DropdownOptions>({ options, activeOption, onS
       );
    }
 
-   const DropdownMenu = (props: any) => {
+   const DropdownMenu = ( props: any ) => {
       return (
-         <Menu {...props}>
-            {Object.entries(options).map(([option, Children]) => (
+         <Menu { ...props }>
+            { Object.entries( options ).map( ( [ option, Children ] ) => (
                <DropdownMenuItem
-                  option={option}
-                  isActive={option === activeOption}
-                  onSwitch={onSwitch}
+                  option={ option }
+                  isActive={ option === activeOption }
+                  onSwitch={ onSwitch }
                >
                   <Children />
                </DropdownMenuItem>
-            ))}
+            ) ) }
          </Menu>
       );
    };
 
    return (
       <ContextMenu
-         menu={<DropdownMenu />}
+         menu={ <DropdownMenu /> }
          trigger="click"
       >
          <button
@@ -116,7 +116,7 @@ export default function <O extends DropdownOptions>({ options, activeOption, onS
             >
                <SelectedOption preview />
             </UI.Type>
-            {createIconComponent({ icon: `<path d="m14 6-6 6-6-6h12z" />` })}
+            { createIconComponent( { icon: `<path d="m14 6-6 6-6-6h12z" />` } ) }
          </button>
       </ContextMenu>
    );

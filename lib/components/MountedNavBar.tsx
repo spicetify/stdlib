@@ -18,9 +18,9 @@
  */
 
 import { React } from "../../src/expose/React.js";
-import { UI } from "../../src/expose/webpack/ComponentLibrary.js";
-import { ReactDOM } from "../../src/expose/webpack/React.js";
-import { NavTo, ScrollableContainer } from "../../src/expose/webpack/ReactComponents.js";
+import { UI } from "../../src/webpack/ComponentLibrary.js";
+import { ReactDOM } from "../../src/webpack/React.js";
+import { NavTo, ScrollableContainer } from "../../src/webpack/ReactComponents.js";
 import { isTouchscreenUi } from "../../src/utils/index.js";
 
 import type { FC, ReactNode } from "react";
@@ -33,18 +33,18 @@ interface NavToChipProps {
 }
 const NavToChip: FC<NavToChipProps> = props => (
    <NavTo
-      replace={true}
-      to={props.to}
-      tabIndex={-1}
-      onClick={props.onClick}
+      replace={ true }
+      to={ props.to }
+      tabIndex={ -1 }
+      onClick={ props.onClick }
       className="ZWI7JsjzJaR_G8Hy4W6J"
    >
       <UI.Chip
-         selected={props.selected}
+         selected={ props.selected }
          selectedColorSet="invertedLight"
-         tabIndex={-1}
+         tabIndex={ -1 }
       >
-         {props.title}
+         { props.title }
       </UI.Chip>
    </NavTo>
 );
@@ -54,20 +54,20 @@ export interface NavBarProps {
    categories: string[];
    selectedCategory: string;
 }
-const NavBar = ({ namespace, categories, selectedCategory }: NavBarProps) => (
+const NavBar = ( { namespace, categories, selectedCategory }: NavBarProps ) => (
    <div className="fVB_YDdnaDlztX7CcWTA">
       <div className="e179_Eg8r7Ub6yjjxctr contentSpacing">
          <div className="VIeVCUUETJyYPCDpsBif">
             <ScrollableContainer>
-               {categories.map(category => (
+               { categories.map( category => (
                   <NavToChip
-                     to={`spotify:app:bespoke:${namespace}:${category}`}
-                     title={category}
-                     selected={category === selectedCategory}
+                     to={ `spotify:app:bespoke:${ namespace }:${ category }` }
+                     title={ category }
+                     selected={ category === selectedCategory }
                   >
-                     {category}
+                     { category }
                   </NavToChip>
-               ))}
+               ) ) }
             </ScrollableContainer>
          </div>
       </div>
@@ -83,19 +83,19 @@ const TopBarMounted: FC<TopBarMountedProps> = props => {
    const component = (
       <div
          className="main-topbar-topbarContent"
-         style={{ pointerEvents: "all" }}
+         style={ { pointerEvents: "all" } }
       >
-         {props.children}
+         { props.children }
       </div>
    );
 
    return touchscreenUi
       ? component
-      : ReactDOM.createPortal(component, document.querySelector(".main-topBar-topbarContentWrapper")!);
+      : ReactDOM.createPortal( component, document.querySelector( ".main-topBar-topbarContentWrapper" )! );
 };
 
-export const TopNavBar = (props: NavBarProps) => (
+export const TopNavBar = ( props: NavBarProps ) => (
    <TopBarMounted>
-      <NavBar {...props} />
+      <NavBar { ...props } />
    </TopBarMounted>
 );

@@ -27,7 +27,7 @@ declare global {
    var __renderRoutes: any;
 }
 
-globalThis.__renderRoutes = registry.getItems.bind(registry);
+globalThis.__renderRoutes = registry.getItems.bind( registry );
 transformer(
    emit => str => {
       str = str.replace(

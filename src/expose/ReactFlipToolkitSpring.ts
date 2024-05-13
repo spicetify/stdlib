@@ -22,7 +22,7 @@ import { transformer } from "../../mixin.js";
 import type { spring } from "react-flip-toolkit";
 
 export type ReactFlipToolkitSpring = typeof spring;
-export let ReactFlipToolkitSpring = null! as ReactFlipToolkitSpring;
+export let ReactFlipToolkitSpring: ReactFlipToolkitSpring;
 
 transformer(
    emit => str => {
@@ -30,11 +30,11 @@ transformer(
          /([a-zA-Z_\$][\w\$]*)=((?:function|\()([\w$.,{}()= ]+(?:springConfig|overshootClamping)){2})/,
          "$1=__ReactFlipToolkitSpring=$2",
       );
-      Object.defineProperty(globalThis, "__ReactFlipToolkitSpring", { set: emit });
+      Object.defineProperty( globalThis, "__ReactFlipToolkitSpring", { set: emit } );
       return str;
    },
    {
-      then: ($: ReactFlipToolkitSpring) => {
+      then: ( $: ReactFlipToolkitSpring ) => {
          ReactFlipToolkitSpring = $;
       },
       glob: /^\/vendor~xpui\.js/,

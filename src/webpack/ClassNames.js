@@ -15,7 +15,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ import { exportedFunctions } from "./index.js";
-import { findBy } from "/hooks/util.js";
-export const DragHandler = findBy("dataTransfer", "data-dragging")(exportedFunctions);
-export const useExtractedColor = exportedFunctions.find((m)=>m.toString().includes("extracted-color") || m.toString().includes("colorRaw") && m.toString().includes("useEffect"));
+ */ import { webpackLoaded } from "../../mixin.js";
+import { chunks, require } from "./index.js";
+export let classnames;
+webpackLoaded.subscribe((loaded)=>{
+    if (!loaded) {
+        return;
+    }
+    const [classnamesModuleID] = chunks.find(([_, v])=>v.toString().includes("[native code]") && !v.toString().includes("<anonymous>"));
+    classnames = require(classnamesModuleID);
+});

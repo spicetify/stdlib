@@ -15,5 +15,16 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ import { modules } from "./index.js";
-export const Mousetrap = modules.find((m)=>m.addKeycodes);
+ */ import { webpackLoaded } from "../../mixin.js";
+import { chunks, require } from "./index.js";
+import { findBy } from "/hooks/util.js";
+// https://github.com/remix-run/react-router/blob/main/packages/react-router/lib/hooks.tsx#L131
+export let useMatch;
+webpackLoaded.subscribe((loaded)=>{
+    if (!loaded) {
+        return;
+    }
+    const [ReactRouterModuleID] = chunks.find(([_, v])=>v.toString().includes("React Router"));
+    const ReactRouterModule = Object.values(require(ReactRouterModuleID));
+    useMatch = findBy("let{pathname:", /\(([a-zA-Z_\$][\w\$]*),([a-zA-Z_\$][\w\$]*)\)\),\[\2,\1\]/)(ReactRouterModule);
+});

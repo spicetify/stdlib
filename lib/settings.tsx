@@ -19,10 +19,10 @@
 
 import { React } from "../src/expose/React.js";
 import { SettingsSection, SettingsSectionTitle } from "../src/expose/SettingsSection.js";
-import { UI } from "../src/expose/webpack/ComponentLibrary.js";
-import { SettingColumn, SettingText, SettingToggle } from "../src/expose/webpack/ReactComponents.js";
+import { UI } from "../src/webpack/ComponentLibrary.js";
+import { SettingColumn, SettingText, SettingToggle } from "../src/webpack/ReactComponents.js";
 
-type Task<A> = (() => Awaited<A>) | (() => Promise<Awaited<A>>);
+type Task<A> = ( () => Awaited<A> ) | ( () => Promise<Awaited<A>> );
 
 type OmitType<A> = Omit<A, "type">;
 
@@ -48,13 +48,13 @@ export interface ButtonField<I extends string = any> extends BaseField<I> {
 }
 export interface ToggleField<I extends string = any> extends BaseField<I> {
    type: FieldType.TOGGLE;
-   onSelected?: (checked: boolean) => void;
+   onSelected?: ( checked: boolean ) => void;
 }
 
 export interface InputField<I extends string = any> extends BaseField<I> {
    type: FieldType.INPUT;
    inputType: string;
-   onChange?: (value: string) => void;
+   onChange?: ( value: string ) => void;
 }
 
 export interface HiddenField<I extends string = any> extends BaseField<I> {
@@ -66,22 +66,22 @@ import SettingsButton from "./components/SettingsButton.js";
 import type { LoadableModule } from "/hooks/module.js";
 
 export class Settings<A = Record<string, never>> {
-   public sectionFields: { [key: string]: JSX.Element } = {};
+   public sectionFields: { [ key: string ]: JSX.Element; } = {};
    private proxy;
 
    getName() {
       return this.name;
    }
 
-   private constructor(private name: string, private id: string) {
+   private constructor( private name: string, private id: string ) {
       this.proxy = new Proxy(
          {},
          {
-            get: (target, prop) => Settings.getFieldValue(this.getId(prop.toString())),
-            set: (target, prop, newValue) => {
-               const id = this.getId(prop.toString());
-               if (Settings.getFieldValue(id) !== newValue) {
-                  Settings.setFieldValue(id, newValue);
+            get: ( target, prop ) => Settings.getFieldValue( this.getId( prop.toString() ) ),
+            set: ( target, prop, newValue ) => {
+               const id = this.getId( prop.toString() );
+               if ( Settings.getFieldValue( id ) !== newValue ) {
+                  Settings.setFieldValue( id, newValue );
                }
                return true;
             },
@@ -89,8 +89,8 @@ export class Settings<A = Record<string, never>> {
       );
    }
 
-   static fromModule(mod: LoadableModule) {
-      return new Settings(mod.getDisplayName(), mod.getModuleIdentifier());
+   static fromModule( mod: LoadableModule ) {
+      return new Settings( mod.getDisplayName(), mod.getModuleIdentifier() );
    }
 
    get cfg() {
@@ -98,12 +98,12 @@ export class Settings<A = Record<string, never>> {
    }
 
    finalize = () => {
-      SettingsSectionRegistry.register(<this.SettingsSection />, () => true);
+      SettingsSectionRegistry.register( <this.SettingsSection />, () => true );
       return this;
    };
 
-   addButton = <I extends string>(props: OmitType<ButtonField<I>>) => {
-      this.addField(FieldType.BUTTON, props, this.ButtonField);
+   addButton = <I extends string>( props: OmitType<ButtonField<I>> ) => {
+      this.addField( FieldType.BUTTON, props, this.ButtonField );
       return this;
    };
 
@@ -111,128 +111,128 @@ export class Settings<A = Record<string, never>> {
       props: OmitType<ToggleField<I>>,
       defaultValue: Task<boolean> = () => false,
    ) => {
-      this.addField(FieldType.TOGGLE, props, this.ToggleField, defaultValue);
-      return this as Settings<A & { [X in I]: boolean }>;
+      this.addField( FieldType.TOGGLE, props, this.ToggleField, defaultValue );
+      return this as Settings<A & { [ X in I ]: boolean }>;
    };
 
-   addInput = <I extends string>(props: OmitType<InputField<I>>, defaultValue: Task<string> = () => "") => {
-      this.addField(FieldType.INPUT, props, this.InputField, defaultValue);
-      return this as Settings<A & { [X in I]: string }>;
+   addInput = <I extends string>( props: OmitType<InputField<I>>, defaultValue: Task<string> = () => "" ) => {
+      this.addField( FieldType.INPUT, props, this.InputField, defaultValue );
+      return this as Settings<A & { [ X in I ]: string }>;
    };
 
    private addField<SF extends SettingsField>(
-      type: SF["type"],
+      type: SF[ "type" ],
       opts: OmitType<SF>,
       fieldComponent: React.FC<SF>,
       defaultValue?: any,
    ) {
-      if (defaultValue !== undefined) {
-         const settingId = this.getId(opts.id);
-         Settings.setDefaultFieldValue(settingId, defaultValue);
+      if ( defaultValue !== undefined ) {
+         const settingId = this.getId( opts.id );
+         Settings.setDefaultFieldValue( settingId, defaultValue );
       }
-      const field = Object.assign({}, opts, { type }) as SF;
-      this.sectionFields[opts.id] = React.createElement(fieldComponent, field);
+      const field = Object.assign( {}, opts, { type } ) as SF;
+      this.sectionFields[ opts.id ] = React.createElement( fieldComponent, field );
    }
 
-   getId = (nameId: string) => ["settings", this.id, nameId].join(":");
+   getId = ( nameId: string ) => [ "settings", this.id, nameId ].join( ":" );
 
-   private useStateFor = <A,>(id: string) => {
-      const [value, setValueState] = React.useState(Settings.getFieldValue<A>(id));
+   private useStateFor = <A,>( id: string ) => {
+      const [ value, setValueState ] = React.useState( Settings.getFieldValue<A>( id ) );
 
       return [
          value,
-         (newValue: A) => {
-            if (newValue !== undefined) {
-               setValueState(newValue);
-               Settings.setFieldValue(id, newValue);
+         ( newValue: A ) => {
+            if ( newValue !== undefined ) {
+               setValueState( newValue );
+               Settings.setFieldValue( id, newValue );
             }
          },
       ] as const;
    };
 
-   static getFieldValue = <R,>(id: string): R => JSON.parse(localStorage[id] ?? "null");
+   static getFieldValue = <R,>( id: string ): R => JSON.parse( localStorage[ id ] ?? "null" );
 
-   static setFieldValue = (id: string, newValue: any) => {
-      localStorage[id] = JSON.stringify(newValue ?? null);
+   static setFieldValue = ( id: string, newValue: any ) => {
+      localStorage[ id ] = JSON.stringify( newValue ?? null );
    };
 
-   private static setDefaultFieldValue = async (id: string, defaultValue: Task<any>) => {
-      if (Settings.getFieldValue(id) === null) Settings.setFieldValue(id, await defaultValue());
+   private static setDefaultFieldValue = async ( id: string, defaultValue: Task<any> ) => {
+      if ( Settings.getFieldValue( id ) === null ) Settings.setFieldValue( id, await defaultValue() );
    };
 
    private SettingsSection = () => (
-      <SettingsSection filterMatchQuery={this.name}>
-         <SettingsSectionTitle>{this.name}</SettingsSectionTitle>
-         {Object.values(this.sectionFields)}
+      <SettingsSection filterMatchQuery={ this.name }>
+         <SettingsSectionTitle>{ this.name }</SettingsSectionTitle>
+         { Object.values( this.sectionFields ) }
       </SettingsSection>
    );
 
-   SettingField = ({ field, children }: { field: SettingsField; children?: any }) => (
-      <SettingColumn filterMatchQuery={field.id}>
+   SettingField = ( { field, children }: { field: SettingsField; children?: any; } ) => (
+      <SettingColumn filterMatchQuery={ field.id }>
          <div className="x-settings-firstColumn">
-            <SettingText htmlFor={field.id}>{field.desc}</SettingText>
+            <SettingText htmlFor={ field.id }>{ field.desc }</SettingText>
          </div>
-         <div className="x-settings-secondColumn">{children}</div>
+         <div className="x-settings-secondColumn">{ children }</div>
       </SettingColumn>
    );
 
-   ButtonField = (field: ButtonField) => (
-      <this.SettingField field={field}>
+   ButtonField = ( field: ButtonField ) => (
+      <this.SettingField field={ field }>
          <UI.ButtonSecondary
-            id={field.id}
+            id={ field.id }
             buttonSize="sm"
-            onClick={field.onClick}
+            onClick={ field.onClick }
             className="x-settings-button"
          >
-            {field.text}
+            { field.text }
          </UI.ButtonSecondary>
       </this.SettingField>
    );
 
-   ToggleField = (field: ToggleField) => {
-      const id = this.getId(field.id);
-      const [value, setValue] = this.useStateFor<boolean>(id);
+   ToggleField = ( field: ToggleField ) => {
+      const id = this.getId( field.id );
+      const [ value, setValue ] = this.useStateFor<boolean>( id );
       return (
-         <this.SettingField field={field}>
+         <this.SettingField field={ field }>
             <SettingToggle
-               id={field.id}
-               value={Settings.getFieldValue(id)}
-               onSelected={(checked: boolean) => {
-                  setValue(checked);
-                  field.onSelected?.(checked);
-               }}
+               id={ field.id }
+               value={ Settings.getFieldValue( id ) }
+               onSelected={ ( checked: boolean ) => {
+                  setValue( checked );
+                  field.onSelected?.( checked );
+               } }
                className="x-settings-button"
             />
          </this.SettingField>
       );
    };
 
-   InputField = (field: InputField) => {
-      const id = this.getId(field.id);
-      const [value, setValue] = this.useStateFor<string>(id);
+   InputField = ( field: InputField ) => {
+      const id = this.getId( field.id );
+      const [ value, setValue ] = this.useStateFor<string>( id );
       return (
-         <this.SettingField field={field}>
+         <this.SettingField field={ field }>
             <input
                className="x-settings-input"
-               id={field.id}
+               id={ field.id }
                dir="ltr"
-               value={Settings.getFieldValue(id)}
-               type={field.inputType}
-               onChange={e => {
+               value={ Settings.getFieldValue( id ) }
+               type={ field.inputType }
+               onChange={ e => {
                   const value = e.currentTarget.value;
-                  setValue(value);
-                  field.onChange?.(value);
-               }}
+                  setValue( value );
+                  field.onChange?.( value );
+               } }
             />
          </this.SettingField>
       );
    };
 }
 
-export const createSettings = (mod: LoadableModule & { settings?: Settings }) => {
-   if (!mod.settings) {
-      mod.settings = Settings.fromModule(mod);
+export const createSettings = ( mod: LoadableModule & { settings?: Settings; } ) => {
+   if ( !mod.settings ) {
+      mod.settings = Settings.fromModule( mod );
    }
 
-   return [mod.settings, <SettingsButton section={mod.settings.getName()} />] as const;
+   return [ mod.settings, <SettingsButton section={ mod.settings.getName() } /> ] as const;
 };

@@ -22,8 +22,8 @@ import { transformer } from "../../mixin.js";
 import type { PlatformAutoGen } from "/hooks/PlatformAutoGen.d.ts";
 
 export type Platform = PlatformAutoGen;
-export let Platform = null! as Platform;
-export let Cosmos = null! as ReturnType<Platform["getPlayerAPI"]>["_cosmos"];
+export let Platform: Platform;
+export let Cosmos: ReturnType<Platform[ "getPlayerAPI" ]>[ "_cosmos" ];
 
 transformer<Platform>(
    emit => str => {
@@ -31,13 +31,13 @@ transformer<Platform>(
          /(setTitlebarHeight[\w(){}.,&$!=;"" ]+)(\{version:[a-zA-Z_\$][\w\$]*,)/,
          "$1__Platform=$2",
       );
-      Object.defineProperty(globalThis, "__Platform", {
+      Object.defineProperty( globalThis, "__Platform", {
          set: emit,
-      });
+      } );
       return str;
    },
    {
-      then: ($: Platform) => {
+      then: ( $: Platform ) => {
          Platform = $;
          Cosmos = $.getPlayerAPI()._cosmos;
       },

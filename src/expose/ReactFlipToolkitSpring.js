@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */ import { transformer } from "../../mixin.js";
-export let ReactFlipToolkitSpring = null;
+export let ReactFlipToolkitSpring;
 transformer((emit)=>(str)=>{
         str = str.replace(/([a-zA-Z_\$][\w\$]*)=((?:function|\()([\w$.,{}()= ]+(?:springConfig|overshootClamping)){2})/, "$1=__ReactFlipToolkitSpring=$2");
         Object.defineProperty(globalThis, "__ReactFlipToolkitSpring", {

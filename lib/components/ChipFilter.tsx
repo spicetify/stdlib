@@ -19,8 +19,8 @@
 
 import { _ } from "/modules/official/stdlib/deps.js";
 import { React } from "../../src/expose/React.js";
-import { UI } from "../../src/expose/webpack/ComponentLibrary.js";
-import { ScrollableContainer } from "../../src/expose/webpack/ReactComponents";
+import { UI } from "../../src/webpack/ComponentLibrary.js";
+import { ScrollableContainer } from "../../src/webpack/ReactComponents.js";
 
 export interface FilterOption {
    key: string;
@@ -32,35 +32,35 @@ export interface FilterOption {
 export interface ChipFilterProps {
    availableFilters: FilterOption[];
    selectedFilters: FilterOption[];
-   toggleFilter: (filter: FilterOption) => void;
+   toggleFilter: ( filter: FilterOption ) => void;
    className?: string;
 }
 export const ChipFilter = React.memo(
-   ({ availableFilters, selectedFilters, toggleFilter, className }: ChipFilterProps) => {
-      const createChip = (isSelected: boolean) => (filter: FilterOption, index: number) =>
-         (
-            <UI.Chip
-               onClick={() => toggleFilter(filter)}
-               selectedColorSet="invertedLight"
-               selected={isSelected}
-               secondary={isSelected && index > 0}
-               style={{ marginBlockEnd: 0, willChange: "transform, opacity" }}
-               tabIndex={-1}
-               index={index}
-               key={filter.key}
-            >
-               {filter.filter[""]}
-            </UI.Chip>
-         );
+   ( { availableFilters, selectedFilters, toggleFilter, className }: ChipFilterProps ) => {
+      const createChip = ( isSelected: boolean ) => ( filter: FilterOption, index: number ) =>
+      (
+         <UI.Chip
+            onClick={ () => toggleFilter( filter ) }
+            selectedColorSet="invertedLight"
+            selected={ isSelected }
+            secondary={ isSelected && index > 0 }
+            style={ { marginBlockEnd: 0, willChange: "transform, opacity" } }
+            tabIndex={ -1 }
+            index={ index }
+            key={ filter.key }
+         >
+            { filter.filter[ "" ] }
+         </UI.Chip>
+      );
 
       return (
          selectedFilters.length + availableFilters.length > 0 && (
             <ScrollableContainer
-               className={className}
-               ariaLabel={"Filter options"}
+               className={ className }
+               ariaLabel={ "Filter options" }
             >
-               {selectedFilters.map(createChip(true))}
-               {availableFilters.map(createChip(false))}
+               { selectedFilters.map( createChip( true ) ) }
+               { availableFilters.map( createChip( false ) ) }
             </ScrollableContainer>
          )
       );

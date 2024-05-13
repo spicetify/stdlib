@@ -15,6 +15,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ import { chunks, require } from "./index.js";
-const [classnamesModuleID] = chunks.find(([_, v])=>v.toString().includes("[native code]") && !v.toString().includes("<anonymous>"));
-export const classnames = require(classnamesModuleID);
+ */ import { webpackLoaded } from "../../mixin.js";
+import { exportedContexts } from "./index.js";
+export let FilterContext;
+webpackLoaded.subscribe((loaded)=>{
+    if (!loaded) {
+        return;
+    }
+    FilterContext = exportedContexts.find((c)=>c._currentValue2?.setFilter);
+});
