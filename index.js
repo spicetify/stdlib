@@ -18,7 +18,7 @@
  */ import { webpackLoaded } from "./mixin.js";
 webpackLoaded.next(true);
 import { Platform } from "./src/expose/Platform.js";
-import { Registrar } from "./src/registers";
+import { Registrar } from "./src/registers/index.js";
 import { BehaviorSubject, Subscription } from "https://esm.sh/rxjs";
 export const createRegistrar = (mod)=>{
     const registrar = new Registrar(mod.getModuleIdentifier());

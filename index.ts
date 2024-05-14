@@ -23,7 +23,7 @@ webpackLoaded.next( true );
 import type { ModuleInstance, Module } from "/hooks/module.js";
 
 import { Platform } from "./src/expose/Platform";
-import { Registrar } from "./src/registers";
+import { Registrar } from "./src/registers/index.js";
 
 import { BehaviorSubject, Subscription } from "https://esm.sh/rxjs";
 

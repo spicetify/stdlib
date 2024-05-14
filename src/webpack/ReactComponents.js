@@ -65,7 +65,12 @@ webpackLoaded.subscribe((loaded)=>{
         const match = str.match(/value:"([\w-]+)"/);
         const name = match?.[1] ?? "";
         // @ts-ignore
-        const type = MenuTypes[name];
+        const type = {
+            album: "Album",
+            show: "PodcastShow",
+            artist: "Artist",
+            track: "Track"
+        }[name];
         return type ? [
             [
                 type,
