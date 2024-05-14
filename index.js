@@ -22,8 +22,8 @@ import { Registrar } from "./src/registers";
 import { BehaviorSubject, Subscription } from "https://esm.sh/rxjs";
 export const createRegistrar = (mod)=>{
     const registrar = new Registrar(mod.getModuleIdentifier());
-    const unloadJS = mod.unloadJS;
-    mod.unloadJS = ()=>{
+    const unloadJS = mod._unloadJS;
+    mod._unloadJS = ()=>{
         registrar.dispose();
         return unloadJS();
     };
@@ -38,7 +38,7 @@ export const createStorage = (mod)=>{
     return new Proxy(globalThis.localStorage, {
         get (target, p, receiver) {
             if (typeof p === "string" && hookedNativeStorageMethods.has(p)) {
-                return (key, ...data)=>target[p](`module:${mod.getModuleIdentifier()}:${key}`, ...data);
+                return (key, ...data)=>target[p](`module:${mod.getIdentifier()}:${key}`, ...data);
             }
             return target[p];
         }
@@ -57,7 +57,7 @@ export const createLogger = (mod)=>{
             get (target, p, receiver) {
                 if (typeof p === "string" && hookedMethods.has(p)) {
                     // @ts-ignore
-                    return (...data)=>target[p](`[${mod.getModuleIdentifier()}]:`, ...data);
+                    return (...data)=>target[p](`[${mod.getIdentifier()}]:`, ...data);
                 }
                 return target[p];
             }
@@ -89,8 +89,8 @@ export const createEventBus = (mod)=>{
     s.add(EventBus.Player.state_updated.subscribe(eventBus.Player.state_updated));
     s.add(EventBus.Player.status_changed.subscribe(eventBus.Player.status_changed));
     s.add(EventBus.History.updated.subscribe(eventBus.History.updated));
-    const unloadJS = mod.unloadJS;
-    mod.unloadJS = ()=>{
+    const unloadJS = mod._unloadJS;
+    mod._unloadJS = ()=>{
         s.unsubscribe();
         return unloadJS();
     };

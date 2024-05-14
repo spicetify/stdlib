@@ -20,17 +20,17 @@
 import { webpackLoaded } from "./mixin";
 webpackLoaded.next( true );
 
-import type { LoadableModule, Module } from "/hooks/module.js";
+import type { ModuleInstance, Module } from "/hooks/module.js";
 
 import { Platform } from "./src/expose/Platform";
 import { Registrar } from "./src/registers";
 
 import { BehaviorSubject, Subscription } from "https://esm.sh/rxjs";
 
-export const createRegistrar = ( mod: LoadableModule ) => {
+export const createRegistrar = ( mod: ModuleInstance ) => {
    const registrar = new Registrar( mod.getModuleIdentifier() );
-   const unloadJS = mod.unloadJS!;
-   mod.unloadJS = () => {
+   const unloadJS = mod._unloadJS!;
+   mod._unloadJS = () => {
       registrar!.dispose();
       return unloadJS();
    };
@@ -44,7 +44,7 @@ export const createStorage = <M extends Module>( mod: M & { storage?: Storage; }
       get( target, p, receiver ) {
          if ( typeof p === "string" && hookedNativeStorageMethods.has( p ) ) {
             return ( key: string, ...data: any[] ) =>
-               target[ p ]( `module:${ mod.getModuleIdentifier() }:${ key }`, ...data );
+               target[ p ]( `module:${ mod.getIdentifier() }:${ key }`, ...data );
          }
 
          return target[ p as keyof typeof target ];
@@ -60,7 +60,7 @@ export const createLogger = ( mod: Module & { logger?: Console; } ) => {
          get( target, p, receiver ) {
             if ( typeof p === "string" && hookedMethods.has( p ) ) {
                // @ts-ignore
-               return ( ...data: any[] ) => target[ p ]( `[${ mod.getModuleIdentifier() }]:`, ...data );
+               return ( ...data: any[] ) => target[ p ]( `[${ mod.getIdentifier() }]:`, ...data );
             }
 
             return target[ p as keyof typeof target ];
@@ -91,7 +91,7 @@ const newEventBus = () => {
 const EventBus = newEventBus();
 export type EventBus = typeof EventBus;
 
-export const createEventBus = ( mod: LoadableModule ) => {
+export const createEventBus = ( mod: ModuleInstance ) => {
    const eventBus = newEventBus();
    // TODO: come up with a nicer solution
    const s = new Subscription();
@@ -99,8 +99,8 @@ export const createEventBus = ( mod: LoadableModule ) => {
    s.add( EventBus.Player.state_updated.subscribe( eventBus.Player.state_updated ) );
    s.add( EventBus.Player.status_changed.subscribe( eventBus.Player.status_changed ) );
    s.add( EventBus.History.updated.subscribe( eventBus.History.updated ) );
-   const unloadJS = mod.unloadJS!;
-   mod.unloadJS = () => {
+   const unloadJS = mod._unloadJS!;
+   mod._unloadJS = () => {
       s.unsubscribe();
       return unloadJS();
    };
