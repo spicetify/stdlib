@@ -59,8 +59,8 @@ export type DropdownOptions = Record<string, React.FC<OptionProps>>;
 
 interface DropdownMenuProps<O extends DropdownOptions> {
    options: O;
-   activeOption: keyof O;
-   onSwitch: ( option: keyof O ) => void;
+   activeOption: keyof NoInfer<O>;
+   onSwitch: ( option: keyof NoInfer<O> ) => void;
 }
 export default function <O extends DropdownOptions>( { options, activeOption, onSwitch }: DropdownMenuProps<O> ) {
    const SelectedOption: React.FC<OptionProps> = options[ activeOption ];

@@ -1,9 +1,14 @@
 {
 	"name": "stdlib",
-	"tags": ["lib"],
+	"tags": [
+		"lib"
+	],
 	"preview": "./assets/PREVIEW.png",
 	"version": "beta",
-	"authors": ["official", "Delusoire"],
+	"authors": [
+		"official",
+		"Delusoire"
+	],
 	"description": "The standard library",
 	"readme": "./assets/README.md",
 	"entries": {

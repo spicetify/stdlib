@@ -20,7 +20,7 @@
 import { webpackLoaded } from "./mixin";
 webpackLoaded.next( true );
 
-import type { ModuleInstance, Module } from "/hooks/module.js";
+import type { ModuleInstance } from "/hooks/module.js";
 
 import { Platform } from "./src/expose/Platform";
 import { Registrar } from "./src/registers/index.js";
@@ -37,7 +37,7 @@ export const createRegistrar = ( mod: ModuleInstance ) => {
    return registrar;
 };
 
-export const createStorage = <M extends Module>( mod: M & { storage?: Storage; } ) => {
+export const createStorage = ( mod: ModuleInstance ) => {
    const hookedNativeStorageMethods = new Set( [ "getItem", "setItem", "removeItem" ] );
 
    return new Proxy( globalThis.localStorage, {
@@ -52,23 +52,19 @@ export const createStorage = <M extends Module>( mod: M & { storage?: Storage; }
    } );
 };
 
-export const createLogger = ( mod: Module & { logger?: Console; } ) => {
-   if ( !mod.logger ) {
-      const hookedMethods = new Set( [ "debug", "error", "info", "log", "warn" ] );
+export const createLogger = ( mod: ModuleInstance ) => {
+   const hookedMethods = new Set( [ "debug", "error", "info", "log", "warn" ] );
 
-      mod.logger = new Proxy( globalThis.console, {
-         get( target, p, receiver ) {
-            if ( typeof p === "string" && hookedMethods.has( p ) ) {
-               // @ts-ignore
-               return ( ...data: any[] ) => target[ p ]( `[${ mod.getIdentifier() }]:`, ...data );
-            }
+   return new Proxy( globalThis.console, {
+      get( target, p, receiver ) {
+         if ( typeof p === "string" && hookedMethods.has( p ) ) {
+            // @ts-ignore
+            return ( ...data: any[] ) => target[ p ]( `[${ mod.getIdentifier() }]:`, ...data );
+         }
 
-            return target[ p as keyof typeof target ];
-         },
-      } );
-   }
-
-   return mod.logger;
+         return target[ p as keyof typeof target ];
+      },
+   } );
 };
 
 const PlayerAPI = Platform.getPlayerAPI();
