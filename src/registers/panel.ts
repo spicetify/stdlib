@@ -20,12 +20,62 @@
 import { transformer } from "../../mixin.js";
 
 import type { createMachine as createMachineT } from "xstate";
+import { Registry, type Predicate } from "./registry.js";
 
 export type StateMachine = ReturnType<typeof createMachineT>;
 export let Machine: StateMachine;
 
-const registry = new Map<string, React.ReactNode>();
+const NodeNash = Symbol.for( "NodeHash" );
+
+class R extends Registry<React.ReactNode, void> {
+   override register( item: React.ReactNode, predicate: Predicate<void> ): React.ReactNode {
+      super.register( item, predicate );
+      const hash = crypto.randomUUID();
+      // @ts-ignore
+      item[ NodeNash ] = hash;
+
+      const state = `bespoke_${ hash }`;
+      const button_click = `bespoke_${ hash }_button_click`;
+
+      stateToNode.set( state, hash );
+
+      ON[ button_click ] = {
+         target: state,
+      };
+
+      Machine.config.states![ state ] = {
+         entry: [],
+         on: Object.setPrototypeOf(
+            {
+               [ button_click ]: {
+                  target: "disabled",
+               },
+            },
+            ON,
+         ),
+      };
+      return item;
+   }
+
+   override unregister( item: React.ReactNode ): React.ReactNode {
+      super.unregister( item );
+      // @ts-ignore
+      const hash = item[ NodeNash ];
+      stateToNode.delete( hash );
+      const state = `bespoke_${ hash }`;
+      const button_click = `bespoke_${ hash }_button_click`;
+
+      stateToNode.delete( state );
+
+      delete ON[ button_click ];
+      return item;
+   }
+}
+
+const registry = new R();
 export default registry;
+
+const stateToNode = new Map<string, React.ReactNode>();
 
 declare global {
    var __renderPanel: any;
@@ -36,10 +86,10 @@ globalThis.__renderPanel = ( state: string ) => {
       return null;
    }
 
-   return registry.get( state );
+   return stateToNode.get( state );
 };
 
-let ON;
+let ON: Record<string, any>;
 
 transformer(
    emit => str => {
@@ -71,7 +121,7 @@ transformer(
          Machine = $;
 
          ON = {
-            ...Machine.config.states.disabled.on,
+            ...Machine.config.states!.disabled.on,
             panel_close_click_or_collapse: [
                {
                   target: "disabled",
@@ -80,15 +130,18 @@ transformer(
          };
          delete ON.playback_autoplay_context_changed;
 
-         for ( const [ k, v ] of Object.entries( Machine.config.states ) ) {
+         for ( const [ k, v ] of Object.entries( Machine.config.states! ) ) {
             if ( k === "puffin_activation" ) {
                continue;
             }
-            v.on = new Proxy( v.on, {
+            v.on = new Proxy( v.on!, {
                get( target, p, receiver ) {
+                  // @ts-ignore
                   if ( p.startsWith( "bespoke" ) ) {
+                     // @ts-ignore
                      return ON[ p ];
                   }
+                  // @ts-ignore
                   return target[ p ];
                },
             } );
@@ -98,35 +151,3 @@ transformer(
       noAwait: true,
    },
 );
-
-export const register = ( state: string, node: React.ReactNode ) => {
-   const module_state = `bespoke_${ state }`;
-   const module_button_click = `bespoke_${ state }_button_click`;
-
-   registry.set( module_state, node );
-
-   ON[ module_button_click ] = {
-      target: module_state,
-   };
-
-   Machine.config.states[ module_state ] = {
-      entry: [],
-      on: Object.setPrototypeOf(
-         {
-            [ module_button_click ]: {
-               target: "disabled",
-            },
-         },
-         ON,
-      ),
-   };
-};
-
-export const unregister = ( state: string ) => {
-   const module_state = `bespoke_${ state }`;
-   const module_button_click = `bespoke_${ state }_button_click`;
-
-   registry.delete( module_state );
-
-   delete ON[ module_button_click ];
-};

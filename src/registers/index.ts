@@ -17,24 +17,25 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import "./panel.js";
 import menu from "./menu.js";
+import navlink from "./navlink.js";
+import panel from "./panel.js";
+import playbarControl from "./playbarButton.js";
+import playbarWidget from "./playbarWidget.js";
 import root from "./root.js";
 import route from "./route.js";
-import navlink from "./navlink.js";
-import playbarControl from "./playbarControl.js";
-import playbarWidget from "./playbarWidget.js";
 import settingsSection from "./settingsSection.js";
 import topbarLeftButton from "./topbarLeftButton.js";
 import topbarRightButton from "./topbarRightButton.js";
 
 const registers = {
    menu,
-   root,
-   route,
    navlink,
+   panel,
    playbarControl,
    playbarWidget,
+   root,
+   route,
    settingsSection,
    topbarLeftButton,
    topbarRightButton,
