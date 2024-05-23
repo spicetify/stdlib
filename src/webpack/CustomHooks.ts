@@ -23,6 +23,7 @@ import { findBy } from "/hooks/util.js";
 
 export let DragHandler: Function;
 export let useExtractedColor: Function;
+export let usePanelAPI: Function;
 
 
 webpackLoaded.subscribe( loaded => {
@@ -36,4 +37,5 @@ webpackLoaded.subscribe( loaded => {
          m.toString().includes( "extracted-color" ) ||
          ( m.toString().includes( "colorRaw" ) && m.toString().includes( "useEffect" ) ),
    )!;
+   usePanelAPI = findBy( "panelSend", "context" )( exportedFunctions );
 } );

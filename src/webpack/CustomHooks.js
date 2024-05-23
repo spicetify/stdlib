@@ -20,10 +20,12 @@ import { exportedFunctions } from "./index.js";
 import { findBy } from "/hooks/util.js";
 export let DragHandler;
 export let useExtractedColor;
+export let usePanelAPI;
 webpackLoaded.subscribe((loaded)=>{
     if (!loaded) {
         return;
     }
     DragHandler = findBy("dataTransfer", "data-dragging")(exportedFunctions);
-    useExtractedColor = exportedFunctions.find((m)=>m.toString().includes("extracted-color") || m.toString().includes("colorRaw") && m.toString().includes("useEffect"));
+    useExtractedColor = exportedFunctions.find( ( m ) => m.toString().includes( "extracted-color" ) || m.toString().includes( "colorRaw" ) && m.toString().includes( "useEffect" ) );
+    usePanelAPI = findBy("panelSend", "context")(exportedFunctions);
 });

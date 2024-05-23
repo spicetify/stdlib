@@ -15,7 +15,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ import menu from "./menu.js";
+ */ import "./panel.js";
+import menu from "./menu.js";
 import root from "./root.js";
 import route from "./route.js";
 import navlink from "./navlink.js";

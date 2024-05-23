@@ -1,7 +1,25 @@
+/* Copyright © 2024
+ *      Delusoire <deluso7re@outlook.com>
+ *
+ * This file is part of bespoke/modules/stdlib.
+ *
+ * bespoke/modules/stdlib is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * bespoke/modules/stdlib is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { transformer } from "../../mixin.js";
 
 import type { createMachine as createMachineT } from "xstate";
-import { Registry } from "./registry.js";
 
 export type StateMachine = ReturnType<typeof createMachineT>;
 export let Machine: StateMachine;
@@ -25,7 +43,7 @@ let ON;
 
 transformer(
    emit => str => {
-      str = str.replace( /(=\(0,[a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\)\(\{id:"RightPanelState)/, "=$1" );
+      str = str.replace( /(=\(0,[a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\)\(\{id:"RightPanelState)/, "=__Machine$1" );
       let __Machine: StateMachine;
       Object.defineProperty( globalThis, "__Machine", {
          set: value => {
@@ -81,11 +99,11 @@ transformer(
    },
 );
 
-export const XYZ = ( state: string, node: React.ReactNode ) => {
+export const register = ( state: string, node: React.ReactNode ) => {
    const module_state = `bespoke_${ state }`;
    const module_button_click = `bespoke_${ state }_button_click`;
 
-   registry.set( state, node );
+   registry.set( module_state, node );
 
    ON[ module_button_click ] = {
       target: module_state,
@@ -104,11 +122,11 @@ export const XYZ = ( state: string, node: React.ReactNode ) => {
    };
 };
 
-export const ABC = ( state: string ) => {
+export const unregister = ( state: string ) => {
    const module_state = `bespoke_${ state }`;
    const module_button_click = `bespoke_${ state }_button_click`;
 
-   registry.delete( state );
+   registry.delete( module_state );
 
    delete ON[ module_button_click ];
 };

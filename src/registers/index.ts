@@ -17,6 +17,7 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import "./panel.js";
 import menu from "./menu.js";
 import root from "./root.js";
 import route from "./route.js";

@@ -28,7 +28,6 @@ export let Color: Function & {
    CSSFormat: any;
 };
 
-export let _reservedPanelIds: Record<string, number>;
 export let Locale: any;
 export let createUrlLocale: Function;
 
@@ -61,7 +60,6 @@ webpackLoaded.subscribe( loaded => {
       CSSFormat: exports.find( m => m.RGBA )!,
    } );
 
-   _reservedPanelIds = exports.find( m => m.BuddyFeed );
    Locale = exports.find( m => m.getTranslations );
    createUrlLocale = findBy( "has", "baseName", "language" )( exportedFunctions );
 
