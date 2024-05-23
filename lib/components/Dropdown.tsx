@@ -59,8 +59,8 @@ export type DropdownOptions = Record<string, React.FC<OptionProps>>;
 
 interface DropdownMenuProps<O extends DropdownOptions> {
    options: O;
-   activeOption: keyof NoInfer<O>;
-   onSwitch: ( option: keyof NoInfer<O> ) => void;
+   activeOption: Extract<keyof NoInfer<O>, string>;
+   onSwitch: ( option: Extract<keyof NoInfer<O>, string> ) => void;
 }
 export default function <O extends DropdownOptions>( { options, activeOption, onSwitch }: DropdownMenuProps<O> ) {
    const SelectedOption: React.FC<OptionProps> = options[ activeOption ];
@@ -68,7 +68,7 @@ export default function <O extends DropdownOptions>( { options, activeOption, on
    if ( Object.keys( options ).length === 1 ) {
       return (
          <button
-            className="x-sortBox-sortDropdown"
+            className="w6j_vX6SF5IxSXrrkYw5"
             type="button"
             role="combobox"
             aria-expanded="false"
@@ -105,7 +105,7 @@ export default function <O extends DropdownOptions>( { options, activeOption, on
          trigger="click"
       >
          <button
-            className="x-sortBox-sortDropdown"
+            className="w6j_vX6SF5IxSXrrkYw5"
             type="button"
             role="combobox"
             aria-expanded="false"

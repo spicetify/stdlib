@@ -21,23 +21,17 @@ import { _ } from "/modules/official/stdlib/deps.js";
 import { React } from "../../src/expose/React.js";
 import { UI } from "../../src/webpack/ComponentLibrary.js";
 import { ScrollableContainer } from "../../src/webpack/ReactComponents.js";
-
-export interface FilterOption {
-   key: string;
-   filter: {
-      "": React.ReactNode;
-   };
-}
+import { TreeNodeVal, type RFilterOpt } from "./index.js";
 
 export interface ChipFilterProps {
-   availableFilters: FilterOption[];
-   selectedFilters: FilterOption[];
-   toggleFilter: ( filter: FilterOption ) => void;
+   availableFilters: RFilterOpt[];
+   selectedFilters: RFilterOpt[];
+   toggleFilter: ( filter: RFilterOpt ) => void;
    className?: string;
 }
 export const ChipFilter = React.memo(
    ( { availableFilters, selectedFilters, toggleFilter, className }: ChipFilterProps ) => {
-      const createChip = ( isSelected: boolean ) => ( filter: FilterOption, index: number ) =>
+      const createChip = ( isSelected: boolean ) => ( filter: RFilterOpt, index: number ) =>
       (
          <UI.Chip
             onClick={ () => toggleFilter( filter ) }
@@ -49,7 +43,7 @@ export const ChipFilter = React.memo(
             index={ index }
             key={ filter.key }
          >
-            { filter.filter[ "" ] }
+            { filter.filter[ TreeNodeVal ] }
          </UI.Chip>
       );
 

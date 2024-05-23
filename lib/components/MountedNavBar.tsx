@@ -82,7 +82,7 @@ const TopBarMounted: FC<TopBarMountedProps> = props => {
 
    const component = (
       <div
-         className="main-topbar-topbarContent"
+         className="qHWqOt_TYlFxiF0Dm2fD"
          style={ { pointerEvents: "all" } }
       >
          { props.children }
@@ -91,7 +91,7 @@ const TopBarMounted: FC<TopBarMountedProps> = props => {
 
    return touchscreenUi
       ? component
-      : ReactDOM.createPortal( component, document.querySelector( ".main-topBar-topbarContentWrapper" )! );
+      : ReactDOM.createPortal( component, document.querySelector( ".rovbQsmAS_mwvpKHaVhQ" )! );
 };
 
 export const TopNavBar = ( props: NavBarProps ) => (

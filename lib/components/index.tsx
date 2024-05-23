@@ -20,7 +20,7 @@
 import { React } from "../../src/expose/React.js";
 import { _ } from "/modules/official/stdlib/deps.js";
 import Dropdown, { type DropdownOptions } from "./Dropdown.js";
-import { ChipFilter, type FilterOption } from "./ChipFilter.js";
+import { ChipFilter } from "./ChipFilter.js";
 import { FilterContext } from "../../src/webpack/FilterContext.js";
 import { FilterBox } from "../../src/webpack/ReactComponents.js";
 
@@ -123,52 +123,60 @@ export const useSearchBar = ( { placeholder, expanded }: { placeholder: string; 
    return [ searchbar, search ] as const;
 };
 
-export type Tree<E> = { "": E; } & {
+export const TreeNodeVal = Symbol.for( "TreeNodeVal" );
+export type Tree<E> = {
+   [ TreeNodeVal ]?: E;
    [ key: string ]: Tree<E>;
 };
 
+export type RTree<E> = {
+   [ TreeNodeVal ]: E;
+   [ key: string ]: Tree<E>;
+};
+
+export type FilterOpt = { key: string, filter: Tree<React.ReactNode>; };
+export type RFilterOpt = { key: string; filter: Required<Tree<React.ReactNode>>; };
+
 export const useChipFilter = ( filters: Tree<React.ReactNode> ) => {
-   const [ selectedFilterFullKey, setSelectedFilterFullKey ] = React.useState( "." );
+   const [ selectedFilterFullKey, setSelectedFilterFullKey ] = React.useState( "" );
 
    const selectedFilters = React.useMemo(
       () =>
          selectedFilterFullKey
             .split( "." )
-            .slice( 1, -1 )
+            .slice( 1, )
             .reduce(
                ( selectedFilters, selectedFilterFullKeyPart ) => {
                   const prevSelectedFilter = selectedFilters.at( -1 )!;
                   const selectedFilter = {
-                     key: `${ prevSelectedFilter.key }${ selectedFilterFullKeyPart }.`,
-                     filter: prevSelectedFilter.filter[ selectedFilterFullKeyPart ] as Tree<React.ReactNode>,
+                     key: `${ prevSelectedFilter.key }.${ selectedFilterFullKeyPart }`,
+                     filter: prevSelectedFilter.filter[ selectedFilterFullKeyPart ],
                   };
                   selectedFilters.push( selectedFilter );
                   return selectedFilters;
                },
-               [ { key: ".", filter: filters } ],
+               [ { key: "", filter: filters } ],
             ),
       [ filters, selectedFilterFullKey ],
    );
 
    const lastSelectedFilter = selectedFilters.at( -1 )!;
-   const availableFilters = [];
+   const availableFilters = new Array<FilterOpt>();
    for ( const [ k, v ] of Object.entries( lastSelectedFilter.filter ) ) {
-      if ( k === "" ) continue;
-      availableFilters.push( { key: `${ lastSelectedFilter.key }${ k }.`, filter: v as Tree<React.ReactNode> } );
+      availableFilters.push( { key: `${ lastSelectedFilter.key }.${ k }`, filter: v } );
    }
 
    const toggleFilter = React.useCallback(
-      ( filter: FilterOption ) =>
-         setSelectedFilterFullKey( filter.key === selectedFilterFullKey ? "." : filter.key ),
+      ( filter: RFilterOpt ) =>
+         setSelectedFilterFullKey( filter.key === selectedFilterFullKey ? "" : filter.key ),
       [ selectedFilterFullKey ],
    );
-
-   const hasFC = ( { filter }: { filter: Tree<React.ReactNode>; } ) => filter[ "" ];
+   const treeNodeHasVal = ( n: FilterOpt ): n is RFilterOpt => TreeNodeVal in n.filter;
 
    const chipFilter = (
       <ChipFilter
-         selectedFilters={ selectedFilters.filter( hasFC ) }
-         availableFilters={ availableFilters.filter( hasFC ) }
+         selectedFilters={ selectedFilters.filter( treeNodeHasVal ) }
+         availableFilters={ availableFilters.filter( treeNodeHasVal ) }
          toggleFilter={ toggleFilter }
       />
    );
