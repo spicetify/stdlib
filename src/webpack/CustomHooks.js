@@ -26,6 +26,6 @@ webpackLoaded.subscribe((loaded)=>{
         return;
     }
     DragHandler = findBy("dataTransfer", "data-dragging")(exportedFunctions);
-    useExtractedColor = exportedFunctions.find( ( m ) => m.toString().includes( "extracted-color" ) || m.toString().includes( "colorRaw" ) && m.toString().includes( "useEffect" ) );
+    useExtractedColor = exportedFunctions.find((m)=>m.toString().includes("extracted-color") || m.toString().includes("colorRaw") && m.toString().includes("useEffect"));
     usePanelAPI = findBy("panelSend", "context")(exportedFunctions);
 });

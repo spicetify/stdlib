@@ -64,7 +64,6 @@ webpackLoaded.subscribe((loaded)=>{
         const str = m.type.toString();
         const match = str.match(/value:"([\w-]+)"/);
         const name = match?.[1] ?? "";
-        // @ts-ignore
         const type = {
             album: "Album",
             show: "PodcastShow",

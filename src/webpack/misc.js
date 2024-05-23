@@ -21,7 +21,6 @@ import { exportedFunctions, exports } from "./index.js";
 import { findBy } from "/hooks/util.js";
 export let useContextMenuState;
 export let Color;
-export let _reservedPanelIds;
 export let Locale;
 export let createUrlLocale;
 export let imageAnalysis;
@@ -45,7 +44,6 @@ webpackLoaded.subscribe((loaded)=>{
     Color = Object.assign(findBy("static fromHex")(exportedFunctions), {
         CSSFormat: exports.find((m)=>m.RGBA)
     });
-    _reservedPanelIds = exports.find((m)=>m.BuddyFeed);
     Locale = exports.find((m)=>m.getTranslations);
     createUrlLocale = findBy("has", "baseName", "language")(exportedFunctions);
     imageAnalysis = findBy(/\![a-zA-Z_\$][\w\$]*\.isFallback|\{extractColor/)(exportedFunctions);

@@ -45,25 +45,22 @@ export const createStorage = (mod)=>{
     });
 };
 export const createLogger = (mod)=>{
-    if (!mod.logger) {
-        const hookedMethods = new Set([
-            "debug",
-            "error",
-            "info",
-            "log",
-            "warn"
-        ]);
-        mod.logger = new Proxy(globalThis.console, {
-            get (target, p, receiver) {
-                if (typeof p === "string" && hookedMethods.has(p)) {
-                    // @ts-ignore
-                    return (...data)=>target[p](`[${mod.getIdentifier()}]:`, ...data);
-                }
-                return target[p];
+    const hookedMethods = new Set([
+        "debug",
+        "error",
+        "info",
+        "log",
+        "warn"
+    ]);
+    return new Proxy(globalThis.console, {
+        get (target, p, receiver) {
+            if (typeof p === "string" && hookedMethods.has(p)) {
+                // @ts-ignore
+                return (...data)=>target[p](`[${mod.getIdentifier()}]:`, ...data);
             }
-        });
-    }
-    return mod.logger;
+            return target[p];
+        }
+    });
 };
 const PlayerAPI = Platform.getPlayerAPI();
 const History = Platform.getHistory();
