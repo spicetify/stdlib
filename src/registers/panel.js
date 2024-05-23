@@ -93,7 +93,7 @@ transformer(
    },
 );
 
-export const XYZ = ( state, node ) => {
+export const register = ( state, node ) => {
    const module_state = `bespoke_${ state }`;
    const module_button_click = `bespoke_${ state }_button_click`;
 
@@ -116,7 +116,7 @@ export const XYZ = ( state, node ) => {
    };
 };
 
-export const ABC = ( state ) => {
+export const unregister = ( state ) => {
    const module_state = `bespoke_${ state }`;
    const module_button_click = `bespoke_${ state }_button_click`;
 
