@@ -17,7 +17,6 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { type Predicate, Registry } from "./registry.js";
 import { React } from "../expose/React.js";
 import { createIconComponent } from "../../lib/createIconComponent.js";
 import { transformer } from "../../mixin.js";
@@ -25,23 +24,22 @@ import { isTouchscreenUi } from "../utils/index.js";
 import { Tooltip } from "../webpack/ReactComponents.js";
 import { UI } from "../webpack/ComponentLibrary.js";
 import { classnames } from "../webpack/ClassNames.js";
+import { Registry } from "./registry.js";
 
-const registry = new ( class extends Registry<React.FC, void> {
-   override register( item: React.FC, predicate: Predicate<void> ): React.FC {
-      super.register( item, predicate );
-      refreshTopbarRightButtons?.();
-      return item;
+const registry = new ( class extends Registry<React.ReactNode> {
+   override add( value: React.ReactNode ): this {
+      refresh?.();
+      return super.add( value );
    }
 
-   override unregister( item: React.FC ): React.FC {
-      super.unregister( item );
-      refreshTopbarRightButtons?.();
-      return item;
+   override delete( value: React.ReactNode ): boolean {
+      refresh?.();
+      return super.delete( value );
    }
-} )();
+} );
 export default registry;
 
-let refreshTopbarRightButtons: React.DispatchWithoutAction | undefined;
+let refresh: React.DispatchWithoutAction | undefined;
 
 declare global {
    var __renderTopbarRightButtons: any;
@@ -50,19 +48,16 @@ declare global {
 let topbarRightButtonFactoryCtx: React.Context<React.FC<TopbarRightButtonProps>>;
 globalThis.__renderTopbarRightButtons = () =>
    React.createElement( () => {
-      const [ ___, refresh ] = React.useReducer( n => n + 1, 0 );
-      refreshTopbarRightButtons = refresh;
+      [ , refresh ] = React.useReducer( n => n + 1, 0 );
 
-      const topbarRightButtonFactory = isTouchscreenUi() ? TopbarRightButtonRound : TopbarRightButtonSquare;
+      const topbarRightButtonFactory = isTouchscreenUi() ? _TopbarRightButtonT : _TopbarRightButton;
 
       if ( !topbarRightButtonFactoryCtx )
          topbarRightButtonFactoryCtx = React.createContext<TopbarRightButtonFactory>( null! );
 
       return (
          <topbarRightButtonFactoryCtx.Provider value={ topbarRightButtonFactory }>
-            { registry.getItems( undefined, true ).map( TopbarRightButton => (
-               <TopbarRightButton />
-            ) ) }
+            { registry.all().reverse() }
          </topbarRightButtonFactoryCtx.Provider>
       );
    } );
@@ -78,14 +73,14 @@ transformer(
 );
 
 type TopbarRightButtonProps = { label: string; disabled?: boolean; onClick: () => void; icon?: string; };
-export const Button = ( props: TopbarRightButtonProps ) => {
+export const TopbarRightButton = ( props: TopbarRightButtonProps ) => {
    const TopbarRightButtonFactory = React.useContext( topbarRightButtonFactoryCtx );
    return TopbarRightButtonFactory && <TopbarRightButtonFactory { ...props } />;
 };
 
 type TopbarRightButtonFactory = React.FC<TopbarRightButtonProps>;
 
-const TopbarRightButtonRound: TopbarRightButtonFactory = props => (
+const _TopbarRightButtonT: TopbarRightButtonFactory = props => (
    <Tooltip label={ props.label }>
       <UI.ButtonTertiary
          aria-label={ props.label }
@@ -99,7 +94,7 @@ const TopbarRightButtonRound: TopbarRightButtonFactory = props => (
    </Tooltip>
 );
 
-const TopbarRightButtonSquare: TopbarRightButtonFactory = props => (
+const _TopbarRightButton: TopbarRightButtonFactory = props => (
    <Tooltip label={ props.label }>
       <button
          aria-label={ props.label }

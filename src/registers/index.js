@@ -15,23 +15,24 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ import "./panel.js";
-import menu from "./menu.js";
+ */ import menu from "./menu.js";
+import navlink from "./navlink.js";
+import panel from "./panel.js";
+import playbarButton from "./playbarButton.js";
+import playbarWidget from "./playbarWidget.js";
 import root from "./root.js";
 import route from "./route.js";
-import navlink from "./navlink.js";
-import playbarControl from "./playbarControl.js";
-import playbarWidget from "./playbarWidget.js";
 import settingsSection from "./settingsSection.js";
 import topbarLeftButton from "./topbarLeftButton.js";
 import topbarRightButton from "./topbarRightButton.js";
 const registers = {
     menu,
+    navlink,
+    panel,
+    playbarButton,
+    playbarWidget,
     root,
     route,
-    navlink,
-    playbarControl,
-    playbarWidget,
     settingsSection,
     topbarLeftButton,
     topbarRightButton
@@ -43,15 +44,13 @@ export class Registrar {
         this.ledger = new Map();
     }
     ledger;
-    register(type, item, predicate = ()=>true) {
+    register(type, item) {
         this.ledger.set(item, type);
-        // @ts-ignore
-        registers[type].register(item, predicate);
+        registers[type].add(item);
     }
     unregister(type, item) {
         this.ledger.delete(item);
-        // @ts-ignore
-        registers[type].unregister(item);
+        registers[type].delete(item);
     }
     dispose() {
         for (const [item, type] of this.ledger.entries())this.unregister(type, item);

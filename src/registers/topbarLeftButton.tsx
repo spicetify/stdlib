@@ -17,30 +17,28 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { type Predicate, Registry } from "./registry.js";
 import { React } from "../expose/React.js";
 import { createIconComponent } from "../../lib/createIconComponent.js";
 import { transformer } from "../../mixin.js";
 import { isTouchscreenUi } from "../utils/index.js";
 import { Tooltip } from "../webpack/ReactComponents.js";
 import { UI } from "../webpack/ComponentLibrary.js";
+import { Registry } from "./registry.js";
 
-const registry = new ( class extends Registry<React.FC, void> {
-   override register( item: React.FC, predicate: Predicate<void> ): React.FC {
-      super.register( item, predicate );
-      refreshTopbarLeftButtons?.();
-      return item;
+const registry = new ( class extends Registry<React.ReactNode> {
+   override add( value: React.ReactNode ): this {
+      refresh?.();
+      return super.add( value );
    }
 
-   override unregister( item: React.FC ): React.FC {
-      super.unregister( item );
-      refreshTopbarLeftButtons?.();
-      return item;
+   override delete( value: React.ReactNode ): boolean {
+      refresh?.();
+      return super.delete( value );
    }
-} )();
+} );
 export default registry;
 
-let refreshTopbarLeftButtons: React.DispatchWithoutAction | undefined;
+let refresh: React.DispatchWithoutAction | undefined;
 
 declare global {
    var __renderTopbarLeftButtons: any;
@@ -49,19 +47,16 @@ declare global {
 let topbarLeftButtonFactoryCtx: React.Context<TopbarLeftButtonFactory>;
 globalThis.__renderTopbarLeftButtons = () =>
    React.createElement( () => {
-      const [ ___, refresh ] = React.useReducer( n => n + 1, 0 );
-      refreshTopbarLeftButtons = refresh;
+      [ , refresh ] = React.useReducer( n => n + 1, 0 );
 
-      const topbarLeftButtonFactory = isTouchscreenUi() ? TopbarLeftButtonRound : TopbarLeftButtonSquare;
+      const topbarLeftButtonFactory = isTouchscreenUi() ? _TopbarLeftButtonT : _TopbarLeftButton;
 
       if ( !topbarLeftButtonFactoryCtx )
          topbarLeftButtonFactoryCtx = React.createContext<TopbarLeftButtonFactory>( null! );
 
       return (
          <topbarLeftButtonFactoryCtx.Provider value={ topbarLeftButtonFactory }>
-            { registry.getItems().map( TopbarLeftButton => (
-               <TopbarLeftButton />
-            ) ) }
+            { registry.all() }
          </topbarLeftButtonFactoryCtx.Provider>
       );
    } );
@@ -77,14 +72,14 @@ transformer(
 );
 
 type TopbarLeftButtonProps = { label: string; disabled?: boolean; onClick: () => void; icon?: string; };
-export const Button = ( props: TopbarLeftButtonProps ) => {
+export const TopbarLeftButton = ( props: TopbarLeftButtonProps ) => {
    const TopbarLeftButtonFactory = React.useContext( topbarLeftButtonFactoryCtx );
    return TopbarLeftButtonFactory && <TopbarLeftButtonFactory { ...props } />;
 };
 
 type TopbarLeftButtonFactory = React.FC<TopbarLeftButtonProps>;
 
-const TopbarLeftButtonRound: TopbarLeftButtonFactory = props => (
+const _TopbarLeftButtonT: TopbarLeftButtonFactory = props => (
    <Tooltip label={ props.label }>
       <UI.ButtonTertiary
          size="medium"
@@ -100,7 +95,7 @@ const TopbarLeftButtonRound: TopbarLeftButtonFactory = props => (
    </Tooltip>
 );
 
-const TopbarLeftButtonSquare: TopbarLeftButtonFactory = props => (
+const _TopbarLeftButton: TopbarLeftButtonFactory = props => (
    <Tooltip label={ props.label }>
       <button
          aria-label={ props.label }

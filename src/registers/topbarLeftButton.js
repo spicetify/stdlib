@@ -15,36 +15,33 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ import { Registry } from "./registry.js";
-import { React } from "../expose/React.js";
+ */ import { React } from "../expose/React.js";
 import { createIconComponent } from "../../lib/createIconComponent.js";
 import { transformer } from "../../mixin.js";
 import { isTouchscreenUi } from "../utils/index.js";
 import { Tooltip } from "../webpack/ReactComponents.js";
 import { UI } from "../webpack/ComponentLibrary.js";
+import { Registry } from "./registry.js";
 const registry = new class extends Registry {
-    register(item, predicate) {
-        super.register(item, predicate);
-        refreshTopbarLeftButtons?.();
-        return item;
+    add(value) {
+        refresh?.();
+        return super.add(value);
     }
-    unregister(item) {
-        super.unregister(item);
-        refreshTopbarLeftButtons?.();
-        return item;
+    delete(value) {
+        refresh?.();
+        return super.delete(value);
     }
-}();
+};
 export default registry;
-let refreshTopbarLeftButtons;
+let refresh;
 let topbarLeftButtonFactoryCtx;
 globalThis.__renderTopbarLeftButtons = ()=>React.createElement(()=>{
-        const [___, refresh] = React.useReducer((n)=>n + 1, 0);
-        refreshTopbarLeftButtons = refresh;
-        const topbarLeftButtonFactory = isTouchscreenUi() ? TopbarLeftButtonRound : TopbarLeftButtonSquare;
+        [, refresh] = React.useReducer((n)=>n + 1, 0);
+        const topbarLeftButtonFactory = isTouchscreenUi() ? _TopbarLeftButtonT : _TopbarLeftButton;
         if (!topbarLeftButtonFactoryCtx) topbarLeftButtonFactoryCtx = React.createContext(null);
         return /*#__PURE__*/ React.createElement(topbarLeftButtonFactoryCtx.Provider, {
             value: topbarLeftButtonFactory
-        }, registry.getItems().map((TopbarLeftButton)=>/*#__PURE__*/ React.createElement(TopbarLeftButton, null)));
+        }, registry.all());
     });
 transformer((emit)=>(str)=>{
         str = str.replace(/("top-bar-forward-button"[^\]]*)/g, "$1,__renderTopbarLeftButtons()");
@@ -53,11 +50,11 @@ transformer((emit)=>(str)=>{
     }, {
     glob: /^\/xpui\.js/
 });
-export const Button = (props)=>{
+export const TopbarLeftButton = (props)=>{
     const TopbarLeftButtonFactory = React.useContext(topbarLeftButtonFactoryCtx);
     return TopbarLeftButtonFactory && /*#__PURE__*/ React.createElement(TopbarLeftButtonFactory, props);
 };
-const TopbarLeftButtonRound = (props)=>/*#__PURE__*/ React.createElement(Tooltip, {
+const _TopbarLeftButtonT = (props)=>/*#__PURE__*/ React.createElement(Tooltip, {
         label: props.label
     }, /*#__PURE__*/ React.createElement(UI.ButtonTertiary, {
         size: "medium",
@@ -72,7 +69,7 @@ const TopbarLeftButtonRound = (props)=>/*#__PURE__*/ React.createElement(Tooltip
         onClick: props.onClick,
         className: "rBX1EWVZ2EaPwP4y1Gkd"
     }));
-const TopbarLeftButtonSquare = (props)=>/*#__PURE__*/ React.createElement(Tooltip, {
+const _TopbarLeftButton = (props)=>/*#__PURE__*/ React.createElement(Tooltip, {
         label: props.label
     }, /*#__PURE__*/ React.createElement("button", {
         "aria-label": props.label,

@@ -16,30 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
+export class Registry<E> extends Set<E> {
+   _E!: E;
 
-export type Predicate<I> = ( input: I ) => boolean;
-
-export class Registry<A, B> {
-   _A!: A;
-   _B!: B;
-
-   private registered = new Map<A, Predicate<B>>();
-
-   getItems( input: B, reverse = false ) {
-      const items = Array.from( this.registered.entries() )
-         .map( ( [ i, p ] ) => p( input ) && i )
-         .filter( Boolean ) as A[];
-      reverse && items.reverse();
-      return items;
-   }
-
-   register( item: A, predicate: Predicate<B> ) {
-      this.registered.set( item, predicate );
-      return item;
-   }
-
-   unregister( item: A ) {
-      this.registered.delete( item );
-      return item;
+   public all(): Array<E> {
+      return Array.from( this );
    }
 }

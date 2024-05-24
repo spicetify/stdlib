@@ -19,17 +19,15 @@
 
 import { React } from "../expose/React.js";
 
-import { Registry } from "./registry.js";
-
 import { matchLast } from "/hooks/util.js";
 
 import type { Context } from "react";
 import { transformer } from "../../mixin.js";
+import { Registry } from "./registry.js";
 
 type __MenuContext = Context<MenuContext>;
 
 declare global {
-   // biome-ignore lint/style/noVar: global scope
    var __MenuContext: __MenuContext;
 }
 
@@ -39,8 +37,8 @@ type MenuContext = {
    target: HTMLElement;
 };
 
-const registry = new Registry<React.ReactNode, MenuContext>();
-export default registry;
+const items = new Registry<React.ReactNode>;
+export default items;
 
 export const useMenuItem = () => React.useContext( globalThis.__MenuContext );
 
@@ -48,10 +46,7 @@ declare global {
    var __renderMenuItems: any;
 }
 
-globalThis.__renderMenuItems = () => {
-   const context = useMenuItem();
-   return registry.getItems( context );
-};
+globalThis.__renderMenuItems = () => items.all();
 transformer(
    emit => str => {
       str = str.replace( /("Menu".+?children:)([a-zA-Z_\$][\w\$]*)/, "$1[__renderMenuItems(),$2].flat()" );

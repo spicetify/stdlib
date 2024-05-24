@@ -15,16 +15,16 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ import { Registry } from "./registry.js";
-import { React } from "../expose/React.js";
+ */ import { React } from "../expose/React.js";
 import { createIconComponent } from "../../lib/createIconComponent.js";
 import { transformer } from "../../mixin.js";
 import { Tooltip } from "../webpack/ReactComponents.js";
 import { UI } from "../webpack/ComponentLibrary.js";
 import { classnames } from "../webpack/ClassNames.js";
-const registry = new Registry();
+import { Registry } from "./registry.js";
+const registry = new Registry;
 export default registry;
-globalThis.__renderPlaybarBarControls = registry.getItems.bind(registry, undefined, true);
+globalThis.__renderPlaybarBarControls = ()=>registry.all().reverse();
 transformer((emit)=>(str)=>{
         str = str.replace(/(children:\[)([^\[]*djJumpButtonFactory)/, "$1...__renderPlaybarBarControls(),$2");
         emit();
@@ -32,26 +32,20 @@ transformer((emit)=>(str)=>{
     }, {
     glob: /^\/xpui\.js/
 });
-export const PlaybarBarControl = ({ label, isActive = false, isActiveNoIndicator = false, disabled = false, icon, onClick })=>{
-    const [_isActive, _setIsActive] = React.useState(isActive);
-    return /*#__PURE__*/ React.createElement(Tooltip, {
+export const PlaybarButton = ({ label, isActive = false, isActiveNoIndicator = false, disabled = false, icon, onClick })=>/*#__PURE__*/ React.createElement(Tooltip, {
         label: label
     }, /*#__PURE__*/ React.createElement(UI.ButtonTertiary, {
         "aria-label": label,
         size: "small",
         className: classnames("KAZD28usA1vPz5GVpm63", {
-            ["EHxL6K_6WWDlTCZP6x5w"]: _isActive,
-            ["RK45o6dbvO1mb0wQtSwq"]: _isActive || isActiveNoIndicator
+            ["EHxL6K_6WWDlTCZP6x5w"]: isActive,
+            ["RK45o6dbvO1mb0wQtSwq"]: isActive || isActiveNoIndicator
         }),
         disabled: disabled,
         iconOnly: icon && (()=>createIconComponent({
                 icon
             })),
-        onClick: ()=>{
-            onClick();
-            _setIsActive(!_isActive);
-        },
-        "data-active": _isActive.toString(),
-        "aria-pressed": _isActive
+        onClick: onClick,
+        "data-active": isActive.toString(),
+        "aria-pressed": isActive
     }));
-};

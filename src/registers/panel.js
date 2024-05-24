@@ -16,14 +16,60 @@
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */ import { transformer } from "../../mixin.js";
+import { Registry } from "./registry.js";
 export let Machine;
-const registry = new Map();
+const registry = new class extends Registry {
+    static NodeNash = Symbol.for("NodeHash");
+    getHash(value) {
+        if (!this.has(value)) {
+            return null;
+        }
+        // @ts-ignore
+        const hash = value[this.constructor.NodeNash];
+        const state = `bespoke_${hash}`;
+        const event = `bespoke_${hash}_button_click`;
+        return {
+            state,
+            event
+        };
+    }
+    add(value) {
+        const hash = crypto.randomUUID();
+        // @ts-ignore
+        value[this.constructor.NodeNash] = hash;
+        const state = `bespoke_${hash}`;
+        const event = `bespoke_${hash}_button_click`;
+        stateToNode.set(state, value);
+        ON[event] = {
+            target: state
+        };
+        Machine.config.states[state] = {
+            entry: [],
+            on: Object.setPrototypeOf({
+                [event]: {
+                    target: "disabled"
+                }
+            }, ON)
+        };
+        return super.add(value);
+    }
+    delete(item) {
+        // @ts-ignore
+        const hash = item[this.constructor.NodeNash];
+        const state = `bespoke_${hash}`;
+        const event = `bespoke_${hash}_button_click`;
+        stateToNode.delete(state);
+        delete ON[event];
+        return super.delete(item);
+    }
+};
 export default registry;
+const stateToNode = new Map();
 globalThis.__renderPanel = (state)=>{
     if (!state.startsWith("bespoke")) {
         return null;
     }
-    return registry.get(state);
+    return stateToNode.get(state);
 };
 let ON;
 transformer((emit)=>(str)=>{
@@ -58,9 +104,12 @@ transformer((emit)=>(str)=>{
             }
             v.on = new Proxy(v.on, {
                 get (target, p, receiver) {
+                    // @ts-ignore
                     if (p.startsWith("bespoke")) {
+                        // @ts-ignore
                         return ON[p];
                     }
+                    // @ts-ignore
                     return target[p];
                 }
             });
@@ -69,25 +118,3 @@ transformer((emit)=>(str)=>{
     glob: /^\/xpui\.js/,
     noAwait: true
 });
-export const register = (state, node)=>{
-    const module_state = `bespoke_${state}`;
-    const module_button_click = `bespoke_${state}_button_click`;
-    registry.set(module_state, node);
-    ON[module_button_click] = {
-        target: module_state
-    };
-    Machine.config.states[module_state] = {
-        entry: [],
-        on: Object.setPrototypeOf({
-            [module_button_click]: {
-                target: "disabled"
-            }
-        }, ON)
-    };
-};
-export const unregister = (state)=>{
-    const module_state = `bespoke_${state}`;
-    const module_button_click = `bespoke_${state}_button_click`;
-    registry.delete(module_state);
-    delete ON[module_button_click];
-};

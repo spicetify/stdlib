@@ -17,21 +17,21 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Registry } from "./registry.js";
 import { React } from "../expose/React.js";
 import { createIconComponent } from "../../lib/createIconComponent.js";
 import { transformer } from "../../mixin.js";
 import { Tooltip } from "../webpack/ReactComponents.js";
 import { UI } from "../webpack/ComponentLibrary.js";
+import { Registry } from "./registry.js";
 
-const registry = new Registry<React.ReactNode, void>();
+const registry = new Registry<React.ReactNode>;
 export default registry;
 
 declare global {
    var __renderNowPlayingWidgets: any;
 }
 
-globalThis.__renderNowPlayingWidgets = registry.getItems.bind( registry );
+globalThis.__renderNowPlayingWidgets = () => registry.all();
 transformer(
    emit => str => {
       str = str.replace( /(hideButtonFactory[^\]]*)/, "$1,...__renderNowPlayingWidgets()" );
@@ -43,8 +43,8 @@ transformer(
    },
 );
 
-export type NowPlayingWidgetProps = { label: string; icon?: string; onClick: () => void; };
-export const NowPlayingWidget = ( { label, icon, onClick }: NowPlayingWidgetProps ) => (
+export type PlaybarWidgetProps = { label: string; icon?: string; onClick: () => void; };
+export const PlaybarWidget = ( { label, icon, onClick }: PlaybarWidgetProps ) => (
    <Tooltip label={ label }>
       <UI.ButtonTertiary
          size="small"

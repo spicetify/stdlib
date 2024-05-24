@@ -15,21 +15,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ export class Registry {
-    _A;
-    _B;
-    registered = new Map();
-    getItems(input, reverse = false) {
-        const items = Array.from(this.registered.entries()).map(([i, p])=>p(input) && i).filter(Boolean);
-        reverse && items.reverse();
-        return items;
-    }
-    register(item, predicate) {
-        this.registered.set(item, predicate);
-        return item;
-    }
-    unregister(item) {
-        this.registered.delete(item);
-        return item;
+ */ export class Registry extends Set {
+    _E;
+    all() {
+        return Array.from(this);
     }
 }

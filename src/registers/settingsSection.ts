@@ -17,17 +17,17 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Registry } from "./registry.js";
 import { transformer } from "../../mixin.js";
+import { Registry } from "./registry.js";
 
-const registry = new Registry<React.ReactElement, void>();
+const registry = new Registry<React.ReactNode>;
 export default registry;
 
 declare global {
    var __renderSettingSections: any;
 }
 
-globalThis.__renderSettingSections = registry.getItems.bind( registry );
+globalThis.__renderSettingSections = () => registry.all();
 transformer(
    emit => str => {
       str = str.replace(

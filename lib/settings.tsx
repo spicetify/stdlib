@@ -98,7 +98,7 @@ export class Settings<A = Record<string, never>> {
    }
 
    finalize = () => {
-      SettingsSectionRegistry.register( <this.SettingsSection />, () => true );
+      SettingsSectionRegistry.add( <this.SettingsSection /> );
       return this;
    };
 

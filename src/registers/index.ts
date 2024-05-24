@@ -20,7 +20,7 @@
 import menu from "./menu.js";
 import navlink from "./navlink.js";
 import panel from "./panel.js";
-import playbarControl from "./playbarButton.js";
+import playbarButton from "./playbarButton.js";
 import playbarWidget from "./playbarWidget.js";
 import root from "./root.js";
 import route from "./route.js";
@@ -32,7 +32,7 @@ const registers = {
    menu,
    navlink,
    panel,
-   playbarControl,
+   playbarButton,
    playbarWidget,
    root,
    route,
@@ -42,27 +42,22 @@ const registers = {
 };
 type Registers = typeof registers;
 
-import type { Predicate } from "./registry.js";
-
 export class Registrar {
    constructor( public id: string ) { }
 
-   ledger = new Map<Registers[ keyof Registers ][ "_A" ], keyof Registers>();
+   private ledger = new Map<any, keyof Registers>();
 
    register<R extends keyof Registers>(
       type: R,
-      item: Registers[ R ][ "_A" ],
-      predicate: Predicate<Registers[ R ][ "_B" ]> = () => true,
+      item: Registers[ R ][ "_E" ],
    ) {
       this.ledger.set( item, type );
-      // @ts-ignore
-      registers[ type ].register( item, predicate );
+      registers[ type ].add( item );
    }
 
-   unregister<R extends keyof Registers>( type: R, item: Registers[ R ][ "_A" ] ) {
+   unregister<R extends keyof Registers>( type: R, item: Registers[ R ][ "_E" ] ) {
       this.ledger.delete( item );
-      // @ts-ignore
-      registers[ type ].unregister( item );
+      registers[ type ].delete( item );
    }
 
    dispose() {

@@ -20,26 +20,35 @@
 import { transformer } from "../../mixin.js";
 
 import type { createMachine as createMachineT } from "xstate";
-import { Registry, type Predicate } from "./registry.js";
+import { Registry } from "./registry.js";
 
 export type StateMachine = ReturnType<typeof createMachineT>;
 export let Machine: StateMachine;
 
-const NodeNash = Symbol.for( "NodeHash" );
+const registry = new ( class extends Registry<React.ReactNode> {
+   private static NodeNash = Symbol.for( "NodeHash" );
 
-class R extends Registry<React.ReactNode, void> {
-   override register( item: React.ReactNode, predicate: Predicate<void> ): React.ReactNode {
-      super.register( item, predicate );
+   getHash( value: React.ReactNode ) {
+      if ( !this.has( value ) ) {
+         return null;
+      }
+      // @ts-ignore
+      const hash = value[ this.constructor.NodeNash ];
+      const state = `bespoke_${ hash }`;
+      const event = `bespoke_${ hash }_button_click`;
+      return { state, event };
+   }
+
+   override add( value: React.ReactNode ): this {
       const hash = crypto.randomUUID();
       // @ts-ignore
-      item[ NodeNash ] = hash;
-
+      value[ this.constructor.NodeNash ] = hash;
       const state = `bespoke_${ hash }`;
-      const button_click = `bespoke_${ hash }_button_click`;
+      const event = `bespoke_${ hash }_button_click`;
 
-      stateToNode.set( state, hash );
+      stateToNode.set( state, value );
 
-      ON[ button_click ] = {
+      ON[ event ] = {
          target: state,
       };
 
@@ -47,32 +56,29 @@ class R extends Registry<React.ReactNode, void> {
          entry: [],
          on: Object.setPrototypeOf(
             {
-               [ button_click ]: {
+               [ event ]: {
                   target: "disabled",
                },
             },
             ON,
          ),
       };
-      return item;
+
+      return super.add( value );
    }
 
-   override unregister( item: React.ReactNode ): React.ReactNode {
-      super.unregister( item );
+   override delete( item: React.ReactNode ): boolean {
       // @ts-ignore
-      const hash = item[ NodeNash ];
-      stateToNode.delete( hash );
+      const hash = item[ this.constructor.NodeNash ];
       const state = `bespoke_${ hash }`;
-      const button_click = `bespoke_${ hash }_button_click`;
+      const event = `bespoke_${ hash }_button_click`;
 
       stateToNode.delete( state );
 
-      delete ON[ button_click ];
-      return item;
+      delete ON[ event ];
+      return super.delete( item );
    }
-}
-
-const registry = new R();
+} );
 export default registry;
 
 const stateToNode = new Map<string, React.ReactNode>();

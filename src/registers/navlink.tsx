@@ -17,7 +17,6 @@
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { type Predicate, Registry } from "./registry.js";
 import { React } from "../expose/React.js";
 import { findMatchingPos } from "/hooks/util.js";
 import { createIconComponent } from "../../lib/createIconComponent.js";
@@ -26,23 +25,22 @@ import { Platform } from "../expose/Platform.js";
 import { classnames } from "../webpack/ClassNames.js";
 import { Nav, ScrollableContainer, Tooltip } from "../webpack/ReactComponents.js";
 import { UI } from "../webpack/ComponentLibrary.js";
+import { Registry } from "./registry.js";
 
-const registry = new ( class extends Registry<React.FC, void> {
-   override register( item: React.FC, predicate: Predicate<void> ): React.FC {
-      super.register( item, predicate );
-      refreshNavLinks?.();
-      return item;
+const registry = new ( class extends Registry<React.ReactNode> {
+   override add( value: React.ReactNode ): this {
+      refresh?.();
+      return super.add( value );
    }
 
-   override unregister( item: React.FC ): React.FC {
-      super.unregister( item );
-      refreshNavLinks?.();
-      return item;
+   override delete( value: React.ReactNode ): boolean {
+      refresh?.();
+      return super.delete( value );
    }
-} )();
+} );
 export default registry;
 
-let refreshNavLinks: React.DispatchWithoutAction | undefined;
+let refresh: React.DispatchWithoutAction | undefined;
 
 declare global {
    var __renderNavLinks: any;
@@ -51,22 +49,19 @@ declare global {
 let navLinkFactoryCtx: React.Context<React.FC<NavLinkFactoryProps>>;
 globalThis.__renderNavLinks = ( isTouchscreenUi: boolean ) =>
    React.createElement( () => {
-      const [ ___, refresh ] = React.useReducer( n => n + 1, 0 );
-      refreshNavLinks = refresh;
+      [ , refresh ] = React.useReducer( n => n + 1, 0 );
 
       if ( !ScrollableContainer ) {
          return;
       }
 
-      const navLinkFactory = isTouchscreenUi ? NavLinkGlobal : NavLinkSidebar;
+      const navLinkFactory = isTouchscreenUi ? _NavLinkGlobal : _NavLinkSidebar;
 
       if ( !navLinkFactoryCtx ) navLinkFactoryCtx = React.createContext<React.FC<NavLinkFactoryProps>>( null! );
 
       const children = (
          <navLinkFactoryCtx.Provider value={ navLinkFactory }>
-            { registry.getItems().map( NavLink => (
-               <NavLink />
-            ) ) }
+            { registry.all() }
          </navLinkFactoryCtx.Provider>
       );
 
@@ -125,11 +120,11 @@ interface NavLinkFactoryProps {
    isActive: boolean;
 }
 
-export const NavLinkSidebar: React.FC<NavLinkFactoryProps> = props => {
+const _NavLinkSidebar: React.FC<NavLinkFactoryProps> = props => {
    const isSidebarCollapsed = Platform.getLocalStorageAPI().getItem( "ylx-sidebar-state" ) === 1;
 
    return (
-      <li className="main-yourLibraryX-navItem InvalidDropTarget">
+      <li className="KAcp7QFuEYSouAsuC5i_ InvalidDropTarget">
          <Tooltip
             label={ isSidebarCollapsed ? props.localizedApp : null }
             disabled={ !isSidebarCollapsed }
@@ -138,8 +133,8 @@ export const NavLinkSidebar: React.FC<NavLinkFactoryProps> = props => {
             <Nav
                to={ props.appRoutePath }
                referrer="other"
-               className={ classnames( "link-subtle", "main-yourLibraryX-navLink", {
-                  "main-yourLibraryX-navLinkActive": props.isActive,
+               className={ classnames( "link-subtle", "hNvCMxbfz7HwgzLjt3IZ", {
+                  "Bh3b80dIrbc0keQ9kdso ": props.isActive,
                } ) }
                onClick={ () => undefined }
                aria-label={ props.localizedApp }
@@ -152,7 +147,7 @@ export const NavLinkSidebar: React.FC<NavLinkFactoryProps> = props => {
    );
 };
 
-export const NavLinkGlobal: React.FC<NavLinkFactoryProps> = props => {
+const _NavLinkGlobal: React.FC<NavLinkFactoryProps> = props => {
    return (
       <div className="inline-flex">
          <Tooltip label={ props.localizedApp }>

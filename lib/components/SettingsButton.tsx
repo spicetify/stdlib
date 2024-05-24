@@ -47,7 +47,7 @@ export default function ( { section }: SettingsButtonProps ): React.ReactElement
             buttonSize="sm"
             onClick={ async () => {
                History.push( "/preferences" );
-               const searchButton = await waitForElement( ".DQ9fp5DjBJxKHeHqtFwC .wCl7pMTEE68v1xuZeZiB" );
+               const searchButton = await waitForElement( ".O2vRz41OsAH0O7xVA4La .wCl7pMTEE68v1xuZeZiB" );
                const recUp = ( fiber: any ) => {
                   const { type } = fiber;
                   if ( type.$$typeof === Symbol.for( "react.provider" ) && type._context._currentValue.setFilter )

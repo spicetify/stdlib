@@ -16,16 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */ import { React } from "../expose/React.js";
-import { Registry } from "./registry.js";
 import { matchLast } from "/hooks/util.js";
 import { transformer } from "../../mixin.js";
-const registry = new Registry();
-export default registry;
+import { Registry } from "./registry.js";
+const items = new Registry;
+export default items;
 export const useMenuItem = ()=>React.useContext(globalThis.__MenuContext);
-globalThis.__renderMenuItems = ()=>{
-    const context = useMenuItem();
-    return registry.getItems(context);
-};
+globalThis.__renderMenuItems = ()=>items.all();
 transformer((emit)=>(str)=>{
         str = str.replace(/("Menu".+?children:)([a-zA-Z_\$][\w\$]*)/, "$1[__renderMenuItems(),$2].flat()");
         const croppedInput = str.match(/.*value:"contextmenu"/)[0];

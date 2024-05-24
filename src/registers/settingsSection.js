@@ -15,11 +15,11 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
- */ import { Registry } from "./registry.js";
-import { transformer } from "../../mixin.js";
-const registry = new Registry();
+ */ import { transformer } from "../../mixin.js";
+import { Registry } from "./registry.js";
+const registry = new Registry;
 export default registry;
-globalThis.__renderSettingSections = registry.getItems.bind(registry);
+globalThis.__renderSettingSections = ()=>registry.all();
 transformer((emit)=>(str)=>{
         str = str.replace(/(\(0,[a-zA-Z_\$][\w\$]*\.jsx\)\([a-zA-Z_\$][\w\$]*,{settings:[a-zA-Z_\$][\w\$]*,setValue:[a-zA-Z_\$][\w\$]*}\))]/, "$1,...__renderSettingSections()]");
         emit();

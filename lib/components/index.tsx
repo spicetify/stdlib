@@ -171,7 +171,7 @@ export const useChipFilter = ( filters: Tree<React.ReactNode> ) => {
          setSelectedFilterFullKey( filter.key === selectedFilterFullKey ? "" : filter.key ),
       [ selectedFilterFullKey ],
    );
-   const treeNodeHasVal = ( n: FilterOpt ): n is RFilterOpt => TreeNodeVal in n.filter;
+   const treeNodeHasVal = ( n: FilterOpt ): n is RFilterOpt => !!n.filter[ TreeNodeVal ];
 
    const chipFilter = (
       <ChipFilter
