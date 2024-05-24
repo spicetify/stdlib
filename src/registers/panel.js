@@ -33,7 +33,7 @@ const registry = new class extends Registry {
             event
         };
     }
-    add(value) {
+    add(value, onEntry, onExit) {
         const hash = crypto.randomUUID();
         // @ts-ignore
         value[this.constructor.NodeNash] = hash;
@@ -44,13 +44,26 @@ const registry = new class extends Registry {
             target: state
         };
         Machine.config.states[state] = {
-            entry: [],
+            entry: [
+                "bespoke_entry"
+            ],
+            exit: [
+                "bespoke_exit"
+            ],
             on: Object.setPrototypeOf({
                 [event]: {
                     target: "disabled"
                 }
             }, ON)
         };
+        if (onEntry) {
+            const entry = `bespoke_${hash}_entry`;
+            Machine._options.actions[entry] = onEntry;
+        }
+        if (onExit) {
+            const exit = `bespoke_${hash}_exit`;
+            Machine._options.actions[exit] = onExit;
+        }
         return super.add(value);
     }
     delete(item) {
@@ -89,6 +102,7 @@ transformer((emit)=>(str)=>{
     }, {
     then: ($)=>{
         Machine = $;
+        Machine._options.actions ??= {};
         ON = {
             ...Machine.config.states.disabled.on,
             panel_close_click_or_collapse: [

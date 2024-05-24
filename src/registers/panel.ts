@@ -39,7 +39,7 @@ const registry = new ( class extends Registry<React.ReactNode> {
       return { state, event };
    }
 
-   override add( value: React.ReactNode ): this {
+   override add( value: React.ReactNode, onEntry?: any, onExit?: any ): this {
       const hash = crypto.randomUUID();
       // @ts-ignore
       value[ this.constructor.NodeNash ] = hash;
@@ -53,7 +53,8 @@ const registry = new ( class extends Registry<React.ReactNode> {
       };
 
       Machine.config.states![ state ] = {
-         entry: [],
+         entry: [ "bespoke_entry" ],
+         exit: [ "bespoke_exit" ],
          on: Object.setPrototypeOf(
             {
                [ event ]: {
@@ -63,6 +64,15 @@ const registry = new ( class extends Registry<React.ReactNode> {
             ON,
          ),
       };
+
+      if ( onEntry ) {
+         const entry = `bespoke_${ hash }_entry`;
+         Machine._options.actions[ entry ] = onEntry;
+      }
+      if ( onExit ) {
+         const exit = `bespoke_${ hash }_exit`;
+         Machine._options.actions[ exit ] = onExit;
+      }
 
       return super.add( value );
    }
@@ -125,6 +135,8 @@ transformer(
    {
       then: ( $: StateMachine ) => {
          Machine = $;
+
+         Machine._options.actions ??= {};
 
          ON = {
             ...Machine.config.states!.disabled.on,
