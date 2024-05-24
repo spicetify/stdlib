@@ -44,12 +44,6 @@ const registry = new class extends Registry {
             target: state
         };
         Machine.config.states[state] = {
-            entry: [
-                "bespoke_entry"
-            ],
-            exit: [
-                "bespoke_exit"
-            ],
             on: Object.setPrototypeOf({
                 [event]: {
                     target: "disabled"
@@ -58,10 +52,16 @@ const registry = new class extends Registry {
         };
         if (onEntry) {
             const entry = `bespoke_${hash}_entry`;
+            Machine.config.states[state].entry = [
+                entry
+            ];
             Machine._options.actions[entry] = onEntry;
         }
         if (onExit) {
             const exit = `bespoke_${hash}_exit`;
+            Machine.config.states[state].exit = [
+                exit
+            ];
             Machine._options.actions[exit] = onExit;
         }
         return super.add(value);

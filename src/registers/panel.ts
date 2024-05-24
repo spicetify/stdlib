@@ -53,8 +53,6 @@ const registry = new ( class extends Registry<React.ReactNode> {
       };
 
       Machine.config.states![ state ] = {
-         entry: [ "bespoke_entry" ],
-         exit: [ "bespoke_exit" ],
          on: Object.setPrototypeOf(
             {
                [ event ]: {
@@ -67,10 +65,12 @@ const registry = new ( class extends Registry<React.ReactNode> {
 
       if ( onEntry ) {
          const entry = `bespoke_${ hash }_entry`;
+         Machine.config.states![ state ].entry = [ entry ];
          Machine._options.actions[ entry ] = onEntry;
       }
       if ( onExit ) {
          const exit = `bespoke_${ hash }_exit`;
+         Machine.config.states![ state ].exit = [ exit ];
          Machine._options.actions[ exit ] = onExit;
       }
 

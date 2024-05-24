@@ -49,15 +49,17 @@ export class Registrar {
 
    register<R extends keyof Registers>(
       type: R,
-      item: Registers[ R ][ "_E" ],
+      ...args: Parameters<Registers[ R ][ "add" ]>
    ) {
-      this.ledger.set( item, type );
-      registers[ type ].add( item );
+      this.ledger.set( args[ 0 ], type );
+      // @ts-ignore
+      registers[ type ].add( ...args );
    }
 
-   unregister<R extends keyof Registers>( type: R, item: Registers[ R ][ "_E" ] ) {
-      this.ledger.delete( item );
-      registers[ type ].delete( item );
+   unregister<R extends keyof Registers>( type: R, ...args: Parameters<Registers[ R ][ "delete" ]> ) {
+      this.ledger.delete( args[ 0 ] );
+      // @ts-ignore
+      registers[ type ].delete( ...args );
    }
 
    dispose() {

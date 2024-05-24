@@ -44,13 +44,15 @@ export class Registrar {
         this.ledger = new Map();
     }
     ledger;
-    register(type, item) {
-        this.ledger.set(item, type);
-        registers[type].add(item);
+    register(type, ...args) {
+        this.ledger.set(args[0], type);
+        // @ts-ignore
+        registers[type].add(...args);
     }
-    unregister(type, item) {
-        this.ledger.delete(item);
-        registers[type].delete(item);
+    unregister(type, ...args) {
+        this.ledger.delete(args[0]);
+        // @ts-ignore
+        registers[type].delete(...args);
     }
     dispose() {
         for (const [item, type] of this.ledger.entries())this.unregister(type, item);
