@@ -52,7 +52,7 @@ const registry = new ( class extends Registry<React.ReactNode> {
          target: state,
       };
 
-      Machine.config.states![ state ] = {
+      STATES[ state ] = {
          on: Object.setPrototypeOf(
             {
                [ event ]: {
@@ -65,13 +65,13 @@ const registry = new ( class extends Registry<React.ReactNode> {
 
       if ( onEntry ) {
          const entry = `bespoke_${ hash }_entry`;
-         Machine.config.states![ state ].entry = [ entry ];
-         Machine._options.actions[ entry ] = onEntry;
+         STATES[ state ].entry = [ entry ];
+         ACTIONS[ entry ] = onEntry;
       }
       if ( onExit ) {
          const exit = `bespoke_${ hash }_exit`;
          Machine.config.states![ state ].exit = [ exit ];
-         Machine._options.actions[ exit ] = onExit;
+         ACTIONS[ exit ] = onExit;
       }
 
       return super.add( value );
@@ -105,7 +105,9 @@ globalThis.__renderPanel = ( state: string ) => {
    return stateToNode.get( state );
 };
 
-let ON: Record<string, any>;
+let ON: Record<string, any> = {};
+let STATES: Record<string, any> = {};
+let ACTIONS: Record<string, any> = {};
 
 transformer(
    emit => str => {
@@ -114,9 +116,8 @@ transformer(
          set: ( $: StateMachine ) => {
             Machine = $;
 
-            Machine._options.actions ??= {};
-
             ON = {
+               ...ON,
                ...Machine.config.states!.disabled.on,
                panel_close_click_or_collapse: [
                   {
@@ -142,6 +143,10 @@ transformer(
                   },
                } );
             }
+
+            Object.setPrototypeOf( Machine.config.states!, STATES );
+
+            Machine._options.actions = ACTIONS;
          },
          get: () => Machine,
       } );

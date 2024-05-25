@@ -43,7 +43,7 @@ const registry = new class extends Registry {
         ON[event] = {
             target: state
         };
-        Machine.config.states[state] = {
+        STATES[state] = {
             on: Object.setPrototypeOf({
                 [event]: {
                     target: "disabled"
@@ -52,17 +52,17 @@ const registry = new class extends Registry {
         };
         if (onEntry) {
             const entry = `bespoke_${hash}_entry`;
-            Machine.config.states[state].entry = [
+            STATES[state].entry = [
                 entry
             ];
-            Machine._options.actions[entry] = onEntry;
+            ACTIONS[entry] = onEntry;
         }
         if (onExit) {
             const exit = `bespoke_${hash}_exit`;
             Machine.config.states[state].exit = [
                 exit
             ];
-            Machine._options.actions[exit] = onExit;
+            ACTIONS[exit] = onExit;
         }
         return super.add(value);
     }
@@ -84,14 +84,16 @@ globalThis.__renderPanel = (state)=>{
     }
     return stateToNode.get(state);
 };
-let ON;
+let ON = {};
+let STATES = {};
+let ACTIONS = {};
 transformer((emit)=>(str)=>{
         str = str.replace(/(=\(0,[a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\)\(\{id:"RightPanelState)/, "=__Machine$1");
         Object.defineProperty(globalThis, "__Machine", {
             set: ($)=>{
                 Machine = $;
-                Machine._options.actions ??= {};
                 ON = {
+                    ...ON,
                     ...Machine.config.states.disabled.on,
                     panel_close_click_or_collapse: [
                         {
@@ -116,6 +118,8 @@ transformer((emit)=>(str)=>{
                         }
                     });
                 }
+                Object.setPrototypeOf(Machine.config.states, STATES);
+                Machine._options.actions = ACTIONS;
             },
             get: ()=>Machine
         });
