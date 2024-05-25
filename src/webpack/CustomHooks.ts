@@ -18,12 +18,32 @@
  */
 
 import { webpackLoaded } from "../../mixin";
-import { exportedFunctions } from "./index.js";
+import { Platform } from "../expose/Platform.js";
+import { exportedFunctions, exports } from "./index.js";
 import { findBy } from "/hooks/util.js";
 
 export let DragHandler: Function;
 export let useExtractedColor: Function;
 export let usePanelAPI: Function;
+
+export let imageAnalysis: Function;
+export let fallbackPreset: any;
+
+export let extractColorPreset = async ( image: any ) => {
+   const analysis = await imageAnalysis( Platform.getGraphQLLoader(), image );
+   for ( const result of analysis ) {
+      if ( "isFallback" in result === false ) {
+         result.isFallback = fallbackPreset === result; // Why ?
+      }
+   }
+
+   return analysis;
+};
+export let getPlayContext: Function;
+
+export let useContextMenuState: Function;
+
+export let useLocation: Function;
 
 
 webpackLoaded.subscribe( loaded => {
@@ -38,4 +58,13 @@ webpackLoaded.subscribe( loaded => {
          ( m.toString().includes( "colorRaw" ) && m.toString().includes( "useEffect" ) ),
    )!;
    usePanelAPI = findBy( "panelSend", "context" )( exportedFunctions );
+
+   useContextMenuState = findBy( "useContextMenuState" )( exportedFunctions );
+
+   imageAnalysis = findBy( /\![a-zA-Z_\$][\w\$]*\.isFallback|\{extractColor/ )( exportedFunctions );
+   fallbackPreset = exports.find( m => m.colorDark );
+
+   getPlayContext = findBy( "referrerIdentifier", "usePlayContextItem" )( exportedFunctions );
+
+   useLocation = findBy( "location", "useContext" )( exportedFunctions );
 } );

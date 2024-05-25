@@ -22,29 +22,12 @@ import { Platform } from "../expose/Platform";
 import { exportedFunctions, exports } from "./index.js";
 import { findBy } from "/hooks/util.js";
 
-export let useContextMenuState: Function;
-
 export let Color: Function & {
    CSSFormat: any;
 };
 
 export let Locale: any;
 export let createUrlLocale: Function;
-
-export let imageAnalysis: Function;
-export let fallbackPreset: any;
-
-export let extractColorPreset = async ( image: any ) => {
-   const analysis = await imageAnalysis( Platform.getGraphQLLoader(), image );
-   for ( const result of analysis ) {
-      if ( "isFallback" in result === false ) {
-         result.isFallback = fallbackPreset === result; // Why ?
-      }
-   }
-
-   return analysis;
-};
-export let getPlayContext: Function;
 
 export let InternalPropetyMap: any;
 
@@ -54,8 +37,6 @@ webpackLoaded.subscribe( loaded => {
       return;
    }
 
-   useContextMenuState = findBy( "useContextMenuState" )( exportedFunctions );
-
    Color = Object.assign( findBy( "static fromHex" )( exportedFunctions )!, {
       CSSFormat: exports.find( m => m.RGBA )!,
    } );
@@ -63,10 +44,6 @@ webpackLoaded.subscribe( loaded => {
    Locale = exports.find( m => m.getTranslations );
    createUrlLocale = findBy( "has", "baseName", "language" )( exportedFunctions );
 
-   imageAnalysis = findBy( /\![a-zA-Z_\$][\w\$]*\.isFallback|\{extractColor/ )( exportedFunctions );
-   fallbackPreset = exports.find( m => m.colorDark );
-
-   getPlayContext = findBy( "referrerIdentifier", "usePlayContextItem" )( exportedFunctions );
 
    InternalPropetyMap = exports.find( o => o.Builder );
 } );

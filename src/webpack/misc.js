@@ -16,38 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
  */ import { webpackLoaded } from "../../mixin.js";
-import { Platform } from "../expose/Platform.js";
 import { exportedFunctions, exports } from "./index.js";
 import { findBy } from "/hooks/util.js";
-export let useContextMenuState;
 export let Color;
 export let Locale;
 export let createUrlLocale;
-export let imageAnalysis;
-export let fallbackPreset;
-export let extractColorPreset = async (image)=>{
-    const analysis = await imageAnalysis(Platform.getGraphQLLoader(), image);
-    for (const result of analysis){
-        if ("isFallback" in result === false) {
-            result.isFallback = fallbackPreset === result; // Why ?
-        }
-    }
-    return analysis;
-};
-export let getPlayContext;
 export let InternalPropetyMap;
 webpackLoaded.subscribe((loaded)=>{
     if (!loaded) {
         return;
     }
-    useContextMenuState = findBy("useContextMenuState")(exportedFunctions);
     Color = Object.assign(findBy("static fromHex")(exportedFunctions), {
         CSSFormat: exports.find((m)=>m.RGBA)
     });
     Locale = exports.find((m)=>m.getTranslations);
     createUrlLocale = findBy("has", "baseName", "language")(exportedFunctions);
-    imageAnalysis = findBy(/\![a-zA-Z_\$][\w\$]*\.isFallback|\{extractColor/)(exportedFunctions);
-    fallbackPreset = exports.find((m)=>m.colorDark);
-    getPlayContext = findBy("referrerIdentifier", "usePlayContextItem")(exportedFunctions);
     InternalPropetyMap = exports.find((o)=>o.Builder);
 });
