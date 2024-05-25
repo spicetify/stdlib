@@ -31,8 +31,5 @@ webpackLoaded.subscribe( loaded => {
       return;
    }
 
-   const [ classnamesModuleID ] = chunks.find(
-      ( [ _, v ] ) => v.toString().includes( "[native code]" ) && !v.toString().includes( "<anonymous>" ),
-   )!;
-   classnames = require( classnamesModuleID );
+   classnames = chunks.filter( ( [ _, v ] ) => v.toString().includes( "[native code]" ) ).map( ( [ i ] ) => require( i ) ).find( e => typeof e === "function" );
 } );

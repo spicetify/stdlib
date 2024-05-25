@@ -92,40 +92,42 @@ transformer((emit)=>(str)=>{
         Object.defineProperty(globalThis, "__Machine", {
             set: ($)=>{
                 Machine = $;
-                ON = {
-                    ...ON,
-                    ...Machine.config.states.disabled.on,
-                    panel_close_click_or_collapse: [
-                        {
-                            target: "disabled"
-                        }
-                    ]
-                };
-                delete ON.playback_autoplay_context_changed;
-                for (const [k, v] of Object.entries(Machine.config.states)){
-                    if (k === "puffin_activation") {
-                        continue;
-                    }
-                    v.on = new Proxy(v.on, {
-                        get (target, p, receiver) {
-                            // @ts-ignore
-                            if (p.startsWith("bespoke")) {
-                                // @ts-ignore
-                                return ON[p];
+                queueMicrotask(()=>{
+                    ON = {
+                        ...ON,
+                        ...Machine.config.states.disabled.on,
+                        panel_close_click_or_collapse: [
+                            {
+                                target: "disabled"
                             }
-                            // @ts-ignore
-                            return target[p];
+                        ]
+                    };
+                    delete ON.playback_autoplay_context_changed;
+                    for (const [k, v] of Object.entries(Machine.config.states)){
+                        if (k === "puffin_activation") {
+                            continue;
                         }
-                    });
-                }
-                Object.setPrototypeOf(Machine.config.states, STATES);
-                Machine._options.actions = ACTIONS;
+                        v.on = new Proxy(v.on, {
+                            get (target, p, receiver) {
+                                // @ts-ignore
+                                if (p.startsWith("bespoke")) {
+                                    // @ts-ignore
+                                    return ON[p];
+                                }
+                                // @ts-ignore
+                                return target[p];
+                            }
+                        });
+                    }
+                    Object.setPrototypeOf(Machine.config.states, STATES);
+                    Machine._options.actions = ACTIONS;
+                });
             },
             get: ()=>Machine
         });
         // ! HACKY ALERT
         str = str.replace(/(case [a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\.Disabled:return!0;default:)/, "$1return true;");
-        str = str.replace(/(\(([a-zA-Z_\$][\w\$]*),"PanelSection".+?children:[a-zA-Z_\$][\w\$]*)/, "$1??__renderPanel($2)");
+        str = str.replace(/(\(([a-zA-Z_\$][\w\$]*),"PanelSection".+?children:\[?)/, "$1__renderPanel($2)??");
         emit();
         return str;
     }, {

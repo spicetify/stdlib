@@ -139,7 +139,7 @@ webpackLoaded.subscribe((loaded)=>{
             configuration
         }, children);
     PanelHeader = exportedFunctions.find((m)=>m.toString().includes("panel") && m.toString().includes("actions"));
-    PanelContent = findBy((m)=>m.render.toString().includes("scrollBarContainer"))(exportedForwardRefs) || findBy("scrollBarContainer")(exportedFunctions);
+    PanelContent = exportedForwardRefs.find((f)=>f.render.toString().includes("fixedHeader"));
     PanelSkeleton = findBy("label", "aside")(exportedFunctions) || findBy((m)=>m.render.toString().includes("section"))(exportedForwardRefs);
     Snackbar = {
         wrapper: findBy("encore-light-theme", "elevated")(exportedFunctions),

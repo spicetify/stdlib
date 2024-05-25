@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "tailor": "node node_modules/@delu/tailor/cli.js"
+    "b": "node node_modules/@delu/tailor/cli.js -b",
+    "w": "node node_modules/@delu/tailor/cli.js -w"
   },
   "devDependencies": {
     "@delu/tailor": "npm:@jsr/delu__tailor@^0.2.0",

@@ -116,37 +116,39 @@ transformer(
          set: ( $: StateMachine ) => {
             Machine = $;
 
-            ON = {
-               ...ON,
-               ...Machine.config.states!.disabled.on,
-               panel_close_click_or_collapse: [
-                  {
-                     target: "disabled",
-                  },
-               ],
-            };
-            delete ON.playback_autoplay_context_changed;
+            queueMicrotask( () => {
+               ON = {
+                  ...ON,
+                  ...Machine.config.states!.disabled.on,
+                  panel_close_click_or_collapse: [
+                     {
+                        target: "disabled",
+                     },
+                  ],
+               };
+               delete ON.playback_autoplay_context_changed;
 
-            for ( const [ k, v ] of Object.entries( Machine.config.states! ) ) {
-               if ( k === "puffin_activation" ) {
-                  continue;
-               }
-               v.on = new Proxy( v.on!, {
-                  get( target, p, receiver ) {
-                     // @ts-ignore
-                     if ( p.startsWith( "bespoke" ) ) {
+               for ( const [ k, v ] of Object.entries( Machine.config.states! ) ) {
+                  if ( k === "puffin_activation" ) {
+                     continue;
+                  }
+                  v.on = new Proxy( v.on!, {
+                     get( target, p, receiver ) {
                         // @ts-ignore
-                        return ON[ p ];
-                     }
-                     // @ts-ignore
-                     return target[ p ];
-                  },
-               } );
-            }
+                        if ( p.startsWith( "bespoke" ) ) {
+                           // @ts-ignore
+                           return ON[ p ];
+                        }
+                        // @ts-ignore
+                        return target[ p ];
+                     },
+                  } );
+               }
 
-            Object.setPrototypeOf( Machine.config.states!, STATES );
+               Object.setPrototypeOf( Machine.config.states!, STATES );
 
-            Machine._options.actions = ACTIONS;
+               Machine._options.actions = ACTIONS;
+            } );
          },
          get: () => Machine,
       } );
@@ -158,8 +160,8 @@ transformer(
       );
 
       str = str.replace(
-         /(\(([a-zA-Z_\$][\w\$]*),"PanelSection".+?children:[a-zA-Z_\$][\w\$]*)/,
-         "$1??__renderPanel($2)",
+         /(\(([a-zA-Z_\$][\w\$]*),"PanelSection".+?children:\[?)/,
+         "$1__renderPanel($2)??",
       );
 
       emit();
