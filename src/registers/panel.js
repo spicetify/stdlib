@@ -87,48 +87,43 @@ globalThis.__renderPanel = (state)=>{
 let ON;
 transformer((emit)=>(str)=>{
         str = str.replace(/(=\(0,[a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\)\(\{id:"RightPanelState)/, "=__Machine$1");
-        let __Machine;
         Object.defineProperty(globalThis, "__Machine", {
-            set: (value)=>{
-                emit(value);
-                __Machine = value;
+            set: ($)=>{
+                Machine = $;
+                Machine._options.actions ??= {};
+                ON = {
+                    ...Machine.config.states.disabled.on,
+                    panel_close_click_or_collapse: [
+                        {
+                            target: "disabled"
+                        }
+                    ]
+                };
+                delete ON.playback_autoplay_context_changed;
+                for (const [k, v] of Object.entries(Machine.config.states)){
+                    if (k === "puffin_activation") {
+                        continue;
+                    }
+                    v.on = new Proxy(v.on, {
+                        get (target, p, receiver) {
+                            // @ts-ignore
+                            if (p.startsWith("bespoke")) {
+                                // @ts-ignore
+                                return ON[p];
+                            }
+                            // @ts-ignore
+                            return target[p];
+                        }
+                    });
+                }
             },
-            get: ()=>__Machine
+            get: ()=>Machine
         });
         // ! HACKY ALERT
         str = str.replace(/(case [a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\.Disabled:return!0;default:)/, "$1return true;");
         str = str.replace(/(\(([a-zA-Z_\$][\w\$]*),"PanelSection".+?children:[a-zA-Z_\$][\w\$]*)/, "$1??__renderPanel($2)");
+        emit();
         return str;
     }, {
-    then: ($)=>{
-        Machine = $;
-        Machine._options.actions ??= {};
-        ON = {
-            ...Machine.config.states.disabled.on,
-            panel_close_click_or_collapse: [
-                {
-                    target: "disabled"
-                }
-            ]
-        };
-        delete ON.playback_autoplay_context_changed;
-        for (const [k, v] of Object.entries(Machine.config.states)){
-            if (k === "puffin_activation") {
-                continue;
-            }
-            v.on = new Proxy(v.on, {
-                get (target, p, receiver) {
-                    // @ts-ignore
-                    if (p.startsWith("bespoke")) {
-                        // @ts-ignore
-                        return ON[p];
-                    }
-                    // @ts-ignore
-                    return target[p];
-                }
-            });
-        }
-    },
-    glob: /^\/xpui\.js/,
-    noAwait: true
+    glob: /^\/xpui\.js/
 });

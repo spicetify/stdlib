@@ -110,13 +110,40 @@ let ON: Record<string, any>;
 transformer(
    emit => str => {
       str = str.replace( /(=\(0,[a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\)\(\{id:"RightPanelState)/, "=__Machine$1" );
-      let __Machine: StateMachine;
       Object.defineProperty( globalThis, "__Machine", {
-         set: value => {
-            emit( value );
-            __Machine = value;
+         set: ( $: StateMachine ) => {
+            Machine = $;
+
+            Machine._options.actions ??= {};
+
+            ON = {
+               ...Machine.config.states!.disabled.on,
+               panel_close_click_or_collapse: [
+                  {
+                     target: "disabled",
+                  },
+               ],
+            };
+            delete ON.playback_autoplay_context_changed;
+
+            for ( const [ k, v ] of Object.entries( Machine.config.states! ) ) {
+               if ( k === "puffin_activation" ) {
+                  continue;
+               }
+               v.on = new Proxy( v.on!, {
+                  get( target, p, receiver ) {
+                     // @ts-ignore
+                     if ( p.startsWith( "bespoke" ) ) {
+                        // @ts-ignore
+                        return ON[ p ];
+                     }
+                     // @ts-ignore
+                     return target[ p ];
+                  },
+               } );
+            }
          },
-         get: () => __Machine,
+         get: () => Machine,
       } );
 
       // ! HACKY ALERT
@@ -130,42 +157,10 @@ transformer(
          "$1??__renderPanel($2)",
       );
 
+      emit();
       return str;
    },
    {
-      then: ( $: StateMachine ) => {
-         Machine = $;
-
-         Machine._options.actions ??= {};
-
-         ON = {
-            ...Machine.config.states!.disabled.on,
-            panel_close_click_or_collapse: [
-               {
-                  target: "disabled",
-               },
-            ],
-         };
-         delete ON.playback_autoplay_context_changed;
-
-         for ( const [ k, v ] of Object.entries( Machine.config.states! ) ) {
-            if ( k === "puffin_activation" ) {
-               continue;
-            }
-            v.on = new Proxy( v.on!, {
-               get( target, p, receiver ) {
-                  // @ts-ignore
-                  if ( p.startsWith( "bespoke" ) ) {
-                     // @ts-ignore
-                     return ON[ p ];
-                  }
-                  // @ts-ignore
-                  return target[ p ];
-               },
-            } );
-         }
-      },
       glob: /^\/xpui\.js/,
-      noAwait: true,
    },
 );
