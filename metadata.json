@@ -1,14 +1,9 @@
 {
 	"name": "stdlib",
-	"tags": [
-		"lib"
-	],
+	"tags": ["lib"],
 	"preview": "./assets/PREVIEW.png",
 	"version": "0.1.0-beta",
-	"authors": [
-		"official",
-		"Delusoire"
-	],
+	"authors": ["official", "Delusoire"],
 	"description": "The standard library",
 	"readme": "./assets/README.md",
 	"entries": {

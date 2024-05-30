@@ -1,20 +1,6 @@
-/* Copyright © 2024
- *      Delusoire <deluso7re@outlook.com>
- *
- * This file is part of bespoke/modules/stdlib.
- *
- * bespoke/modules/stdlib is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * bespoke/modules/stdlib is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with bespoke/modules/stdlib. If not, see <https://www.gnu.org/licenses/>.
+/*
+ * Copyright (C) 2024 Delusoire
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 import menu from "./menu.js";
@@ -29,41 +15,38 @@ import topbarLeftButton from "./topbarLeftButton.js";
 import topbarRightButton from "./topbarRightButton.js";
 
 const registers = {
-   menu,
-   navlink,
-   panel,
-   playbarButton,
-   playbarWidget,
-   root,
-   route,
-   settingsSection,
-   topbarLeftButton,
-   topbarRightButton,
+	menu,
+	navlink,
+	panel,
+	playbarButton,
+	playbarWidget,
+	root,
+	route,
+	settingsSection,
+	topbarLeftButton,
+	topbarRightButton,
 };
 type Registers = typeof registers;
 
 export class Registrar {
-   constructor( public id: string ) { }
+	constructor(public id: string) {}
 
-   private ledger = new Map<any, keyof Registers>();
+	private ledger = new Map<any, keyof Registers>();
 
-   register<R extends keyof Registers>(
-      type: R,
-      ...args: Parameters<Registers[ R ][ "add" ]>
-   ) {
-      this.ledger.set( args[ 0 ], type );
-      // @ts-ignore
-      registers[ type ].add( ...args );
-   }
+	register<R extends keyof Registers>(type: R, ...args: Parameters<Registers[R]["add"]>) {
+		this.ledger.set(args[0], type);
+		// @ts-ignore
+		registers[type].add(...args);
+	}
 
-   unregister<R extends keyof Registers>( type: R, ...args: Parameters<Registers[ R ][ "delete" ]> ) {
-      this.ledger.delete( args[ 0 ] );
-      // @ts-ignore
-      registers[ type ].delete( ...args );
-   }
+	unregister<R extends keyof Registers>(type: R, ...args: Parameters<Registers[R]["delete"]>) {
+		this.ledger.delete(args[0]);
+		// @ts-ignore
+		registers[type].delete(...args);
+	}
 
-   dispose() {
-      for ( const [ item, type ] of this.ledger.entries() ) this.unregister( type, item );
-      this.ledger.clear();
-   }
+	dispose() {
+		for (const [item, type] of this.ledger.entries()) this.unregister(type, item);
+		this.ledger.clear();
+	}
 }
