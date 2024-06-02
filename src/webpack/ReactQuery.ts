@@ -16,7 +16,7 @@ import type {
 	useSuspenseQuery as useSuspenseQueryT,
 	useInfiniteQuery as useInfiniteQueryT,
 } from "npm:@tanstack/react-query";
-import { findBy } from "/hooks/util.js";
+import { findBy } from "/hooks/util.ts";
 
 export type QueryClient = QueryClientT;
 export type QueryClientProvider = typeof QueryClientProviderT;

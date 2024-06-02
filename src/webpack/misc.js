@@ -12,7 +12,7 @@ webpackLoaded.subscribe((loaded)=>{
     if (!loaded) {
         return;
     }
-    Color = Object.assign(findBy("static fromHex")(exportedFunctions), {
+    Color = Object.assign(findBy("this.rgb")(exportedFunctions), {
         CSSFormat: exports.find((m)=>m.RGBA)
     });
     Locale = exports.find((m)=>m.getTranslations);

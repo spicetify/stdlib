@@ -10,4 +10,3 @@ import "./ReduxStore.js";
 import "./SettingsSection.js";
 import "./Snackbar.js";
 import "./Tippy.js";
-import "./enqueueImageSnackbar.js";

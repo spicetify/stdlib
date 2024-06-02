@@ -12,4 +12,3 @@ import "./ReduxStore.ts";
 import "./SettingsSection.ts";
 import "./Snackbar.ts";
 import "./Tippy.ts";
-import "./enqueueImageSnackbar.ts";

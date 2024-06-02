@@ -21,7 +21,7 @@ webpackLoaded.subscribe(loaded => {
 		return;
 	}
 
-	Color = Object.assign(findBy("static fromHex")(exportedFunctions)!, {
+	Color = Object.assign(findBy("this.rgb")(exportedFunctions)!, {
 		CSSFormat: exports.find(m => m.RGBA)!,
 	});
 

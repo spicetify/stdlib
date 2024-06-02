@@ -15,10 +15,7 @@ const registry = new class extends Registry {
     }
 }();
 export default registry;
-let resolveRefreshRoot;
-const refreshRoot = new Promise((r)=>{
-    resolveRefreshRoot = r;
-});
+const { promise: refreshRoot, resolve: resolveRefreshRoot } = Promise.withResolvers();
 globalThis.__renderRootChildren = ()=>registry.all();
 transformer((emit)=>(str)=>{
         const croppedInput = str.match(/.*"data-right-sidebar-hidden"/)[0];

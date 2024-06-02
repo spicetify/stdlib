@@ -4,9 +4,17 @@
  */
 
 import { React } from "../src/expose/React.ts";
-import { SettingsSection, SettingsSectionTitle } from "../src/expose/SettingsSection.ts";
+import {
+	future,
+	SettingsSection,
+	SettingsSectionTitle,
+} from "../src/expose/SettingsSection.ts";
 import { UI } from "../src/webpack/ComponentLibrary.ts";
-import { SettingColumn, SettingText, SettingToggle } from "../src/webpack/ReactComponents.ts";
+import {
+	SettingColumn,
+	SettingText,
+	SettingToggle,
+} from "../src/webpack/ReactComponents.ts";
 
 type Task<A> = (() => Awaited<A>) | (() => Promise<Awaited<A>>);
 
@@ -25,7 +33,11 @@ export interface BaseField<I extends string> {
 	desc: string;
 }
 
-export type SettingsField = HiddenField | InputField | ButtonField | ToggleField;
+export type SettingsField =
+	| HiddenField
+	| InputField
+	| ButtonField
+	| ToggleField;
 
 export interface ButtonField<I extends string = any> extends BaseField<I> {
 	type: FieldType.BUTTON;
@@ -66,7 +78,8 @@ export class Settings<A = Record<string, never>> {
 		this.proxy = new Proxy(
 			{},
 			{
-				get: (target, prop) => Settings.getFieldValue(this.getId(prop.toString())),
+				get: (target, prop) =>
+					Settings.getFieldValue(this.getId(prop.toString())),
 				set: (target, prop, newValue) => {
 					const id = this.getId(prop.toString());
 					if (Settings.getFieldValue(id) !== newValue) {
@@ -129,7 +142,9 @@ export class Settings<A = Record<string, never>> {
 	getId = (nameId: string) => ["settings", this.id, nameId].join(":");
 
 	private useStateFor = <A,>(id: string) => {
-		const [value, setValueState] = React.useState(Settings.getFieldValue<A>(id));
+		const [value, setValueState] = React.useState(
+			Settings.getFieldValue<A>(id),
+		);
 
 		return [
 			value,
@@ -142,29 +157,46 @@ export class Settings<A = Record<string, never>> {
 		] as const;
 	};
 
-	static getFieldValue = <R,>(id: string): R => JSON.parse(localStorage[id] ?? "null");
+	static getFieldValue = <R,>(id: string): R =>
+		JSON.parse(localStorage[id] ?? "null");
 
 	static setFieldValue = (id: string, newValue: any) => {
 		localStorage[id] = JSON.stringify(newValue ?? null);
 	};
 
-	private static setDefaultFieldValue = async (id: string, defaultValue: Task<any>) => {
-		if (Settings.getFieldValue(id) === null) Settings.setFieldValue(id, await defaultValue());
+	private static setDefaultFieldValue = async (
+		id: string,
+		defaultValue: Task<any>,
+	) => {
+		if (Settings.getFieldValue(id) === null) {
+			Settings.setFieldValue(id, await defaultValue());
+		}
 	};
 
-	private SettingsSection = () => (
-		<SettingsSection filterMatchQuery={this.name}>
-			<SettingsSectionTitle>{this.name}</SettingsSectionTitle>
-			{Object.values(this.sectionFields)}
-		</SettingsSection>
-	);
+	private SettingsSection = () => {
+		const [, refresh] = React.useReducer((n) => n + 1, 0);
+		future.pull(refresh);
 
-	SettingField = ({ field, children }: { field: SettingsField; children?: any; }) => (
+		if (!SettingsSection) {
+			return;
+		}
+
+		return (
+			<SettingsSection filterMatchQuery={this.name}>
+				<SettingsSectionTitle>{this.name}</SettingsSectionTitle>
+				{Object.values(this.sectionFields)}
+			</SettingsSection>
+		);
+	};
+
+	SettingField = (
+		{ field, children }: { field: SettingsField; children?: any; },
+	) => (
 		<SettingColumn filterMatchQuery={field.id}>
-			<div className="x-settings-firstColumn">
+			<div className="g2SG95QPZfbn5RINccth">
 				<SettingText htmlFor={field.id}>{field.desc}</SettingText>
 			</div>
-			<div className="x-settings-secondColumn">{children}</div>
+			<div className="rtzkwMH3kqwgnS_BxP_t">{children}</div>
 		</SettingColumn>
 	);
 
@@ -174,7 +206,7 @@ export class Settings<A = Record<string, never>> {
 				id={field.id}
 				buttonSize="sm"
 				onClick={field.onClick}
-				className="x-settings-button"
+				className="rFFJg1UIumqUUFDgo6n7"
 			>
 				{field.text}
 			</UI.ButtonSecondary>
@@ -193,7 +225,6 @@ export class Settings<A = Record<string, never>> {
 						setValue(checked);
 						field.onSelected?.(checked);
 					}}
-					className="x-settings-button"
 				/>
 			</this.SettingField>
 		);
@@ -205,12 +236,12 @@ export class Settings<A = Record<string, never>> {
 		return (
 			<this.SettingField field={field}>
 				<input
-					className="x-settings-input"
+					className="SkbGMKYv49KtJNB5XxdX"
 					id={field.id}
 					dir="ltr"
 					value={Settings.getFieldValue(id)}
 					type={field.inputType}
-					onChange={e => {
+					onChange={(e) => {
 						const value = e.currentTarget.value;
 						setValue(value);
 						field.onChange?.(value);
@@ -221,10 +252,15 @@ export class Settings<A = Record<string, never>> {
 	};
 }
 
-export const createSettings = (mod: ModuleInstance & { settings?: Settings; }) => {
+export const createSettings = (
+	mod: ModuleInstance & { settings?: Settings; },
+) => {
 	if (!mod.settings) {
 		mod.settings = Settings.fromModule(mod);
 	}
 
-	return [mod.settings, <SettingsButton section={mod.settings.getName()} />] as const;
+	return [
+		mod.settings,
+		<SettingsButton section={mod.settings.getName()} />,
+	] as const;
 };

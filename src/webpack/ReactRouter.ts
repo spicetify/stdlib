@@ -4,8 +4,8 @@
  */
 
 import { webpackLoaded } from "../../mixin.ts";
-import { chunks, require } from "./index.js";
-import { findBy } from "/hooks/util.js";
+import { chunks, require } from "./index.ts";
+import { findBy } from "/hooks/util.ts";
 
 // https://github.com/remix-run/react-router/blob/main/packages/react-router/lib/hooks.tsx#L131
 export let useMatch: Function;

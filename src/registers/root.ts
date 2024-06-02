@@ -19,10 +19,7 @@ const registry = new (class extends Registry<React.ReactNode> {
 })();
 export default registry;
 
-let resolveRefreshRoot!: (refreshRoot: () => void) => void;
-const refreshRoot = new Promise<() => void>(r => {
-	resolveRefreshRoot = r;
-});
+const { promise: refreshRoot, resolve: resolveRefreshRoot } = Promise.withResolvers<() => void>();
 
 declare global {
 	var __renderRootChildren: any;

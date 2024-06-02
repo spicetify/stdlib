@@ -9,6 +9,17 @@ export type SettingsSectionProps = { filterMatchQuery: string; };
 export type SettingsSection = React.FC<SettingsSectionProps>;
 export let SettingsSection: SettingsSection;
 
+export let future = {
+	push: () => { },
+	pull(fn: () => void) {
+		const push = this.push;
+		this.push = () => {
+			push();
+			fn();
+		};
+	},
+};
+
 export type SettingsSectionTitleProps = {};
 export type SettingsSectionTitle = React.FC<SettingsSectionTitleProps>;
 export let SettingsSectionTitle: SettingsSectionTitle;
@@ -25,6 +36,7 @@ transformer<SettingsSection>(
 	{
 		then: ($: SettingsSection) => {
 			SettingsSection = $;
+			future.push();
 		},
 		glob: /^\/xpui-routes-desktop-settings\.js/,
 		noAwait: true,

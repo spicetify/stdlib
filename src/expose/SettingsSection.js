@@ -3,6 +3,16 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */ import { transformer } from "../../mixin.js";
 export let SettingsSection;
+export let future = {
+    push: ()=>{},
+    pull (fn) {
+        const push = this.push;
+        this.push = ()=>{
+            push();
+            fn();
+        };
+    }
+};
 export let SettingsSectionTitle;
 transformer((emit)=>(str)=>{
         str = str.replace(/(\.jsxs\)\()([a-zA-Z_\$][\w\$]*)([^=]*"desktop.settings.compatibility")/, "$1(__SettingsSection=$2)$3");
@@ -13,6 +23,7 @@ transformer((emit)=>(str)=>{
     }, {
     then: ($)=>{
         SettingsSection = $;
+        future.push();
     },
     glob: /^\/xpui-routes-desktop-settings\.js/,
     noAwait: true
