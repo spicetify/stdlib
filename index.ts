@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { webpackLoaded } from "./mixin";
+import { webpackLoaded } from "./mixin.ts";
 webpackLoaded.next(true);
 
-import type { ModuleInstance } from "/hooks/module.js";
+import type { ModuleInstance } from "/hooks/module.ts";
 
-import { Platform } from "./src/expose/Platform";
-import { Registrar } from "./src/registers/index.js";
+import { Platform } from "./src/expose/Platform.ts";
+import { Registrar } from "./src/registers/index.ts";
 
 import { BehaviorSubject, Subscription } from "https://esm.sh/rxjs";
 

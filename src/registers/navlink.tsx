@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { React } from "../expose/React.js";
-import { findMatchingPos } from "/hooks/util.js";
-import { createIconComponent } from "../../lib/createIconComponent.js";
-import { transformer } from "../../mixin.js";
-import { Platform } from "../expose/Platform.js";
-import { classnames } from "../webpack/ClassNames.js";
-import { Nav, ScrollableContainer, Tooltip } from "../webpack/ReactComponents.js";
-import { UI } from "../webpack/ComponentLibrary.js";
-import { Registry } from "./registry.js";
+import { React } from "../expose/React.ts";
+import { findMatchingPos } from "/hooks/util.ts";
+import { createIconComponent } from "../../lib/createIconComponent.tsx";
+import { transformer } from "../../mixin.ts";
+import { Platform } from "../expose/Platform.ts";
+import { classnames } from "../webpack/ClassNames.ts";
+import { Nav, ScrollableContainer, Tooltip } from "../webpack/ReactComponents.ts";
+import { UI } from "../webpack/ComponentLibrary.ts";
+import { Registry } from "./registry.ts";
 
 const registry = new (class extends Registry<React.ReactNode> {
 	override add(value: React.ReactNode): this {

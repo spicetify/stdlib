@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { React } from "../expose/React.js";
-import { createIconComponent } from "../../lib/createIconComponent.js";
-import { transformer } from "../../mixin.js";
-import { Tooltip } from "../webpack/ReactComponents.js";
-import { UI } from "../webpack/ComponentLibrary.js";
-import { classnames } from "../webpack/ClassNames.js";
-import { Registry } from "./registry.js";
+import { React } from "../expose/React.ts";
+import { createIconComponent } from "../../lib/createIconComponent.tsx";
+import { transformer } from "../../mixin.ts";
+import { Tooltip } from "../webpack/ReactComponents.ts";
+import { UI } from "../webpack/ComponentLibrary.ts";
+import { classnames } from "../webpack/ClassNames.ts";
+import { Registry } from "./registry.ts";
 
 const registry = new Registry<React.ReactNode>();
 export default registry;
@@ -53,9 +53,9 @@ export const PlaybarButton = ({
 		<UI.ButtonTertiary
 			aria-label={label}
 			size="small"
-			className={classnames(CLASSMAP.main.playbar.buttons.button.wrapper, {
-				[CLASSMAP.main.playbar.buttons.button.wrapper__indicator]: isActive,
-				[CLASSMAP.main.playbar.buttons.button.wrapper__active]: isActive || isActiveNoIndicator,
+			className={classnames(MAP.main.playbar.buttons.button.wrapper, {
+				[MAP.main.playbar.buttons.button.wrapper__indicator]: isActive,
+				[MAP.main.playbar.buttons.button.wrapper__active]: isActive || isActiveNoIndicator,
 			})}
 			disabled={disabled}
 			iconOnly={icon && (() => createIconComponent({ icon }))}

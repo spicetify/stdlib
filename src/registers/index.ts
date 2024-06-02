@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import menu from "./menu.js";
-import navlink from "./navlink.js";
-import panel from "./panel.js";
-import playbarButton from "./playbarButton.js";
-import playbarWidget from "./playbarWidget.js";
-import root from "./root.js";
-import route from "./route.js";
-import settingsSection from "./settingsSection.js";
-import topbarLeftButton from "./topbarLeftButton.js";
-import topbarRightButton from "./topbarRightButton.js";
+import menu from "./menu.ts";
+import navlink from "./navlink.ts";
+import panel from "./panel.ts";
+import playbarButton from "./playbarButton.ts";
+import playbarWidget from "./playbarWidget.ts";
+import root from "./root.ts";
+import route from "./route.ts";
+import settingsSection from "./settingsSection.ts";
+import topbarLeftButton from "./topbarLeftButton.ts";
+import topbarRightButton from "./topbarRightButton.ts";
 
 const registers = {
 	menu,
@@ -29,7 +29,7 @@ const registers = {
 type Registers = typeof registers;
 
 export class Registrar {
-	constructor(public id: string) {}
+	constructor(public id: string) { }
 
 	private ledger = new Map<any, keyof Registers>();
 

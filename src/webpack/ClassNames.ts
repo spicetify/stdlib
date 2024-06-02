@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { webpackLoaded } from "../../mixin";
-import { chunks, require } from "./index.js";
+import { webpackLoaded } from "../../mixin.ts";
+import { chunks, require } from "./index.ts";
 
-import type classNamesT from "classnames";
+import type classNamesT from "npm:@types/classnames";
 export type classNames = typeof classNamesT;
 
 export let classnames: classNames;

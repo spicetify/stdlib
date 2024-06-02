@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { React } from "../src/expose/React.js";
-import { SettingsSection, SettingsSectionTitle } from "../src/expose/SettingsSection.js";
-import { UI } from "../src/webpack/ComponentLibrary.js";
-import { SettingColumn, SettingText, SettingToggle } from "../src/webpack/ReactComponents.js";
+import { React } from "../src/expose/React.ts";
+import { SettingsSection, SettingsSectionTitle } from "../src/expose/SettingsSection.ts";
+import { UI } from "../src/webpack/ComponentLibrary.ts";
+import { SettingColumn, SettingText, SettingToggle } from "../src/webpack/ReactComponents.ts";
 
 type Task<A> = (() => Awaited<A>) | (() => Promise<Awaited<A>>);
 
@@ -47,12 +47,12 @@ export interface HiddenField<I extends string = any> extends BaseField<I> {
 	type: FieldType.HIDDEN;
 }
 
-import SettingsSectionRegistry from "../src/registers/settingsSection.js";
-import SettingsButton from "./components/SettingsButton.js";
-import type { ModuleInstance } from "/hooks/module.js";
+import SettingsSectionRegistry from "../src/registers/settingsSection.ts";
+import SettingsButton from "./components/SettingsButton.tsx";
+import type { ModuleInstance } from "/hooks/module.ts";
 
 export class Settings<A = Record<string, never>> {
-	public sectionFields: { [key: string]: JSX.Element } = {};
+	public sectionFields: { [key: string]: JSX.Element; } = {};
 	private proxy;
 
 	getName() {
@@ -159,7 +159,7 @@ export class Settings<A = Record<string, never>> {
 		</SettingsSection>
 	);
 
-	SettingField = ({ field, children }: { field: SettingsField; children?: any }) => (
+	SettingField = ({ field, children }: { field: SettingsField; children?: any; }) => (
 		<SettingColumn filterMatchQuery={field.id}>
 			<div className="x-settings-firstColumn">
 				<SettingText htmlFor={field.id}>{field.desc}</SettingText>
@@ -221,7 +221,7 @@ export class Settings<A = Record<string, never>> {
 	};
 }
 
-export const createSettings = (mod: ModuleInstance & { settings?: Settings }) => {
+export const createSettings = (mod: ModuleInstance & { settings?: Settings; }) => {
 	if (!mod.settings) {
 		mod.settings = Settings.fromModule(mod);
 	}

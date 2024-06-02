@@ -7,17 +7,7 @@ declare global {
 	var webpackChunkclient_web: any;
 }
 
-import { webpackLoaded } from "../../mixin";
-
-import type {
-	NamedExoticComponent as NamedExoticComponentT,
-	ForwardRefExoticComponent as ForwardRefExoticComponentT,
-	Context as ContextT,
-} from "react";
-
-export type NamedExoticComponent = NamedExoticComponentT;
-export type ForwardRefExoticComponent<P> = ForwardRefExoticComponentT<P>;
-export type Context<T> = ContextT<T>;
+import { webpackLoaded } from "../../mixin.ts";
 
 type WebpackRequire = any;
 type WebpackChunk = any;
@@ -31,9 +21,9 @@ export let exports: Array<any>;
 export let exportedFunctions: Array<Function>;
 
 export let exportedReactObjects: Partial<Record<any, any[]>>;
-export let exportedContexts: Array<Context<any>>;
-export let exportedForwardRefs: Array<ForwardRefExoticComponent<any>>;
-export let exportedMemos: NamedExoticComponent[];
+export let exportedContexts: Array<React.Context<any>>;
+export let exportedForwardRefs: Array<React.ForwardRefExoticComponent<any>>;
+export let exportedMemos: React.NamedExoticComponent[];
 
 webpackLoaded.subscribe(loaded => {
 	if (!loaded) {
@@ -48,7 +38,7 @@ webpackLoaded.subscribe(loaded => {
 		.flatMap(module => {
 			try {
 				return Object.values(module);
-			} catch (_) {}
+			} catch (_) { }
 		})
 		.filter(Boolean);
 

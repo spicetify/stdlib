@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { webpackLoaded } from "../../mixin";
-import { exportedFunctions, exports } from "./index.js";
-import { findBy } from "/hooks/util.js";
+import { webpackLoaded } from "../../mixin.ts";
+import { exportedFunctions, exports } from "./index.ts";
+import { findBy } from "/hooks/util.ts";
 
 export let Color: Function & {
 	CSSFormat: any;

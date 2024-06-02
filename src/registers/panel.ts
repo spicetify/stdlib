@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { transformer } from "../../mixin.js";
+import { transformer } from "../../mixin.ts";
 
-import type { createMachine as createMachineT } from "xstate";
-import { Registry } from "./registry.js";
+import type { createMachine as createMachineT } from "npm:xstate";
+import { Registry } from "./registry.ts";
 
 export type StateMachine = ReturnType<typeof createMachineT>;
 export let Machine: StateMachine;

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { webpackLoaded } from "../../mixin";
-import { capitalize } from "../../deps";
-import { Platform } from "../expose/Platform";
+import { webpackLoaded } from "../../mixin.ts";
+import { capitalize } from "../../deps.ts";
+import { Platform } from "../expose/Platform.ts";
 import {
 	chunks,
 	exportedForwardRefs,
@@ -13,11 +13,11 @@ import {
 	exportedMemos,
 	modules,
 	require,
-} from "./index.js";
-import { findBy } from "/hooks/util.js";
-import { React } from "../expose/React";
+} from "./index.ts";
+import { findBy } from "/hooks/util.ts";
+import { React } from "../expose/React.ts";
 
-import type { SnackbarProvider as SnackbarProviderT } from "notistack";
+import type { SnackbarProvider as SnackbarProviderT } from "npm:notistack";
 export type SnackbarProvider = SnackbarProviderT;
 
 export let Menus: any;
@@ -47,14 +47,14 @@ export let RemoteConfigProvider: ({
 	children,
 }: {
 	configuration?:
-		| {
-				accessListeners: Set<any>;
-				getValue: () => any;
-				toBuilder: () => any;
-				toJSON: () => any;
-				values: Map<any, any>;
-		  }
-		| undefined;
+	| {
+		accessListeners: Set<any>;
+		getValue: () => any;
+		toBuilder: () => any;
+		toJSON: () => any;
+		values: Map<any, any>;
+	}
+	| undefined;
 	children?: any;
 }) => React.FunctionComponentElement<any>;
 export let PanelHeader: Function;

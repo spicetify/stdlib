@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { webpackLoaded } from "../../mixin";
-import { exportedForwardRefs, exportedFunctions, exports } from "./index.js";
+import { webpackLoaded } from "../../mixin.ts";
+import { exportedForwardRefs, exportedFunctions, exports } from "./index.ts";
 
 export let UI: any;
 

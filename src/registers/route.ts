@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { transformer } from "../../mixin.js";
-import { Registry } from "./registry.js";
+import { transformer } from "../../mixin.ts";
+import { Registry } from "./registry.ts";
 
 const registry = new Registry<React.ReactNode>();
 export default registry;

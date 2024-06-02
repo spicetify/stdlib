@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { transformer } from "../../mixin.js";
+import { transformer } from "../../mixin.ts";
 
 export let enqueueImageSnackbar: any;
 

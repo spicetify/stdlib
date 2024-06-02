@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { matchLast } from "/hooks/util.js";
-import { transformer } from "../../mixin.js";
-import { Registry } from "./registry.js";
+import { matchLast } from "/hooks/util.ts";
+import { transformer } from "../../mixin.ts";
+import { Registry } from "./registry.ts";
 const registry = new (class extends Registry<React.ReactNode> {
 	override add(value: React.ReactNode): this {
 		refreshRoot.then(f => f());

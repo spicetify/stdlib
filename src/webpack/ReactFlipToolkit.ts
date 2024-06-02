@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { webpackLoaded } from "../../mixin";
-import { exportedFunctions } from "./index.js";
+import { webpackLoaded } from "../../mixin.ts";
+import { exportedFunctions } from "./index.ts";
 
-import type { Flipped as FlippedT, Flipper as FlipperT } from "react-flip-toolkit";
+import type { Flipped as FlippedT, Flipper as FlipperT } from "npm:react-flip-toolkit";
 
 export type Flipped = typeof FlippedT;
 export type Flipper = FlipperT;

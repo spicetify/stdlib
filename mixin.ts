@@ -4,7 +4,7 @@
  */
 
 import { BehaviorSubject } from "https://esm.sh/rxjs";
-import type { Transformer } from "/hooks/transform.js";
+import type { Transformer } from "/hooks/transform.ts";
 
 export const webpackLoaded = new BehaviorSubject<boolean>(false);
 

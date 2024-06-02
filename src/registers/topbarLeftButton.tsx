@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { React } from "../expose/React.js";
-import { createIconComponent } from "../../lib/createIconComponent.js";
-import { transformer } from "../../mixin.js";
-import { isTouchscreenUi } from "../utils/index.js";
-import { Tooltip } from "../webpack/ReactComponents.js";
-import { UI } from "../webpack/ComponentLibrary.js";
-import { Registry } from "./registry.js";
+import { React } from "../expose/React.ts";
+import { createIconComponent } from "../../lib/createIconComponent.tsx";
+import { transformer } from "../../mixin.ts";
+import { isTouchscreenUi } from "../utils/index.ts";
+import { Tooltip } from "../webpack/ReactComponents.ts";
+import { UI } from "../webpack/ComponentLibrary.ts";
+import { Registry } from "./registry.ts";
 
 const registry = new (class extends Registry<React.ReactNode> {
 	override add(value: React.ReactNode): this {
@@ -81,7 +81,7 @@ const _TopbarLeftButtonT: TopbarLeftButtonFactory = props => (
 			aria-label={props.label}
 			disabled={props.disabled}
 			onClick={props.onClick}
-			className={CLASSMAP.main.topbar.left.button_t.wrapper}
+			className={MAP.main.topbar.left.button_t.wrapper}
 		/>
 	</Tooltip>
 );
@@ -91,14 +91,14 @@ const _TopbarLeftButton: TopbarLeftButtonFactory = props => (
 		<button
 			aria-label={props.label}
 			disabled={props.disabled}
-			className={CLASSMAP.main.topbar.left.button.wrapper}
+			className={MAP.main.topbar.left.button.wrapper}
 			onClick={props.onClick}
 		>
 			{props.icon &&
 				createIconComponent({
 					icon: props.icon,
 					iconSize: 16,
-					className: CLASSMAP.main.topbar.left.button.icon.wrapper,
+					className: MAP.main.topbar.left.button.icon.wrapper,
 				})}
 		</button>
 	</Tooltip>

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { webpackLoaded } from "../../mixin";
-import { modules } from "./index.js";
+import { webpackLoaded } from "../../mixin.ts";
+import { modules } from "./index.ts";
 
-import type ReactDOMT from "react-dom";
-import type ReactDOMServerT from "react-dom/server";
+import type ReactDOMT from "npm:@types/react-dom";
+import type ReactDOMServerT from "npm:@types/react-dom/server";
 export type ReactDOM = typeof ReactDOMT;
 export type ReactDOMServer = typeof ReactDOMServerT;
 

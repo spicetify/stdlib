@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { React } from "../src/expose/React.js";
-import { UI } from "../src/webpack/ComponentLibrary.js";
-import { Locale } from "../src/webpack/misc.js";
-import { GenericModal } from "../src/webpack/ReactComponents.js";
+import { React } from "../src/expose/React.ts";
+import { UI } from "../src/webpack/ComponentLibrary.ts";
+import { Locale } from "../src/webpack/misc.ts";
+import { GenericModal } from "../src/webpack/ReactComponents.ts";
 
-import RootRegistry from "../src/registers/root.js";
-import { createIconComponent } from "./createIconComponent.js";
+import RootRegistry from "../src/registers/root.ts";
+import { createIconComponent } from "./createIconComponent.tsx";
 
 let close: (() => void) | undefined = undefined;
 let ref: React.ReactElement | undefined = undefined;

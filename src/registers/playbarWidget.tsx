@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { React } from "../expose/React.js";
-import { createIconComponent } from "../../lib/createIconComponent.js";
-import { transformer } from "../../mixin.js";
-import { Tooltip } from "../webpack/ReactComponents.js";
-import { UI } from "../webpack/ComponentLibrary.js";
-import { Registry } from "./registry.js";
+import { React } from "../expose/React.ts";
+import { createIconComponent } from "../../lib/createIconComponent.tsx";
+import { transformer } from "../../mixin.ts";
+import { Tooltip } from "../webpack/ReactComponents.ts";
+import { UI } from "../webpack/ComponentLibrary.ts";
+import { Registry } from "./registry.ts";
 
 const registry = new Registry<React.ReactNode>();
 export default registry;
@@ -29,7 +29,7 @@ transformer(
 	},
 );
 
-export type PlaybarWidgetProps = { label: string; icon?: string; onClick: () => void };
+export type PlaybarWidgetProps = { label: string; icon?: string; onClick: () => void; };
 export const PlaybarWidget = ({ label, icon, onClick }: PlaybarWidgetProps) => (
 	<Tooltip label={label}>
 		<UI.ButtonTertiary

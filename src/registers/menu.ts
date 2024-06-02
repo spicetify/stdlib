@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { React } from "../expose/React.js";
+import { React } from "../expose/React.ts";
 
-import { matchLast } from "/hooks/util.js";
+import { matchLast } from "/hooks/util.ts";
 
-import type { Context } from "react";
-import { transformer } from "../../mixin.js";
-import { Registry } from "./registry.js";
+import { transformer } from "../../mixin.ts";
+import { Registry } from "./registry.ts";
 
-type __MenuContext = Context<MenuContext>;
+type __MenuContext = React.Context<MenuContext>;
 
 declare global {
 	var __MenuContext: __MenuContext;
@@ -64,5 +63,5 @@ transformer(
 
 export const createProfileMenuShouldAdd =
 	() =>
-	({ trigger, target }: MenuContext) =>
-		trigger === "click" && target.getAttribute("data-testid") === "user-widget-link";
+		({ trigger, target }: MenuContext) =>
+			trigger === "click" && target.getAttribute("data-testid") === "user-widget-link";

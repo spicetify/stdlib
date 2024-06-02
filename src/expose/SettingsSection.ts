@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { transformer } from "../../mixin.js";
+import { transformer } from "../../mixin.ts";
 
-export type SettingsSectionProps = { filterMatchQuery: string };
+export type SettingsSectionProps = { filterMatchQuery: string; };
 export type SettingsSection = React.FC<SettingsSectionProps>;
 export let SettingsSection: SettingsSection;
 

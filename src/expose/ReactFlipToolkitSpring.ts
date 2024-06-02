@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { transformer } from "../../mixin.js";
+import { transformer } from "../../mixin.ts";
 
-import type { spring } from "react-flip-toolkit";
+import type { spring } from "npm:react-flip-toolkit";
 
 export type ReactFlipToolkitSpring = typeof spring;
 export let ReactFlipToolkitSpring: ReactFlipToolkitSpring;

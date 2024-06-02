@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { webpackLoaded } from "../../mixin";
-import { chunks, exportedFunctions, modules, require } from "./index.js";
+import { webpackLoaded } from "../../mixin.ts";
+import { chunks, exportedFunctions, modules, require } from "./index.ts";
 
 import type {
 	QueryClient as QueryClientT,
@@ -15,7 +15,7 @@ import type {
 	useQueryClient as useQueryClientT,
 	useSuspenseQuery as useSuspenseQueryT,
 	useInfiniteQuery as useInfiniteQueryT,
-} from "@tanstack/react-query";
+} from "npm:@tanstack/react-query";
 import { findBy } from "/hooks/util.js";
 
 export type QueryClient = QueryClientT;

@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { React } from "../expose/React.js";
-import { createIconComponent } from "../../lib/createIconComponent.js";
-import { transformer } from "../../mixin.js";
-import { isTouchscreenUi } from "../utils/index.js";
-import { Tooltip } from "../webpack/ReactComponents.js";
-import { UI } from "../webpack/ComponentLibrary.js";
-import { classnames } from "../webpack/ClassNames.js";
-import { Registry } from "./registry.js";
+import { React } from "../expose/React.ts";
+import { createIconComponent } from "../../lib/createIconComponent.tsx";
+import { transformer } from "../../mixin.ts";
+import { isTouchscreenUi } from "../utils/index.ts";
+import { Tooltip } from "../webpack/ReactComponents.ts";
+import { UI } from "../webpack/ComponentLibrary.ts";
+import { classnames } from "../webpack/ClassNames.ts";
+import { Registry } from "./registry.ts";
 
 const registry = new (class extends Registry<React.ReactNode> {
 	override add(value: React.ReactNode): this {
@@ -81,7 +81,7 @@ const _TopbarRightButtonT: TopbarRightButtonFactory = props => (
 			onClick={props.onClick}
 			size="small"
 			condensedAll
-			className={CLASSMAP.main.topbar.right.button_t.wrapper}
+			className={MAP.main.topbar.right.button_t.wrapper}
 		>
 			{props.icon && createIconComponent({ icon: props.icon, iconSize: 16, realIconSize: 24 })}
 		</UI.ButtonTertiary>
@@ -92,7 +92,7 @@ const _TopbarRightButton: TopbarRightButtonFactory = props => (
 	<Tooltip label={props.label}>
 		<button
 			aria-label={props.label}
-			className={classnames("encore-over-media-set", CLASSMAP.main.topbar.right.button.wrapper)}
+			className={classnames("encore-over-media-set", MAP.main.topbar.right.button.wrapper)}
 			onClick={props.onClick}
 			disabled={props.disabled}
 		>

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { webpackLoaded } from "../../mixin";
+import { webpackLoaded } from "../../mixin.ts";
 import { chunks, require } from "./index.js";
 import { findBy } from "/hooks/util.js";
 

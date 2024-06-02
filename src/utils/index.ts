@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { Platform } from "../expose/Platform.js";
+import { Platform } from "../expose/Platform.ts";
 
 export const isTouchscreenUi = () => {
 	if (!Platform) {

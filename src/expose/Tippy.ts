@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { transformer } from "../../mixin.js";
+import { transformer } from "../../mixin.ts";
 
-import type { Tippy as TippyT } from "tippy.js";
+import type { Tippy as TippyT } from "npm:tippy.js";
 
 export type Tippy = TippyT;
 export let Tippy: Tippy;

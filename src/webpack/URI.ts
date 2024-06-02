@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { chunks, require } from "./index.js";
-import { capitalize } from "../../deps";
-import { webpackLoaded } from "../../mixin";
+import { chunks, require } from "./index.ts";
+import { capitalize } from "../../deps.ts";
+import { webpackLoaded } from "../../mixin.ts";
 
 type ParsableAsURI = any;
 

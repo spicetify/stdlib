@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { transformer } from "../../mixin.js";
+import { transformer } from "../../mixin.ts";
 
-import type SnackbarT from "notistack";
+import type SnackbarT from "npm:notistack";
 
 export type Snackbar = typeof SnackbarT;
 export let Snackbar: Snackbar;
