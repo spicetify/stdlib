@@ -6,14 +6,7 @@
 import { webpackLoaded } from "../../mixin.ts";
 import { capitalize } from "../../deps.ts";
 import { Platform } from "../expose/Platform.ts";
-import {
-	chunks,
-	exportedForwardRefs,
-	exportedFunctions,
-	exportedMemos,
-	modules,
-	require,
-} from "./index.ts";
+import { chunks, exportedForwardRefs, exportedFunctions, exportedMemos, modules, require } from "./index.ts";
 import { findBy } from "/hooks/util.ts";
 import { React } from "../expose/React.ts";
 
@@ -47,14 +40,14 @@ export let RemoteConfigProvider: ({
 	children,
 }: {
 	configuration?:
-	| {
-		accessListeners: Set<any>;
-		getValue: () => any;
-		toBuilder: () => any;
-		toJSON: () => any;
-		values: Map<any, any>;
-	}
-	| undefined;
+		| {
+			accessListeners: Set<any>;
+			getValue: () => any;
+			toBuilder: () => any;
+			toJSON: () => any;
+			values: Map<any, any>;
+		}
+		| undefined;
 	children?: any;
 }) => React.FunctionComponentElement<any>;
 export let PanelHeader: Function;
@@ -82,13 +75,13 @@ export let Tracklist: React.NamedExoticComponent;
 export let TracklistRow: React.NamedExoticComponent;
 export let TracklistColumnsContextProvider: Function;
 
-webpackLoaded.subscribe(loaded => {
+webpackLoaded.subscribe((loaded) => {
 	if (!loaded) {
 		return;
 	}
 
 	Menus = Object.fromEntries(
-		exportedMemos.flatMap(m => {
+		exportedMemos.flatMap((m) => {
 			const str = (m as any).type.toString() as string;
 			const match = str.match(/value:"([\w-]+)"/);
 			const name = match?.[1] ?? "";
@@ -102,9 +95,7 @@ webpackLoaded.subscribe(loaded => {
 		}),
 	);
 
-	const [ContextMenuModuleID] = chunks.find(([_, v]) =>
-		v.toString().includes("toggleContextMenu"),
-	)!;
+	const [ContextMenuModuleID] = chunks.find(([_, v]) => v.toString().includes("toggleContextMenu"))!;
 	const [playlistMenuChunkID] = chunks.find(
 		([, v]) =>
 			v.toString().includes('value:"playlist"') &&
@@ -113,7 +104,7 @@ webpackLoaded.subscribe(loaded => {
 	)!;
 
 	Menus.Playlist = Object.values(require(playlistMenuChunkID)).find(
-		m => typeof m === "function" || typeof m === "object",
+		(m) => typeof m === "function" || typeof m === "object",
 	);
 
 	Cards = Object.assign(
@@ -128,7 +119,7 @@ webpackLoaded.subscribe(loaded => {
 		},
 		Object.fromEntries(
 			[
-				exportedFunctions.map(m => {
+				exportedFunctions.map((m) => {
 					try {
 						const str = m.toString();
 						const match = str.match(/featureIdentifier:"(.+?)"/);
@@ -139,7 +130,7 @@ webpackLoaded.subscribe(loaded => {
 						return [];
 					}
 				}),
-				exportedMemos.map(m => {
+				exportedMemos.map((m) => {
 					try {
 						const str = (m as any).type.toString();
 						const match = str.match(/featureIdentifier:"(.+?)"/);
@@ -157,18 +148,16 @@ webpackLoaded.subscribe(loaded => {
 	RemoteConfigProviderComponent = findBy("resolveSuspense", "configuration")(exportedFunctions);
 
 	Slider = exportedFunctions.find(
-		m => m.toString().includes("onStepBackward") && !m.toString().includes("volume"),
+		(m) => m.toString().includes("onStepBackward") && !m.toString().includes("volume"),
 	);
 
 	const exportedMemoFRefs = exportedMemos.filter(
-		m => (m as any).type.$$typeof === Symbol.for("react.forward_ref"),
+		(m) => (m as any).type.$$typeof === Symbol.for("react.forward_ref"),
 	);
-	Nav = exportedMemoFRefs.find(m =>
-		(m as any).type.render.toString().includes("navigationalRoot"),
-	)!;
-	NavTo = exportedMemoFRefs.find(m => (m as any).type.render.toString().includes("pageId"))!;
+	Nav = exportedMemoFRefs.find((m) => (m as any).type.render.toString().includes("navigationalRoot"))!;
+	NavTo = exportedMemoFRefs.find((m) => (m as any).type.render.toString().includes("pageId"))!;
 
-	InstrumentedRedirect = modules.find(e => e.InstrumentedRedirect);
+	InstrumentedRedirect = modules.find((e) => e.InstrumentedRedirect).InstrumentedRedirect;
 
 	SnackbarProvider = findBy("enqueueSnackbar called with invalid argument")(
 		exportedFunctions,
@@ -194,12 +183,11 @@ webpackLoaded.subscribe(loaded => {
 	}) => React.createElement(RemoteConfigProviderComponent, { configuration }, children);
 
 	PanelHeader = exportedFunctions.find(
-		m => m.toString().includes("panel") && m.toString().includes("actions"),
+		(m) => m.toString().includes("panel") && m.toString().includes("actions"),
 	)!;
-	PanelContent = exportedForwardRefs.find(f => f.render.toString().includes("fixedHeader"));
-	PanelSkeleton =
-		findBy("label", "aside")(exportedFunctions) ||
-		findBy(m => m.render.toString().includes("section"))(exportedForwardRefs);
+	PanelContent = exportedForwardRefs.find((f) => f.render.toString().includes("fixedHeader"));
+	PanelSkeleton = findBy("label", "aside")(exportedFunctions) ||
+		findBy((m) => m.render.toString().includes("section"))(exportedForwardRefs);
 
 	Snackbar = {
 		wrapper: findBy("encore-light-theme", "elevated")(exportedFunctions),
@@ -208,7 +196,7 @@ webpackLoaded.subscribe(loaded => {
 		styledImage: findBy("placeholderSrc")(exportedFunctions),
 	};
 
-	FilterBox = exportedMemos.find(f => (f as any).type.toString().includes("filterBoxApiRef"))!;
+	FilterBox = exportedMemos.find((f) => (f as any).type.toString().includes("filterBoxApiRef"))!;
 	ScrollableContainer = findBy("scrollLeft", "showButtons")(exportedFunctions);
 	ScrollableText = findBy("scrollLeft", "pauseAtEndEdgeDurationMs")(exportedFunctions);
 	Toggle = findBy("onSelected", 'type:"checkbox"')(exportedFunctions);
@@ -223,7 +211,7 @@ webpackLoaded.subscribe(loaded => {
 
 	GenericModal = findBy("GenericModal")(exportedFunctions);
 
-	Tracklist = exportedMemos.find(f => (f as any).type.toString().includes("nrValidItems"))!;
-	TracklistRow = exportedMemos.find(f => (f as any).type.toString().includes("track-icon"))!;
+	Tracklist = exportedMemos.find((f) => (f as any).type.toString().includes("nrValidItems"))!;
+	TracklistRow = exportedMemos.find((f) => (f as any).type.toString().includes("track-icon"))!;
 	TracklistColumnsContextProvider = findBy("columnType")(exportedFunctions);
 });

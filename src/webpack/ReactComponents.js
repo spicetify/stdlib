@@ -109,7 +109,7 @@ webpackLoaded.subscribe((loaded)=>{
     const exportedMemoFRefs = exportedMemos.filter((m)=>m.type.$$typeof === Symbol.for("react.forward_ref"));
     Nav = exportedMemoFRefs.find((m)=>m.type.render.toString().includes("navigationalRoot"));
     NavTo = exportedMemoFRefs.find((m)=>m.type.render.toString().includes("pageId"));
-    InstrumentedRedirect = modules.find((e)=>e.InstrumentedRedirect);
+    InstrumentedRedirect = modules.find((e)=>e.InstrumentedRedirect).InstrumentedRedirect;
     SnackbarProvider = findBy("enqueueSnackbar called with invalid argument")(exportedFunctions);
     SettingColumn = findBy("setSectionFilterMatchQueryValue", "filterMatchQuery")(exportedFunctions);
     SettingText = findBy("textSubdued", "dangerouslySetInnerHTML")(exportedFunctions);
