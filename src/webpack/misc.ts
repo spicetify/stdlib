@@ -8,7 +8,7 @@ import { exportedFunctions, exports } from "./index.ts";
 import { findBy } from "/hooks/util.ts";
 
 export let Color: Function & {
-	CSSFormat: any;
+	Format: any;
 };
 
 export let Locale: any;
@@ -22,7 +22,7 @@ webpackLoaded.subscribe(loaded => {
 	}
 
 	Color = Object.assign(findBy("this.rgb")(exportedFunctions)!, {
-		CSSFormat: exports.find(m => m.RGBA)!,
+		Format: exports.find(m => m.RGBA)!,
 	});
 
 	Locale = exports.find(m => m.getTranslations);

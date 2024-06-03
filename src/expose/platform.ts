@@ -25,7 +25,7 @@ transformer<Platform>(
 	{
 		then: ($: Platform) => {
 			Platform = $;
-			Cosmos = $.getPlayerAPI()._cosmos;
+			Cosmos = $.getRegistry().resolve(Symbol.for("Cosmos"));
 		},
 		glob: /^\/xpui\.js/,
 	},

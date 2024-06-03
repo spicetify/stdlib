@@ -30,7 +30,7 @@ export const createStorage = (mod: ModuleInstance) => {
 		get(target, p, receiver) {
 			if (typeof p === "string" && hookedNativeStorageMethods.has(p)) {
 				return (key: string, ...data: any[]) =>
-					target[p](`module:${mod.getIdentifier()}:${key}`, ...data);
+					target[p](`module:${mod.getModuleIdentifier()}:${key}`, ...data);
 			}
 
 			return target[p as keyof typeof target];
@@ -45,7 +45,7 @@ export const createLogger = (mod: ModuleInstance) => {
 		get(target, p, receiver) {
 			if (typeof p === "string" && hookedMethods.has(p)) {
 				// @ts-ignore
-				return (...data: any[]) => target[p](`[${mod.getIdentifier()}]:`, ...data);
+				return (...data: any[]) => target[p](`[${mod.getModuleIdentifier()}]:`, ...data);
 			}
 
 			return target[p as keyof typeof target];

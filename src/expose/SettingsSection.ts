@@ -9,7 +9,7 @@ export type SettingsSectionProps = { filterMatchQuery: string; };
 export type SettingsSection = React.FC<SettingsSectionProps>;
 export let SettingsSection: SettingsSection;
 
-export let future = {
+export const future = {
 	push: () => { },
 	pull(fn: () => void) {
 		const push = this.push;

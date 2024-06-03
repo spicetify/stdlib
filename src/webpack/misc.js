@@ -13,7 +13,7 @@ webpackLoaded.subscribe((loaded)=>{
         return;
     }
     Color = Object.assign(findBy("this.rgb")(exportedFunctions), {
-        CSSFormat: exports.find((m)=>m.RGBA)
+        Format: exports.find((m)=>m.RGBA)
     });
     Locale = exports.find((m)=>m.getTranslations);
     createUrlLocale = findBy("has", "baseName", "language")(exportedFunctions);

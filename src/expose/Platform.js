@@ -13,7 +13,7 @@ transformer((emit)=>(str)=>{
     }, {
     then: ($)=>{
         Platform = $;
-        Cosmos = $.getPlayerAPI()._cosmos;
+        Cosmos = $.getRegistry().resolve(Symbol.for("Cosmos"));
     },
     glob: /^\/xpui\.js/
 });

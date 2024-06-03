@@ -24,7 +24,7 @@ export const createStorage = (mod)=>{
     return new Proxy(globalThis.localStorage, {
         get (target, p, receiver) {
             if (typeof p === "string" && hookedNativeStorageMethods.has(p)) {
-                return (key, ...data)=>target[p](`module:${mod.getIdentifier()}:${key}`, ...data);
+                return (key, ...data)=>target[p](`module:${mod.getModuleIdentifier()}:${key}`, ...data);
             }
             return target[p];
         }
@@ -42,7 +42,7 @@ export const createLogger = (mod)=>{
         get (target, p, receiver) {
             if (typeof p === "string" && hookedMethods.has(p)) {
                 // @ts-ignore
-                return (...data)=>target[p](`[${mod.getIdentifier()}]:`, ...data);
+                return (...data)=>target[p](`[${mod.getModuleIdentifier()}]:`, ...data);
             }
             return target[p];
         }
