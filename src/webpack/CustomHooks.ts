@@ -31,14 +31,16 @@ export let useContextMenuState: Function;
 
 export let useLocation: Function;
 
-webpackLoaded.subscribe(loaded => {
+export let useTrackListColumns: Function;
+
+webpackLoaded.subscribe((loaded) => {
 	if (!loaded) {
 		return;
 	}
 
 	DragHandler = findBy("dataTransfer", "data-dragging")(exportedFunctions);
 	useExtractedColor = exportedFunctions.find(
-		m =>
+		(m) =>
 			m.toString().includes("extracted-color") ||
 			(m.toString().includes("colorRaw") && m.toString().includes("useEffect")),
 	)!;
@@ -47,9 +49,11 @@ webpackLoaded.subscribe(loaded => {
 	useContextMenuState = findBy("useContextMenuState")(exportedFunctions);
 
 	imageAnalysis = findBy(/\![a-zA-Z_\$][\w\$]*\.isFallback|\{extractColor/)(exportedFunctions);
-	fallbackPreset = exports.find(m => m.colorDark);
+	fallbackPreset = exports.find((m) => m.colorDark);
 
 	getPlayContext = findBy("referrerIdentifier", "usePlayContextItem")(exportedFunctions);
 
 	useLocation = findBy("location", "useContext")(exportedFunctions);
+
+	useTrackListColumns = findBy("useTrackListColumns")(exportedFunctions);
 });
