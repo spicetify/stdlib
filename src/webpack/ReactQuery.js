@@ -1,8 +1,7 @@
 /*
  * Copyright (C) 2024 Delusoire
  * SPDX-License-Identifier: GPL-3.0-or-later
- */ import { webpackLoaded } from "../../mixin.js";
-import { chunks, exportedFunctions, modules, require } from "./index.js";
+ */ import { chunks, exportedFunctions, modules, require } from "./index.js";
 import { findBy } from "/hooks/util.js";
 export let QueryClient;
 export let PersistQueryClientProvider;
@@ -13,10 +12,7 @@ export let useQuery;
 export let useQueryClient;
 export let useSuspenseQuery;
 export let useInfiniteQuery;
-webpackLoaded.subscribe((loaded)=>{
-    if (!loaded) {
-        return;
-    }
+CHUNKS.xpui.promise.then(()=>{
     QueryClient = findBy("defaultMutationOptions")(exportedFunctions);
     PersistQueryClientProvider = findBy("persistOptions")(exportedFunctions);
     QueryClientProvider = findBy("use QueryClientProvider")(exportedFunctions);

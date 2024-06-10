@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */ import { chunks, require } from "./index.js";
 import { capitalize } from "../../deps.js";
-import { webpackLoaded } from "../../mixin.js";
 export let Types;
 export let isSameIdentity;
 export let urlEncode;
@@ -13,10 +12,7 @@ export let from;
 export let fromString;
 export let is;
 export let create;
-webpackLoaded.subscribe((loaded)=>{
-    if (!loaded) {
-        return;
-    }
+CHUNKS.xpui.promise.then(()=>{
     const [URIModuleID] = chunks.find(([id, v])=>v.toString().includes("Invalid Spotify URI!") && Object.keys(require(id)).length > 10);
     const URIModule = require(URIModuleID);
     const [_Types, ...vs] = Object.values(URIModule);

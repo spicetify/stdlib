@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { webpackLoaded } from "./mixin.ts";
-webpackLoaded.next(true);
-
 import type { ModuleInstance } from "/hooks/module.ts";
 
 import { Platform } from "./src/expose/Platform.ts";
@@ -94,13 +91,14 @@ let cachedState = {};
 const listener = ({ data: state }) => {
 	EventBus.Player.state_updated.next(state);
 	if (state?.item?.uri !== cachedState?.item?.uri) EventBus.Player.song_changed.next(state);
-	if (state?.isPaused !== cachedState?.isPaused || state?.isBuffering !== cachedState?.isBuffering)
+	if (state?.isPaused !== cachedState?.isPaused || state?.isBuffering !== cachedState?.isBuffering) {
 		EventBus.Player.status_changed.next(state);
+	}
 	cachedState = state;
 };
 PlayerAPI.getEvents().addListener("update", listener);
 
-const cancel = History.listen(location => EventBus.History.updated.next(location));
+const cancel = History.listen((location) => EventBus.History.updated.next(location));
 
 export default function () {
 	return () => {

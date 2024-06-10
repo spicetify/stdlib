@@ -3,10 +3,17 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { webpackLoaded } from "../../mixin.ts";
 import { capitalize } from "../../deps.ts";
 import { Platform } from "../expose/Platform.ts";
-import { chunks, exportedForwardRefs, exportedFunctions, exportedMemos, modules, require } from "./index.ts";
+import {
+	analyzeWebpackRequire,
+	chunks,
+	exportedForwardRefs,
+	exportedFunctions,
+	exportedMemos,
+	modules,
+	require,
+} from "./index.ts";
 import { findBy } from "/hooks/util.ts";
 import { React } from "../expose/React.ts";
 
@@ -75,11 +82,7 @@ export let Tracklist: React.NamedExoticComponent;
 export let TracklistRow: React.NamedExoticComponent;
 export let TracklistColumnsContextProvider: Function;
 
-webpackLoaded.subscribe((loaded) => {
-	if (!loaded) {
-		return;
-	}
-
+CHUNKS.xpui.promise.then(() => {
 	Menus = Object.fromEntries(
 		exportedMemos.flatMap((m) => {
 			const str = (m as any).type.toString() as string;
@@ -163,10 +166,6 @@ webpackLoaded.subscribe((loaded) => {
 		exportedFunctions,
 	) as unknown as SnackbarProvider;
 
-	SettingColumn = findBy("setSectionFilterMatchQueryValue", "filterMatchQuery")(exportedFunctions);
-	SettingText = findBy("textSubdued", "dangerouslySetInnerHTML")(exportedFunctions);
-	SettingToggle = findBy("condensed", "onSelected")(exportedFunctions);
-
 	ContextMenu = Object.values(require(ContextMenuModuleID))[0];
 	RightClickMenu = findBy("action", "open", "trigger", "right-click")(exportedFunctions);
 
@@ -214,4 +213,11 @@ webpackLoaded.subscribe((loaded) => {
 	Tracklist = exportedMemos.find((f) => (f as any).type.toString().includes("nrValidItems"))!;
 	TracklistRow = exportedMemos.find((f) => (f as any).type.toString().includes("track-icon"))!;
 	TracklistColumnsContextProvider = findBy("columnType")(exportedFunctions);
+});
+
+(CHUNKS["/xpui-desktop-routes-settings.js"] ??= Promise.withResolvers()).promise.then(() => {
+	const { exportedFunctions } = analyzeWebpackRequire(require);
+	SettingColumn = findBy("setSectionFilterMatchQueryValue", "filterMatchQuery")(exportedFunctions);
+	SettingText = findBy("textSubdued", "dangerouslySetInnerHTML")(exportedFunctions);
+	SettingToggle = findBy("condensed", "onSelected")(exportedFunctions);
 });

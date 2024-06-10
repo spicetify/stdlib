@@ -11,14 +11,14 @@ export type Snackbar = typeof SnackbarT;
 export let Snackbar: Snackbar;
 
 transformer(
-	emit => str => {
+	(emit) => (str) => {
 		str = str.replace(
-			/(\.call\(this,[a-zA-Z_\$][\w\$]*\)\|\|this\)\.enqueueSnackbar)/,
-			"$1=__Snackbar",
+			/var ([a-zA-Z_\$][\w\$]*);return\(\1=([^;]*?)\)\.enqueueSnackbar=/,
+			"var $1;return($1=__Snackbar=$2).enqueueSnackbar=",
 		);
 		let __Snackbar: Snackbar | undefined = undefined;
 		Object.defineProperty(globalThis, "__Snackbar", {
-			set: value => {
+			set: (value) => {
 				emit(value);
 				__Snackbar = value;
 			},

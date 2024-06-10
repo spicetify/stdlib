@@ -1,8 +1,7 @@
 /*
  * Copyright (C) 2024 Delusoire
  * SPDX-License-Identifier: GPL-3.0-or-later
- */ import { webpackLoaded } from "../../mixin.js";
-import { Platform } from "../expose/Platform.js";
+ */ import { Platform } from "../expose/Platform.js";
 import { exportedFunctions, exports } from "./index.js";
 import { findBy } from "/hooks/util.js";
 export let DragHandler;
@@ -22,10 +21,8 @@ export let extractColorPreset = async (image)=>{
 export let getPlayContext;
 export let useContextMenuState;
 export let useLocation;
-webpackLoaded.subscribe((loaded)=>{
-    if (!loaded) {
-        return;
-    }
+export let useTrackListColumns;
+CHUNKS.xpui.promise.then(()=>{
     DragHandler = findBy("dataTransfer", "data-dragging")(exportedFunctions);
     useExtractedColor = exportedFunctions.find((m)=>m.toString().includes("extracted-color") || m.toString().includes("colorRaw") && m.toString().includes("useEffect"));
     usePanelAPI = findBy("panelSend", "context")(exportedFunctions);
@@ -34,4 +31,5 @@ webpackLoaded.subscribe((loaded)=>{
     fallbackPreset = exports.find((m)=>m.colorDark);
     getPlayContext = findBy("referrerIdentifier", "usePlayContextItem")(exportedFunctions);
     useLocation = findBy("location", "useContext")(exportedFunctions);
+    useTrackListColumns = findBy("useTrackListColumns")(exportedFunctions);
 });

@@ -4,7 +4,7 @@
  */ import { transformer } from "../../mixin.js";
 export let Snackbar;
 transformer((emit)=>(str)=>{
-        str = str.replace(/(\.call\(this,[a-zA-Z_\$][\w\$]*\)\|\|this\)\.enqueueSnackbar)/, "$1=__Snackbar");
+        str = str.replace(/var ([a-zA-Z_\$][\w\$]*);return\(\1=([^;]*?)\)\.enqueueSnackbar=/, "var $1;return($1=__Snackbar=$2).enqueueSnackbar=");
         let __Snackbar = undefined;
         Object.defineProperty(globalThis, "__Snackbar", {
             set: (value)=>{

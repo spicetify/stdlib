@@ -1,8 +1,7 @@
 /*
  * Copyright (C) 2024 Delusoire
  * SPDX-License-Identifier: GPL-3.0-or-later
- */ import { webpackLoaded } from "../../mixin.js";
-export let require;
+ */ export let require;
 export let chunks;
 export let modules;
 export let exports;
@@ -11,10 +10,42 @@ export let exportedReactObjects;
 export let exportedContexts;
 export let exportedForwardRefs;
 export let exportedMemos;
-webpackLoaded.subscribe((loaded)=>{
-    if (!loaded) {
-        return;
+export const analyzeWebpackRequire = (require)=>{
+    const chunks = Object.entries(require.m);
+    const modules = chunks.map(([id])=>require(id));
+    const exports = modules.filter((module)=>typeof module === "object").flatMap((module)=>{
+        try {
+            return Object.values(module);
+        } catch (_) {}
+    }).filter(Boolean);
+    const isFunction = (obj)=>typeof obj === "function";
+    const exportedFunctions = exports.filter(isFunction);
+    const exportedReactObjects = Object.groupBy(exports, (x)=>x.$$typeof);
+    const exportedContexts = exportedReactObjects[Symbol.for("react.context")];
+    const exportedForwardRefs = exportedReactObjects[Symbol.for("react.forward_ref")];
+    const exportedMemos = exportedReactObjects[Symbol.for("react.memo")];
+    return {
+        chunks,
+        modules,
+        exports,
+        exportedFunctions,
+        exportedReactObjects,
+        exportedContexts,
+        exportedForwardRefs,
+        exportedMemos
+    };
+};
+CHUNKS["/vendor~xpui.js"] ??= Promise.withResolvers();
+CHUNKS["/xpui.js"] ??= Promise.withResolvers();
+Object.assign(CHUNKS, {
+    xpui: {
+        promise: Promise.all([
+            CHUNKS["/vendor~xpui.js"].promise,
+            CHUNKS["/xpui.js"].promise
+        ])
     }
+});
+CHUNKS.xpui.promise.then(()=>{
     require = globalThis.webpackChunkclient_web.push([
         [
             Symbol()
@@ -22,17 +53,13 @@ webpackLoaded.subscribe((loaded)=>{
         {},
         (re)=>re
     ]);
-    chunks = Object.entries(require.m);
-    modules = chunks.map(([id])=>require(id));
-    exports = modules.filter((module)=>typeof module === "object").flatMap((module)=>{
-        try {
-            return Object.values(module);
-        } catch (_) {}
-    }).filter(Boolean);
-    const isFunction = (obj)=>typeof obj === "function";
-    exportedFunctions = exports.filter(isFunction);
-    exportedReactObjects = Object.groupBy(exports, (x)=>x.$$typeof);
-    exportedContexts = exportedReactObjects[Symbol.for("react.context")];
-    exportedForwardRefs = exportedReactObjects[Symbol.for("react.forward_ref")];
-    exportedMemos = exportedReactObjects[Symbol.for("react.memo")];
+    const analysis = analyzeWebpackRequire(require);
+    chunks = analysis.chunks;
+    modules = analysis.modules;
+    exports = analysis.exports;
+    exportedFunctions = analysis.exportedFunctions;
+    exportedReactObjects = analysis.exportedReactObjects;
+    exportedContexts = analysis.exportedContexts;
+    exportedForwardRefs = analysis.exportedForwardRefs;
+    exportedMemos = analysis.exportedMemos;
 });

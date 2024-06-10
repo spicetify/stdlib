@@ -5,7 +5,6 @@
 
 import { chunks, require } from "./index.ts";
 import { capitalize } from "../../deps.ts";
-import { webpackLoaded } from "../../mixin.ts";
 
 type ParsableAsURI = any;
 
@@ -136,38 +135,31 @@ export let create: {
 	UserToplist: any;
 };
 
-webpackLoaded.subscribe(loaded => {
-	if (!loaded) {
-		return;
-	}
-
+CHUNKS.xpui.promise.then(() => {
 	const [URIModuleID] = chunks.find(
-		([id, v]) =>
-			v.toString().includes("Invalid Spotify URI!") && Object.keys(require(id)).length > 10,
+		([id, v]) => v.toString().includes("Invalid Spotify URI!") && Object.keys(require(id)).length > 10,
 	)!;
 	const URIModule = require(URIModuleID);
 	const [_Types, ...vs] = Object.values(URIModule) as [URITypes, ...Function[]];
 	Types = _Types;
 	const TypesKeys = Object.keys(Types);
 
-	const isTestFn = (fn: Function) => TypesKeys.some(t => fn.toString().includes(`${t}}`));
-	const isCreateFn = (fn: Function) => TypesKeys.some(t => fn.toString().includes(`${t},`));
+	const isTestFn = (fn: Function) => TypesKeys.some((t) => fn.toString().includes(`${t}}`));
+	const isCreateFn = (fn: Function) => TypesKeys.some((t) => fn.toString().includes(`${t},`));
 
 	const CaseLikeThis = (s: string) => s.split("_").map(capitalize).join("");
 
-	const fnsByType = Object.groupBy(vs, fn =>
-		isTestFn(fn) ? "test" : isCreateFn(fn) ? "create" : undefined!,
-	);
+	const fnsByType = Object.groupBy(vs, (fn) => isTestFn(fn) ? "test" : isCreateFn(fn) ? "create" : undefined!);
 	is = Object.fromEntries(
-		fnsByType.test!.map(fn => [CaseLikeThis(fn.toString().match(/([\w_\d]{2,})\}/)![1]), fn]),
+		fnsByType.test!.map((fn) => [CaseLikeThis(fn.toString().match(/([\w_\d]{2,})\}/)![1]), fn]),
 	) as any;
 	create = Object.fromEntries(
-		fnsByType.create!.map(fn => [CaseLikeThis(fn.toString().match(/([\w_\d]{2,})\,/)![1]), fn]),
+		fnsByType.create!.map((fn) => [CaseLikeThis(fn.toString().match(/([\w_\d]{2,})\,/)![1]), fn]),
 	) as any;
 	const uniqueFns = fnsByType[undefined as unknown as keyof typeof fnsByType]!;
 
 	const findAndExcludeBy = (...strings: string[]) => {
-		const i = uniqueFns.findIndex(f => strings.every(str => f.toString().includes(str)));
+		const i = uniqueFns.findIndex((f) => strings.every((str) => f.toString().includes(str)));
 		return uniqueFns.splice(i, 1)[0];
 	};
 

@@ -1,13 +1,9 @@
 /*
  * Copyright (C) 2024 Delusoire
  * SPDX-License-Identifier: GPL-3.0-or-later
- */ import { webpackLoaded } from "../../mixin.js";
-import { exportedForwardRefs, exportedFunctions, exports } from "./index.js";
+ */ import { exportedForwardRefs, exportedFunctions, exports } from "./index.js";
 export let UI;
-webpackLoaded.subscribe((loaded)=>{
-    if (!loaded) {
-        return;
-    }
+CHUNKS.xpui.promise.then(()=>{
     const componentNames = Object.keys(exports.find((e)=>e.BrowserDefaultFocusStyleProvider));
     const componentRegexes = componentNames.map((n)=>new RegExp(`"data-encore-id":(?:[a-zA-Z_\$][\w\$]*\\.){2}${n}\\b`));
     const componentPairs = [

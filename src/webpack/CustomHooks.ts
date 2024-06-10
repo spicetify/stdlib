@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { webpackLoaded } from "../../mixin.ts";
 import { Platform } from "../expose/Platform.ts";
 import { exportedFunctions, exports } from "./index.ts";
 import { findBy } from "/hooks/util.ts";
@@ -33,11 +32,7 @@ export let useLocation: Function;
 
 export let useTrackListColumns: Function;
 
-webpackLoaded.subscribe((loaded) => {
-	if (!loaded) {
-		return;
-	}
-
+CHUNKS.xpui.promise.then(() => {
 	DragHandler = findBy("dataTransfer", "data-dragging")(exportedFunctions);
 	useExtractedColor = exportedFunctions.find(
 		(m) =>

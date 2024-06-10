@@ -1,10 +1,9 @@
 /*
  * Copyright (C) 2024 Delusoire
  * SPDX-License-Identifier: GPL-3.0-or-later
- */ import { webpackLoaded } from "../../mixin.js";
-import { capitalize } from "../../deps.js";
+ */ import { capitalize } from "../../deps.js";
 import { Platform } from "../expose/Platform.js";
-import { chunks, exportedForwardRefs, exportedFunctions, exportedMemos, modules, require } from "./index.js";
+import { analyzeWebpackRequire, chunks, exportedForwardRefs, exportedFunctions, exportedMemos, modules, require } from "./index.js";
 import { findBy } from "/hooks/util.js";
 import { React } from "../expose/React.js";
 export let Menus;
@@ -42,10 +41,7 @@ export let GenericModal;
 export let Tracklist;
 export let TracklistRow;
 export let TracklistColumnsContextProvider;
-webpackLoaded.subscribe((loaded)=>{
-    if (!loaded) {
-        return;
-    }
+CHUNKS.xpui.promise.then(()=>{
     Menus = Object.fromEntries(exportedMemos.flatMap((m)=>{
         const str = m.type.toString();
         const match = str.match(/value:"([\w-]+)"/);
@@ -111,9 +107,6 @@ webpackLoaded.subscribe((loaded)=>{
     NavTo = exportedMemoFRefs.find((m)=>m.type.render.toString().includes("pageId"));
     InstrumentedRedirect = modules.find((e)=>e.InstrumentedRedirect).InstrumentedRedirect;
     SnackbarProvider = findBy("enqueueSnackbar called with invalid argument")(exportedFunctions);
-    SettingColumn = findBy("setSectionFilterMatchQueryValue", "filterMatchQuery")(exportedFunctions);
-    SettingText = findBy("textSubdued", "dangerouslySetInnerHTML")(exportedFunctions);
-    SettingToggle = findBy("condensed", "onSelected")(exportedFunctions);
     ContextMenu = Object.values(require(ContextMenuModuleID))[0];
     RightClickMenu = findBy("action", "open", "trigger", "right-click")(exportedFunctions);
     ConfirmDialog = findBy("isOpen", "shouldCloseOnEsc", "onClose")(exportedFunctions);
@@ -145,4 +138,10 @@ webpackLoaded.subscribe((loaded)=>{
     Tracklist = exportedMemos.find((f)=>f.type.toString().includes("nrValidItems"));
     TracklistRow = exportedMemos.find((f)=>f.type.toString().includes("track-icon"));
     TracklistColumnsContextProvider = findBy("columnType")(exportedFunctions);
+});
+(CHUNKS["/xpui-desktop-routes-settings.js"] ??= Promise.withResolvers()).promise.then(()=>{
+    const { exportedFunctions } = analyzeWebpackRequire(require);
+    SettingColumn = findBy("setSectionFilterMatchQueryValue", "filterMatchQuery")(exportedFunctions);
+    SettingText = findBy("textSubdued", "dangerouslySetInnerHTML")(exportedFunctions);
+    SettingToggle = findBy("condensed", "onSelected")(exportedFunctions);
 });

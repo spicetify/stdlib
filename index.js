@@ -1,9 +1,7 @@
 /*
  * Copyright (C) 2024 Delusoire
  * SPDX-License-Identifier: GPL-3.0-or-later
- */ import { webpackLoaded } from "./mixin.js";
-webpackLoaded.next(true);
-import { Platform } from "./src/expose/Platform.js";
+ */ import { Platform } from "./src/expose/Platform.js";
 import { Registrar } from "./src/registers/index.js";
 import { BehaviorSubject, Subscription } from "https://esm.sh/rxjs";
 export const createRegistrar = (mod)=>{
@@ -83,7 +81,9 @@ let cachedState = {};
 const listener = ({ data: state })=>{
     EventBus.Player.state_updated.next(state);
     if (state?.item?.uri !== cachedState?.item?.uri) EventBus.Player.song_changed.next(state);
-    if (state?.isPaused !== cachedState?.isPaused || state?.isBuffering !== cachedState?.isBuffering) EventBus.Player.status_changed.next(state);
+    if (state?.isPaused !== cachedState?.isPaused || state?.isBuffering !== cachedState?.isBuffering) {
+        EventBus.Player.status_changed.next(state);
+    }
     cachedState = state;
 };
 PlayerAPI.getEvents().addListener("update", listener);
