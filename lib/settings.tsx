@@ -4,17 +4,9 @@
  */
 
 import { React } from "../src/expose/React.ts";
-import {
-	future,
-	SettingsSection,
-	SettingsSectionTitle,
-} from "../src/expose/SettingsSection.ts";
+import { future, SettingsSection, SettingsSectionTitle } from "../src/expose/SettingsSection.ts";
 import { UI } from "../src/webpack/ComponentLibrary.ts";
-import {
-	SettingColumn,
-	SettingText,
-	SettingToggle,
-} from "../src/webpack/ReactComponents.ts";
+import { SettingColumn, SettingText, SettingToggle } from "../src/webpack/ReactComponents.ts";
 
 type Task<A> = (() => Awaited<A>) | (() => Promise<Awaited<A>>);
 
@@ -61,10 +53,10 @@ export interface HiddenField<I extends string = any> extends BaseField<I> {
 
 import SettingsSectionRegistry from "../src/registers/settingsSection.ts";
 import SettingsButton from "./components/SettingsButton.tsx";
-import type { ModuleInstance } from "/hooks/module.ts";
+import type { Module } from "/hooks/index.ts";
 
 export class Settings<A = Record<string, never>> {
-	public sectionFields: { [key: string]: JSX.Element; } = {};
+	public sectionFields: { [key: string]: JSX.Element } = {};
 	private proxy;
 
 	getName() {
@@ -78,8 +70,7 @@ export class Settings<A = Record<string, never>> {
 		this.proxy = new Proxy(
 			{},
 			{
-				get: (target, prop) =>
-					Settings.getFieldValue(this.getId(prop.toString())),
+				get: (target, prop) => Settings.getFieldValue(this.getId(prop.toString())),
 				set: (target, prop, newValue) => {
 					const id = this.getId(prop.toString());
 					if (Settings.getFieldValue(id) !== newValue) {
@@ -91,7 +82,7 @@ export class Settings<A = Record<string, never>> {
 		);
 	}
 
-	static fromModule(mod: ModuleInstance) {
+	static fromModule(mod: Module) {
 		return new Settings(mod.getName(), mod.getModuleIdentifier());
 	}
 
@@ -157,8 +148,7 @@ export class Settings<A = Record<string, never>> {
 		] as const;
 	};
 
-	static getFieldValue = <R,>(id: string): R =>
-		JSON.parse(localStorage[id] ?? "null");
+	static getFieldValue = <R,>(id: string): R => JSON.parse(localStorage[id] ?? "null");
 
 	static setFieldValue = (id: string, newValue: any) => {
 		localStorage[id] = JSON.stringify(newValue ?? null);
@@ -190,7 +180,7 @@ export class Settings<A = Record<string, never>> {
 	};
 
 	SettingField = (
-		{ field, children }: { field: SettingsField; children?: any; },
+		{ field, children }: { field: SettingsField; children?: any },
 	) => (
 		<SettingColumn filterMatchQuery={field.id}>
 			<div className="g2SG95QPZfbn5RINccth">
@@ -253,7 +243,7 @@ export class Settings<A = Record<string, never>> {
 }
 
 export const createSettings = (
-	mod: ModuleInstance & { settings?: Settings; },
+	mod: Module & { settings?: Settings },
 ) => {
 	if (!mod.settings) {
 		mod.settings = Settings.fromModule(mod);
